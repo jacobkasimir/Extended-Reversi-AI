@@ -1,0 +1,22 @@
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - ./gradlew clean build
+  artifacts:
+    paths:
+      - build/classes/main
+
+test:
+  stage: test
+  script:
+    - ./gradlew test
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/test/binary/TEST-*.xml
+    paths:
+      - build/reports/tests/test

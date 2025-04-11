@@ -1,0 +1,16 @@
+# Gradle
+.gradle/
+build/
+bin/
+!bin/*.jar
+
+# Java
+*.class
+
+# IDEs
+.idea/
+*.iml
+*.log
+*.swp
+.DS_Store
+.vscode
