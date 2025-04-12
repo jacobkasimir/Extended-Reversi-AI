@@ -3,7 +3,7 @@ import javax.swing.text.Position;
 public class GameRules {
 
     public static boolean isNotHole(Move move,MapController map ){
-        return map.get(move) != 'h';
+        return map.getMap.getTile(move.x, move.y) != 'h';
     }
 
     public static boolean insideMap(Move move, MapController map){
