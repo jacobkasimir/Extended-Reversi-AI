@@ -17,6 +17,6 @@ test:
   artifacts:
     when: always
     reports:
-      junit: build/test-results/test/binary/TEST-*.xml
+      junit: build/test-results/test/*.xml
     paths:
       - build/reports/tests/test
