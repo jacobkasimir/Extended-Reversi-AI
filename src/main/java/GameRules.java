@@ -2,44 +2,44 @@
 public class GameRules {
 
     public static boolean isNotHole(Move move, MapController map ){
-        return map.getMap.getTile(move.x, move.y) != 'h';
+        return map.getTile(move.getX(), move.getY()) != 'h';
     }
 
     public static boolean insideMap(Move move, MapController map){
-        return map.getMap().getWidth() > move.x  && move.x >= 0 && map.getMap().getDepth() > move.y >= 0;
+        return map.getWidth() > move.getX() && move.getX() >= 0 && map.getHeight() > move.getY() && move.getY() >= 0;
     }
 
     public static boolean occupied(Move move, MapController map){
-        return !(map.getMap().getTile(move.x, move.y) == '0' || map.getMap().getTile(move.x, move.y) == 'b' || map.getMap().getTile(move.x, move.y) == 'i' || map.getMap().getTile(move.x, move.y) == 'c');
+        return !(map.getTile(move.getX(), move.getY()) == '0' || map.getTile(move.getX(), move.getY()) == 'b' || map.getTile(move.x, move.y) == 'i' || map.getTile(move.x, move.y) == 'c');
     }
 
     public static boolean hasBomb(GameState state, Move move){
-        return state.getPlayer(move.player).getNumberBombs() > 0;
+        return state.getPlayer(move.getPlayer()).getNumberBombs() > 0;
     }
 
     public static boolean hasOverwrite(GameState state, Move move){
-        return state.getPlayer(move.player).getNumberOverwrites() > 0;
+        return state.getPlayer(move.getPlayer()).getNumberOverwrites() > 0;
     }
 
     public static boolean validMove(Move move, GameState state){
 
-        if(move.player < 1 && move.player > state.getNumberPlayers()) return false;
-        return state.getPlayer(move.player).isInGame();
+        if(move.getPlayer() < 1 && move.getPlayer() > state.getNumberPlayers()) return false;
+        return state.getPlayer(move.getPlayer()).isInGame();
     }
 
     public static boolean isExpansion(MapController map, Move move){
-        return map.getMap().getTile(move.x, move.y) == 'x';
+        return map.getMap().getTile(move.getX(), move.getY()) == 'x';
     }
 
     public static boolean checkSpecial(GameState state, Move move, MapController map){
-        switch(map.getMap().getTile(move.x, move.y)){
+        switch(map.getMap().getTile(move.getX(), move.getY())){
             case 'b': {
-                return move.special == 20 || move.special == 21;
+                return move.getSpecial() == 20 || move.getSpecial() == 21;
             }
             case 'c': {
-                return move.special >= 1 && move.special <= state.getNumberPlayers();
+                return move.getSpecial() >= 1 && move.getSpecial() <= state.getNumberPlayers();
             }
-            default: return move.special == 0;
+            default: return move.getSpecial() == 0;
         }
     }
 
@@ -53,18 +53,18 @@ public class GameRules {
             search = true;
             tilesPassed = 0;
             while(search){
-                currentPosition = getNextTile(currentPosition);
+                currentPosition = map.getNextTile(currentPosition);
                 if (currentPosition == null) return false;
-                if(map.getMap().getTile(currentPosition.x, currentPosition.y) == (char)move.player){
+                if(map.getMap().getTile(currentPosition.getX(), currentPosition.getY()) == (char)move.getPlayer()){
                     if(tilesPassed > 0) {
-                        if (currentPosition.x != move.x || currentPosition.y != move.y) return true;
+                        if (currentPosition.getX() != move.getX || currentPosition.getY() != move.getY()) return true;
                         search = false;
                     }
                     else search = false;
-                } else if (helpCompare('0', currentPosition))search = false;
-                 else if (helpCompare('c', currentPosition)) search = false;
-                else if (helpCompare('i', currentPosition)) search = false;
-                else if (helpCompare('b', currentPosition)) search = false;
+                } else if (helpCompare('0', currentPosition), map) search = false;
+                 else if (helpCompare('c', currentPosition), map) search = false;
+                else if (helpCompare('i', currentPosition), map) search = false;
+                else if (helpCompare('b', currentPosition), map) search = false;
                 else {
                     tilesPassed++;
                 }
@@ -73,8 +73,8 @@ public class GameRules {
         return false;
     }
 
-    private static boolean helpCompare(char c, Position currentPosition){
-        return (map.getMap().getTile(currentPosition.x, currentPosition.y) == c);
+    private static boolean helpCompare(char c, Position currentPosition, MapController map){
+        return (map.getTile(currentPosition.getX(), currentPosition.getY()) == c);
     }
 
 }

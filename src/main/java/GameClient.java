@@ -33,7 +33,7 @@ public class GameClient {
 
     public void updateGame(Move move){
         this.mapController.refreshMap(move);
-        this.gameState.refreshStatus(move);
+        this.gameState.refreshState(move);
     }
 
     public void setOurPlayerId(byte id) {

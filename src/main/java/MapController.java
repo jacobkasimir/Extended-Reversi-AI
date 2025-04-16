@@ -32,11 +32,20 @@ public class MapController{
         this.height = height;
     }
 
+    public int getBombRadius() {
+        return bombRadius;
+    }
+
+    public void setBombRadius(int bombRadius) {
+        
+        this.bombRadius = bombRadius;
+    }
+
+
     public void refreshMap(Move move){
         // Noch nicht fertig
     }
     
-
     private void initMap(String[] mapString){
         //initialize map
         String[][] newMap = new String[mapString.length][height]; //array that holds all map entries as Strings
@@ -64,27 +73,21 @@ public class MapController{
         }
     }
 
-    public Map getMap() {
-        return map;
+
+    public char getTile(int x, int y) {
+       return map.getTile(x, y);
     }
 
-    public void setMap(Map map) {
-        this.map = map;
+    public void setTile(int x, int y, char c) {
+        map.setTile(x, y, c);
     }
 
-    public Transitions getTransitions() {
-        return transitions;
+
+    public Position getNextTile(Position p) {
+        return transitions.getNextTile(p.x(), p.y(), p.direc());
     }
 
-    public void setTransitions(Transitions transitions) {
-        this.transitions = transitions;
-    }
-
-    public int getBombRadius() {
-        return bombRadius;
-    }
-
-    public void setBombRadius(int bombRadius) {
-        this.bombRadius = bombRadius;
+    public void setTransition(Position p1, Position p2) {
+        transitions.setTransition(p1.x(), p1.y(), p1.direc(), p2.x(), p2.y(), p2.direc());
     }
 }
