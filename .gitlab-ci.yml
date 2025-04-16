@@ -8,7 +8,8 @@ build:
     - ./gradlew clean build
   artifacts:
     paths:
-      - build/classes/main
+      - bin/*.jar
+      - build/classes/java/main
 
 test:
   stage: test
