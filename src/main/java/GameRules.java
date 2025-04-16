@@ -2,7 +2,7 @@ import javax.swing.text.Position;
 
 public class GameRules {
 
-    public static boolean isNotHole(Move move,MapController map ){
+    public static boolean isNotHole(Move move, MapController map ){
         return map.getMap.getTile(move.x, move.y) != 'h';
     }
 
@@ -14,15 +14,15 @@ public class GameRules {
         return !(map.getMap().getTile(move.x, move.y) == '0' || map.getMap().getTile(move.x, move.y) == 'b' || map.getMap().getTile(move.x, move.y) == 'i' || map.getMap().getTile(move.x, move.y) == 'c');
     }
 
-    public static boolean hasBomb(GameStatus state, Move move){
+    public static boolean hasBomb(GameState state, Move move){
         return state.getPlayer(move.player).getNumberBombs() > 0;
     }
 
-    public static boolean hasOverwrite(GameStatus state, Move move){
+    public static boolean hasOverwrite(GameState state, Move move){
         return state.getPlayer(move.player).getNumberOverwrites() > 0;
     }
 
-    public static boolean validMove(Move move, GameStatus state){
+    public static boolean validMove(Move move, GameState state){
 
         if(move.player < 1 && move.player > state.getNumberPlayers()) return false;
         return state.getPlayer(move.player).isInGame();
@@ -32,7 +32,7 @@ public class GameRules {
         return map.getMap().getTile(move.x, move.y) == 'x';
     }
 
-    public static boolean checkSpecial(GameStatus state, Move move, MapController map){
+    public static boolean checkSpecial(GameState state, Move move, MapController map){
         switch(map.getMap().getTile(move.x, move.y)){
             case 'b': {
                 return move.special == 20 || move.special == 21;
@@ -74,7 +74,7 @@ public class GameRules {
         return false;
     }
 
-    private boolean helpCompare(char c, Position currentPosition){
+    private static boolean helpCompare(char c, Position currentPosition){
         return (map.getMap().getTile(currentPosition.x, currentPosition.y) == c);
     }
 
