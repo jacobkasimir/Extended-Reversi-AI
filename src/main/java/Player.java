@@ -6,6 +6,13 @@ public class Player {
     private boolean inGame = true;
 
 
+    public Player(int bombs, int overwrites, int number, boolean in){
+        this.numberBombs = bombs;
+        this.numberOverwrites = overwrites;
+        this.playerNumber = number;
+        this.inGame = in;
+    }
+
     public boolean isInGame() {
         return inGame;
     }
