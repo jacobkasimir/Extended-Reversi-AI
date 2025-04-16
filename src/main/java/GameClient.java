@@ -37,7 +37,7 @@ public class GameClient {
     }
 
     public void setOurPlayerId(byte id) {
-        this.gameState.setOurPlayerId() = id;
+        this.gameState.setOurPlayerId(id);
         System.out.println("Spieler-ID erhalten: " + id);
     }
 
@@ -74,7 +74,7 @@ public class GameClient {
     }
 
     public void endPhase(){
-        this.gameState.setGamePhase(2); //Switch-Case in GameRules???
+        this.gameState.setGamePhase((byte) 2); //Switch-Case in GameRules???
     }
 
     public void endGame(){
