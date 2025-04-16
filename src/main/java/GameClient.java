@@ -47,7 +47,7 @@ public class GameClient {
 
     public Move calculateMove(int timeLimit, int maxDepth) {
         Move possibleMove = generateRandomMove();
-        while(!gameRules.isValid(possibleMove)){
+        while(!MoveVerifier.isValid(possibleMove, mapController, gameStatus)){
             possibleMove = generateRandomMove();
         }
         return possibleMove;

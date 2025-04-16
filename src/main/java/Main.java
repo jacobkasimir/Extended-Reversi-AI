@@ -20,6 +20,7 @@ public class Main {
                 case "--port":
                     port = Integer.parseInt(args[++i]);
                     break;
+                default: break;
             }
         }
         

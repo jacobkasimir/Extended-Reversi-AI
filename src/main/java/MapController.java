@@ -3,12 +3,12 @@ public class MapController{
     private Transitions transitions;
     private int bombRadius;
     private int width;
-    private int depth;
+    private int height;
 
-    public MapController(String[] mapString, String[] transitionsString, int width, int depth, int bombRadius){
-        this.map = new Map(width, depth);
-        this.transitions = new Transitions(width, depth);
-        this.depth = depth;
+    public MapController(String[] mapString, String[] transitionsString, int width, int height, int bombRadius){
+        this.map = new Map(width, height);
+        this.transitions = new Transitions(width, height);
+        this.height = height;
         this.width = width;
         this.bombRadius = bombRadius;
 
@@ -24,21 +24,21 @@ public class MapController{
         this.width = width;
     }
 
-    public int getDepth() {
-        return depth;
+    public int getHeight() {
+        return height;
     }
 
-    public void setDepth(int depth) {
-        this.depth = depth;
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public void refreshMap(Move move){
-        
+        // Noch nicht fertig
     }
 
     private void initMap(String[] mapString){
         //initialize map
-        String[][] newMap = new String[mapString.length][depth]; //array that holds all map entries as Strings
+        String[][] newMap = new String[mapString.length][height]; //array that holds all map entries as Strings
         for (int i = 0; i < mapString.length; i++) {
             newMap[i] = mapString[i].split(" ");
         }
