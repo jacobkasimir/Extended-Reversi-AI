@@ -22,7 +22,7 @@ public class GameClient {
         String[] map = splitString(lines,4,(4 + height));
         String[] transitions = splitString(lines, (4+height), lines.length);
 
-        int gamePhase = 1;
+        byte gamePhase = 1;
 
         this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
         this.mapController =  new MapController(map, transitions, width, height, bombRadius);
