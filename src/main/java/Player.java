@@ -1,4 +1,3 @@
-import org.w3c.dom.ls.LSOutput;
 
 public class Player {
     private int numberBombs;
@@ -37,8 +36,4 @@ public class Player {
     public void setNumberBombs(int numberBombs) {
         this.numberBombs = numberBombs;
     }
-
-
-
 }
-
