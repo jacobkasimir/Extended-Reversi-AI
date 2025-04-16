@@ -21,7 +21,7 @@ public class GameClient {
         int gamePhase = 1;
 
         this.gameStatus = new GameStatus(playerCount, overrideCount, bombCount, bombRadius, width, height, gamePhase);
-        this. mapController =  new MapController(map, transitions, width, height, bombRadius);
+        this.mapController =  new MapController(map, transitions, width, height, bombRadius);
         this.gameRules = new GameRules();
 
         System.out.println("Init abgeschlossen");

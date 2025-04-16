@@ -1,16 +1,17 @@
 public class Map {
-    private int width;
-    private int depth;
-    private int players;
-
     private char[][] map;
     
-    public Map(int width, int depth, int players){
-        this.width = width;
-        this.depth = depth;
-        this.players = players;
+    public Map(int width, int depth){
         this.map = new char[width][depth];
     }
 
     
+    public char getTile(int x, int y) {
+        return map[x][y];
+    }
+
+    public void setTile(int x, int y, char c) {
+        map[x][y] = c;
+    }
+
 }
