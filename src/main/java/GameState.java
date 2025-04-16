@@ -1,13 +1,13 @@
 import java.util.Dictionary;
 
 
-public class GameStatus {
+public class GameState {
     private Dictionary<Integer, Player> players;
     private int numberPlayers;
     private boolean phase1;                 //Phase 1: true; Phase 2: false
 
 
-    public GameStatus(int numberPlayers){
+    public GameState(int numberPlayers){
         this.numberPlayers = numberPlayers;
         phase1 = true;
     }
