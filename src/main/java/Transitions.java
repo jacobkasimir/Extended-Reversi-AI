@@ -1,8 +1,8 @@
 public class Transitions{
     private Position[][][] transitions;
     
-    public Transitions(int width, int depth){
-        this.transitions = new Position[width][depth][8];
+    public Transitions(int width, int height){
+        this.transitions = new Position[width][height][8];
     }
 
     public Position getNextTile(int x, int y, int direc) {
