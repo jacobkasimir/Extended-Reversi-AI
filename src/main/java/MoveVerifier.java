@@ -4,7 +4,9 @@ public class MoveVerifier {
 
         if(!(GameRules.insideMap(move, map) &&
         GameRules.validMove(move, state) &&
-        GameRules.isNotHole(move, map) && GameRules.checkSpecial(state, move, map))) return false;
+        GameRules.isNotHole(move, map) && GameRules.checkSpecial(state, move, map))) {
+            return false;
+        }
 
         if(state.isPhase1()){
             if(GameRules.occupied(move, map)) {

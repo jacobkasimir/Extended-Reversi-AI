@@ -23,7 +23,6 @@ public class GameRules {
     }
 
     public static boolean validMove(Move move, GameState state){
-
         if(move.getPlayer() < 1 && move.getPlayer() > state.getNumberPlayers()) return false;
         return state.getPlayer(move.getPlayer()).isInGame();
     }
@@ -49,23 +48,25 @@ public class GameRules {
         int tilesPassed;
         boolean search;
         Position currentPosition;
-        for(int i = 0; i < 7; i++) {
+        for(int i = 0; i < 8; i++) {
             currentPosition = new Position(move.getX(), move.getY(), i);
             search = true;
             tilesPassed = 0;
             while(search){
                 currentPosition = map.getNextTile(currentPosition);
-                if (currentPosition == null) return false;
-                if(map.getTile(currentPosition.x(), currentPosition.y()) == (char)move.getPlayer()){
+                if (currentPosition == null) break;
+                if(String.valueOf(move.getPlayer()).equals(String.valueOf(map.getTile(currentPosition.x(), currentPosition.y())))){
                     if(tilesPassed > 0) {
                         if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()) return true;
                         search = false;
                     }
                     else search = false;
-                } else if (helpCompare('0', currentPosition, map)) search = false;
-                 else if (helpCompare('c', currentPosition, map)) search = false;
+                } 
+                else if (helpCompare('0', currentPosition, map)) search = false;
+                else if (helpCompare('c', currentPosition, map)) search = false;
                 else if (helpCompare('i', currentPosition, map)) search = false;
                 else if (helpCompare('b', currentPosition, map)) search = false;
+                //Expansion stones und holes ?????
                 else {
                     tilesPassed++;
                 }

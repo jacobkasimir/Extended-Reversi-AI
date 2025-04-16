@@ -1,8 +1,9 @@
 import java.util.Dictionary;
+import java.util.Hashtable;
 
 
 public class GameState {
-    private Dictionary<Integer, Player> players;
+    private Dictionary<Integer, Player> players = new Hashtable<>();
     private int numberPlayers;
     private boolean phase1;                 //Phase 1: true; Phase 2: false
     private byte ourPlayerId;

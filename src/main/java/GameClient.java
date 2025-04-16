@@ -1,10 +1,8 @@
 import java.util.Random;
-import java.util.random.*;
 
 
 public class GameClient {
     private MapController mapController;
-    private GameRules gameRules;
     private GameState gameState;
 
     public void init(String[] lines) {
@@ -26,7 +24,6 @@ public class GameClient {
 
         this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
         this.mapController =  new MapController(map, transitions, width, height, bombRadius);
-        this.gameRules = new GameRules();
 
         System.out.println("Init abgeschlossen");
     }
@@ -50,11 +47,20 @@ public class GameClient {
     }
 
     public Move calculateMove(int timeLimit, int maxDepth) {
-        Move possibleMove = generateRandomMove();
-        while(!MoveVerifier.isValid(possibleMove, mapController, gameState)){
-            possibleMove = generateRandomMove();
-        }
-        return possibleMove;
+        for (int i = 0; i < mapController.getWidth(); i++) {
+            for (int j = 0; j < mapController.getHeight(); j++) {
+                Move possibleMove = new Move(i, j, 0, gameState.getOurPlayerId());
+                if(MoveVerifier.isValid(possibleMove, mapController, gameState)){
+                    return possibleMove;
+                }
+            }
+        }   
+        return new Move(0,0,0,0); //es kann später im Spiel auch keine möglichen Züge geben
+        // Move possibleMove = generateRandomMove();
+        // while(!MoveVerifier.isValid(possibleMove, mapController, gameState)){
+        //     possibleMove = generateRandomMove();
+        // }
+        // return possibleMove;
     }
 
     private Move generateRandomMove(){
