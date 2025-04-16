@@ -60,10 +60,10 @@ public class TCPClient {
 
                     out.writeByte(5);
                     out.writeInt(5);
-                    out.writeShort(move.x);
-                    out.writeShort(move.y);
-                    out.writeByte(move.special);
-                    System.out.println("Zug gesendet: (" + move.x + "," + move.y + "), Spezial: " + move.special);
+                    out.writeShort(move.getX());
+                    out.writeShort(move.getY());
+                    out.writeByte(move.getSpecial());
+                    System.out.println("Zug gesendet: (" + move.getX() + "," + move.getY() + "), Spezial: " + move.getSpecial());
                     break;
 
                 case 6: // Move Announcement
