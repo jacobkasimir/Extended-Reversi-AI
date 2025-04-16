@@ -10,7 +10,8 @@ public class GameRules {
     }
 
     public static boolean occupied(Move move, MapController map){
-        return !(map.getTile(move.getX(), move.getY()) == '0' || map.getTile(move.getX(), move.getY()) == 'b' || map.getTile(move.x, move.y) == 'i' || map.getTile(move.x, move.y) == 'c');
+        return !(map.getTile(move.getX(), move.getY()) == '0' || map.getTile(move.getX(), move.getY()) == 'b' || 
+        map.getTile(move.getX(), move.getY()) == 'i' || map.getTile(move.getX(), move.getY()) == 'c');
     }
 
     public static boolean hasBomb(GameState state, Move move){
@@ -55,9 +56,9 @@ public class GameRules {
             while(search){
                 currentPosition = map.getNextTile(currentPosition);
                 if (currentPosition == null) return false;
-                if(map.getTile(currentPosition.getX(), currentPosition.getY()) == (char)move.getPlayer()){
+                if(map.getTile(currentPosition.x(), currentPosition.y()) == (char)move.getPlayer()){
                     if(tilesPassed > 0) {
-                        if (currentPosition.getX() != move.getX || currentPosition.getY() != move.getY()) return true;
+                        if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()) return true;
                         search = false;
                     }
                     else search = false;
@@ -74,7 +75,7 @@ public class GameRules {
     }
 
     private static boolean helpCompare(char c, Position currentPosition, MapController map){
-        return (map.getTile(currentPosition.getX(), currentPosition.getY()) == c);
+        return (map.getTile(currentPosition.x(), currentPosition.y()) == c);
     }
 
 }
