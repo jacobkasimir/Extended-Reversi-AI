@@ -1,9 +1,16 @@
 import java.util.Random;
 
-
 public class GameClient {
     private MapController mapController;
     private GameState gameState;
+
+    public MapController getMapController() {
+        return mapController;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
 
     public void init(String[] lines) {
         int playerCount = Integer.valueOf(lines[0]);
