@@ -1,4 +1,3 @@
-import javax.swing.text.Position;
 
 public class GameRules {
 
@@ -36,10 +35,10 @@ public class GameRules {
         switch(map.getMap().getTile(move.x, move.y)){
             case 'b': {
                 return move.special == 20 || move.special == 21;
-            }break;
+            }
             case 'c': {
                 return move.special >= 1 && move.special <= state.getNumberPlayers();
-            }break;
+            }
             default: return move.special == 0;
         }
     }
