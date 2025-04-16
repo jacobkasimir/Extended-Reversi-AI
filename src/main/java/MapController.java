@@ -35,6 +35,7 @@ public class MapController{
     public void refreshMap(Move move){
         // Noch nicht fertig
     }
+    
 
     private void initMap(String[] mapString){
         //initialize map
@@ -61,5 +62,29 @@ public class MapController{
             this.transitions.setTransition(Integer.parseInt(newTransition[i][0]), Integer.parseInt(newTransition[i][1]), Integer.parseInt(newTransition[i][2]), 
             Integer.parseInt(newTransition[i][4]), Integer.parseInt(newTransition[i][5]), Integer.parseInt(newTransition[i][6]));
         }
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public void setMap(Map map) {
+        this.map = map;
+    }
+
+    public Transitions getTransitions() {
+        return transitions;
+    }
+
+    public void setTransitions(Transitions transitions) {
+        this.transitions = transitions;
+    }
+
+    public int getBombRadius() {
+        return bombRadius;
+    }
+
+    public void setBombRadius(int bombRadius) {
+        this.bombRadius = bombRadius;
     }
 }

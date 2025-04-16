@@ -44,7 +44,7 @@ public class TCPClient {
 
                 case 3: // Player ID setzen
                     byte playerId = in.readByte();
-                    game.setPlayerId(playerId);
+                    game.setOurPlayerId(playerId);
                     break;
 
                 case 4: // Move Request
