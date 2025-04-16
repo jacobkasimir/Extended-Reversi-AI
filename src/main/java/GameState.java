@@ -65,4 +65,8 @@ public class GameState {
         if(this.isPhase1()) return 1;
         else return 2;
     }
+
+    public void refreshState(Move move){
+        //TODO in future exercises
+    }
 }
