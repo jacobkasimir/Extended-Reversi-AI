@@ -1,6 +1,6 @@
 public class MoveVerifier {
 
-    public static boolean isValid(Move move, MapController map, GameStatus state){
+    public static boolean isValid(Move move, MapController map, GameState state){
 
         if(!(GameRules.insideMap(move, map) &&
         GameRules.validMove(move, state) &&
@@ -15,6 +15,5 @@ public class MoveVerifier {
         }else{
             return GameRules.hasBomb(state, move);
         }
-        return true;
     }
 }
