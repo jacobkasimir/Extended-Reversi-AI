@@ -49,22 +49,22 @@ public class GameRules {
         boolean search;
         Position currentPosition;
         for(int i = 0; i < 7; i++) {
-            currentPosition = new Position(move.x, move.y, i);
+            currentPosition = new Position(move.getX(), move.getY(), i);
             search = true;
             tilesPassed = 0;
             while(search){
                 currentPosition = map.getNextTile(currentPosition);
                 if (currentPosition == null) return false;
-                if(map.getMap().getTile(currentPosition.getX(), currentPosition.getY()) == (char)move.getPlayer()){
+                if(map.getTile(currentPosition.getX(), currentPosition.getY()) == (char)move.getPlayer()){
                     if(tilesPassed > 0) {
                         if (currentPosition.getX() != move.getX || currentPosition.getY() != move.getY()) return true;
                         search = false;
                     }
                     else search = false;
-                } else if (helpCompare('0', currentPosition), map) search = false;
-                 else if (helpCompare('c', currentPosition), map) search = false;
-                else if (helpCompare('i', currentPosition), map) search = false;
-                else if (helpCompare('b', currentPosition), map) search = false;
+                } else if (helpCompare('0', currentPosition, map)) search = false;
+                 else if (helpCompare('c', currentPosition, map)) search = false;
+                else if (helpCompare('i', currentPosition, map)) search = false;
+                else if (helpCompare('b', currentPosition, map)) search = false;
                 else {
                     tilesPassed++;
                 }
