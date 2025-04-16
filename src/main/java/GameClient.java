@@ -1,3 +1,7 @@
+import java.util.Random;
+import java.util.random.*;
+
+
 public class GameClient {
     private MapController mapController;
     private GameRules gameRules;
@@ -20,7 +24,7 @@ public class GameClient {
 
         int gamePhase = 1;
 
-        this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, width, height, gamePhase);
+        this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
         this.mapController =  new MapController(map, transitions, width, height, bombRadius);
         this.gameRules = new GameRules();
 
@@ -32,8 +36,8 @@ public class GameClient {
         this.gameState.refreshStatus(move);
     }
 
-    public void setPlayerId(int id) {
-        this.gameState.setPlayerId() = id;
+    public void setOurPlayerId(byte id) {
+        this.gameState.setOurPlayerId() = id;
         System.out.println("Spieler-ID erhalten: " + id);
     }
 
@@ -53,10 +57,11 @@ public class GameClient {
         return possibleMove;
     }
 
-    public Move generateRandomMove(){
-        int x = Math.random(0,gameState.getWidth());
-        int y = Math.random(0,gameState.getHeight());
-        Move possibleMove = new Move(x,y,mapController.getMap().getSpecial(),gameState.getPlayerId());
+    private Move generateRandomMove(){
+        Random rand = new Random();
+        int x = rand.nextInt(0,mapController.getWidth());
+        int y = rand.nextInt(0,mapController.getHeight());
+        Move possibleMove = new Move(x,y,0,gameState.getOurPlayerId());
         return possibleMove;
     }
 
