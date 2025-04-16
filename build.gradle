@@ -6,26 +6,30 @@ plugins {
 group = 'swp2025.group5'
 version = '1.0'
 
-sourceCompatibility = '17'
+sourceCompatibility = '21'
+targetCompatibility = '21'  //target hinzufügen für vollständige Kompatibilität
 
 application {
-    mainClass = 'Main'
+    mainClass = 'Main'  //besser vollständiger Pfad, siehe unten!
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'Main'
+        attributes 'Main-Class': 'Main'  //auch hier vollständiger Pfad
     }
-    archiveBaseName = 'swp2025_group5'
-    destinationDirectory = file('bin')
+    archiveBaseName.set('swp2025_group5')
+    destinationDirectory.set(file('bin'))
 }
 
 repositories {
     mavenCentral()
 }
 
-
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+test {
+    useJUnitPlatform()
 }
