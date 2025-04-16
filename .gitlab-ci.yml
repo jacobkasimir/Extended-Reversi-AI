@@ -6,11 +6,9 @@ build:
   stage: build
   script:
     - ./gradlew clean build
-    - echo "Listing files in $(pwd)"
-    - find . -type f
-
   artifacts:
     paths:
+      - bin/*.jar
       - build/classes/java/main
 
 test:
