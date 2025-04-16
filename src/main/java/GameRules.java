@@ -28,11 +28,11 @@ public class GameRules {
     }
 
     public static boolean isExpansion(MapController map, Move move){
-        return map.getMap().getTile(move.getX(), move.getY()) == 'x';
+        return map.getTile(move.getX(), move.getY()) == 'x';
     }
 
     public static boolean checkSpecial(GameState state, Move move, MapController map){
-        switch(map.getMap().getTile(move.getX(), move.getY())){
+        switch(map.getTile(move.getX(), move.getY())){
             case 'b': {
                 return move.getSpecial() == 20 || move.getSpecial() == 21;
             }
