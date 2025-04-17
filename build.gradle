@@ -17,8 +17,8 @@ jar {
     manifest {
         attributes 'Main-Class': 'Main'  //auch hier vollständiger Pfad
     }
-    archiveBaseName.set('swp2025_group5')
-    destinationDirectory.set(file('bin'))
+    archiveFileName = ('swp2025_group5.jar')
+    destinationDirectory = (file("$projectDir/bin"))
 }
 
 repositories {
