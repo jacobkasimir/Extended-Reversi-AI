@@ -8,7 +8,7 @@ public class SingleRulesTest {
     private GameState gameState2;
 
 
-    @BeforeAll
+    @BeforeEach
     public void setUpMap(){
         map = new MapController(
             new String[]{
@@ -30,11 +30,6 @@ public class SingleRulesTest {
         gameState1 = new GameState(2, 1, 1, 3, (byte) 1);
         gameState2 = new GameState(2, 0, 0, 3, (byte) 1);
         gameState2.playerDisqualified((byte) 2);
-    }
-
-    @BeforeEach
-    public void setUp(){
-
     }
 
     @Test
