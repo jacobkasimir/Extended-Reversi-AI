@@ -105,25 +105,22 @@ public class SingleRulesTest {
     @Test
     public void validMoveTest(){
         Move moveTrue = new Move(1, 1, 0, 1);
-        Move moveFalse1 = new Move(1, 1, 0, 1);
+        Move moveFalse1 = new Move(1, 1, 0, 2);
         Move moveFalse2 = new Move(1, 1, 0, 3);
         Move moveFalse3 = new Move(1, 1, 0, 0);
         Move moveFalse4 = new Move(1, 1, 0, 10);
-        Move moveFalse5 = new Move(1, 1, 0, 2);
 
         boolean resultTrue = GameRules.validMove(moveTrue, gameState2);
         boolean resultFalse1 = GameRules.validMove(moveFalse1, gameState2);
         boolean resultFalse2 = GameRules.validMove(moveFalse2, gameState2);
         boolean resultFalse3 = GameRules.validMove(moveFalse3, gameState2);
         boolean resultFalse4 = GameRules.validMove(moveFalse4, gameState2);
-        boolean resultFalse5 = GameRules.validMove(moveFalse5, gameState2); 
 
         assertTrue(resultTrue);
         assertFalse(resultFalse1);
         assertFalse(resultFalse2);
         assertFalse(resultFalse3);
         assertFalse(resultFalse4);
-        assertFalse(resultFalse5);
     }
 
     @Test
