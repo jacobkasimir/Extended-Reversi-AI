@@ -78,7 +78,7 @@ public class GameClient {
         return possibleMove;
     }
 
-    private String[] splitString(String[] lines, int min, int max){
+    private static String[] splitString(String[] lines, int min, int max){
         String [] res = new String[max-min];
         for(int i = min; i < max; i++){
             res[i-min] = lines[i];
