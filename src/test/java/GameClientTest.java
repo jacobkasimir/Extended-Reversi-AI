@@ -5,14 +5,14 @@ public class GameClientTest {
 
     @Test
     public void init(){
-        String input = "2 \n 0\n1 1 \n2 6 \n- - b x 2 - \n- 0 x 1 - - \n 1 1 5 <−> 4 0 1";
+        String input = "2 \n 0\n1 1 \n2 6 \n- - b x 2 - \n- 0 x 1 - - \n 1 1 5 <-> 4 0 1";
         String[] lines = input.split("\\R");
         GameClient game = new GameClient();
         Position startPosition = new Position(1, 1, 5);
         Position endPosition = new Position(4, 0, 1);
 
         game.init(lines);
-        
+
         assertEquals(game.getGameState().getNumberPlayers(), 2);
         assertEquals(game.getGameState().getPlayer(0).getNumberOverwrites(), 0);
         assertEquals(game.getGameState().getPlayer(0).getNumberBombs(), 1);
