@@ -23,7 +23,7 @@ public class GameRules {
     }
 
     public static boolean validMove(Move move, GameState state){
-        if(move.getPlayer() < 1 && move.getPlayer() > state.getNumberPlayers()) return false;
+        if(move.getPlayer() < 1 || move.getPlayer() > state.getNumberPlayers()) return false;
         return state.getPlayer(move.getPlayer()).isInGame();
     }
 
