@@ -4,7 +4,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TCPClientTest {
@@ -14,7 +14,7 @@ public class TCPClientTest {
     DataInputStream in;
     DataOutputStream out;
 
-    @BeforeAll
+    @BeforeEach
     public void init() throws Exception{
         serverSocket = new ServerSocket(7777);
         clientSocket = serverSocket.accept();
