@@ -2,7 +2,7 @@
 public class GameRules {
 
     public static boolean isNotHole(Move move, MapController map ){
-        return map.getTile(move.getX(), move.getY()) != 'h';
+        return map.getTile(move.getX(), move.getY()) != '-';
     }
 
     public static boolean insideMap(Move move, MapController map){
@@ -23,7 +23,7 @@ public class GameRules {
     }
 
     public static boolean validMove(Move move, GameState state){
-        if(move.getPlayer() < 1 && move.getPlayer() > state.getNumberPlayers()) return false;
+        if(move.getPlayer() < 1 || move.getPlayer() > state.getNumberPlayers()) return false;
         return state.getPlayer(move.getPlayer()).isInGame();
     }
 

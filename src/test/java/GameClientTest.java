@@ -10,7 +10,7 @@ public class GameClientTest {
 
         GameClient game = new GameClient();
         Position startPosition = new Position(1, 1, 5);
-        Position endPosition = new Position(4, 0, 1);
+        Position endPosition = new Position(4, 0, 1+4);
 
         game.init(lines);
 
