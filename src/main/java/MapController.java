@@ -48,13 +48,16 @@ public class MapController{
     
     private void initMap(String[] mapString){
         //initialize map
-        String[][] newMap = new String[mapString.length][height]; //array that holds all map entries as Strings
-        for (int i = 0; i < mapString.length; i++) {
-            newMap[i] = mapString[i].split(" ");
+        String[][] newMap = new String[width][height]; //array that holds all map entries as Strings
+        for (int i = 0; i < height; i++) {
+            String[] temp = mapString[i].split(" ");
+            for(int j = 0; j < width; j++){
+                newMap[j][i] = temp[j];
+            }
         }
 
-        for (int i = 0; i < newMap.length; i++) {
-            for (int j = 0; j < newMap[i].length; j++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 this.map.setTile(i, j, newMap[i][j].charAt(0));
             }
         }
