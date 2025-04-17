@@ -161,10 +161,10 @@ public class SingleRulesTest {
 
     @Test
     public void checkSpecialTestChoose(){
-        Move moveTrue1 = new Move(4, 6, 0, 1);
-        Move moveTrue2 = new Move(4, 6, 0, 1);
-        Move moveFalse1 = new Move(4, 6, 0, 1);
-        Move moveFalse2 = new Move(2, 3, 0, 1);
+        Move moveTrue1 = new Move(3, 6, 2, 1);
+        Move moveTrue2 = new Move(3, 6, 1, 1);
+        Move moveFalse1 = new Move(3, 6, 0, 1);
+        Move moveFalse2 = new Move(2, 3, 1, 1);
 
         boolean resultTrue1 = GameRules.checkSpecial(gameState1, moveTrue1, map);
         boolean resultTrue2 = GameRules.checkSpecial(gameState1, moveTrue2, map);
