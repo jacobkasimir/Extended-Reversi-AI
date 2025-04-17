@@ -143,9 +143,9 @@ public class SingleRulesTest {
 
     @Test
     public void checkSpecialTestBombs(){
-        Move moveTrue1 = new Move(4, 7, 20, 1);
-        Move moveTrue2 = new Move(4, 7, 21, 1);
-        Move moveFalse1 = new Move(4, 7, 0, 1);
+        Move moveTrue1 = new Move(3, 7, 20, 1);
+        Move moveTrue2 = new Move(3, 7, 21, 1);
+        Move moveFalse1 = new Move(3, 7, 0, 1);
         Move moveFalse2 = new Move(4, 5, 20, 1);
 
         boolean resultTrue1 = GameRules.checkSpecial(gameState1, moveTrue1, map);
