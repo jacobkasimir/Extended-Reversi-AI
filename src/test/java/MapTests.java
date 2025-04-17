@@ -8,8 +8,8 @@ public class MapTests {
         new String[]{"7 7 2 <-> 0 0 6", "7 0 1 <-> 0 7 5"}, 8, 8, 0);
     
     MapController mapController2 = new MapController(new String[]{"0 0 b 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 1 2 0 0 0",
-    "0 0 0 2 1 0 0 0","0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0"}, 
-    new String[]{"7 7 2 <-> 0 0 6", "7 0 1 <-> 0 7 5"}, 8, 7, 0);
+        "0 0 0 2 1 0 0 0","0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0"}, 
+        new String[]{}, 8, 7, 0);
     
     @Test 
     public void mapInitTest(){
