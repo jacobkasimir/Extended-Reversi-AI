@@ -1,11 +1,12 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 
 public class TCPClient {
 
-    public static void connect(String server, int port) throws IOException {
+    public static void connect(InetAddress server, int port) throws IOException {
 
         Socket socket = new Socket(server, port);
 
