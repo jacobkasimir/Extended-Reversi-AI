@@ -67,9 +67,9 @@ public class SingleRulesTest {
 
     @Test
     public void occupiedTest(){
-        Move moveFalse1 = new Move(3, 3, 0, 0);
-        Move moveFalse2 = new Move(4, 3, 0, 0);
-        Move moveTrue = new Move(1, 1, 0, 0);
+        Move moveFalse1 = new Move(2, 3, 0, 0);
+        Move moveFalse2 = new Move(5, 3, 0, 0);
+        Move moveTrue = new Move(3, 3, 0, 0);
 
         boolean resultFalse1 = GameRules.occupied(moveFalse1, map);
         boolean resultFalse2 = GameRules.occupied(moveFalse2, map);
