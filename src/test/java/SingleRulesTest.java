@@ -150,12 +150,56 @@ public class SingleRulesTest {
     }
 
     @Test
-    public void checkSpecialTest(){
-        
+    public void checkSpecialTestBombs(){
+        Move moveTrue1 = new Move(4, 7, 20, 1);
+        Move moveTrue2 = new Move(4, 7, 21, 1);
+        Move moveFalse1 = new Move(4, 7, 0, 1);
+        Move moveFalse2 = new Move(4, 5, 20, 1);
+
+        boolean resultTrue1 = GameRules.checkSpecial(gameState1, moveTrue1, map);
+        boolean resultTrue2 = GameRules.checkSpecial(gameState1, moveTrue2, map);
+        boolean resultFalse1 = GameRules.checkSpecial(gameState1, moveFalse1, map);
+        boolean resultFalse2 = GameRules.checkSpecial(gameState1, moveFalse2, map);
+
+        assertTrue(resultTrue1);
+        assertTrue(resultTrue2);
+        assertFalse(resultFalse1);
+        assertFalse(resultFalse2);
+    }
+
+    @Test
+    public void checkSpecialTestChoose(){
+        Move moveTrue1 = new Move(4, 6, 0, 1);
+        Move moveTrue2 = new Move(4, 6, 0, 1);
+        Move moveFalse1 = new Move(4, 6, 0, 1);
+        Move moveFalse2 = new Move(2, 3, 0, 1);
+
+        boolean resultTrue1 = GameRules.checkSpecial(gameState1, moveTrue1, map);
+        boolean resultTrue2 = GameRules.checkSpecial(gameState1, moveTrue2, map);
+        boolean resultFalse1 = GameRules.checkSpecial(gameState1, moveFalse1, map);
+        boolean resultFalse2 = GameRules.checkSpecial(gameState1, moveFalse2, map);
+
+        assertTrue(resultTrue1);
+        assertTrue(resultTrue2);
+        assertFalse(resultFalse1);
+        assertFalse(resultFalse2);
     }
 
     @Test
     public void capturingTest(){
+        Move moveTrue1 = new Move(2, 4, 0, 1);
+        Move moveTrue2 = new Move(2, 3, 0, 2);
+        Move moveFalse1 = new Move(1, 1, 0, 1);
+        Move moveFalse2 = new Move(4, 5, 1, 1);
 
+        boolean resultTrue1 = GameRules.capturing(moveTrue1, map);
+        boolean resultTrue2 = GameRules.capturing(moveTrue2, map);
+        boolean resultFalse1 = GameRules.capturing(moveFalse1, map);
+        boolean resultFalse2 = GameRules.capturing(moveFalse2, map);
+
+        assertTrue(resultTrue1);
+        assertTrue(resultTrue2);
+        assertFalse(resultFalse1);
+        assertFalse(resultFalse2);
     }
 }
