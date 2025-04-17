@@ -21,9 +21,9 @@ public class GameClientTest {
         assertEquals(game.getMapController().getHeight(), 2);
         assertEquals(game.getMapController().getWidth(), 6);
         assertEquals(game.getMapController().getTile(0, 0) , '-');
-        assertEquals(game.getMapController().getTile(0, 2) , 'b');
+        assertEquals(game.getMapController().getTile(2, 0) , 'b');
         assertEquals(game.getMapController().getTile(1, 1) , '0');
-        assertEquals(game.getMapController().getTile(1, 3) , '1');
+        assertEquals(game.getMapController().getTile(3, 1) , '1');
         assertEquals(game.getMapController().getNextTile(startPosition), endPosition);
     }
 
