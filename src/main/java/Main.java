@@ -1,3 +1,7 @@
+/**
+ * Main class to launch the TCP client for the board game.
+ * Handles command line argument parsing and initiates the server connection.
+ */
 import java.net.InetAddress;
 
 public class Main {
@@ -44,7 +48,6 @@ public class Main {
                 }
             }
 
-            // Auflösung und Ausgabe
             InetAddress inetAddress = InetAddress.getByName(server);
             System.out.println("Verbinde zu " + inetAddress.getHostAddress() + ":" + port);
             TCPClient.connect(inetAddress, port);
