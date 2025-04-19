@@ -23,7 +23,7 @@ public class GameClient {
     }
 
     /**
-     * Initializes the game with the map and player information from the input lines.
+     * Initializes the game state and map controller with the map and player information from the input lines.
      * @param lines The map file content split by lines.
      */
     public void init(String[] lines) {
@@ -85,7 +85,7 @@ public class GameClient {
     }
 
     /**
-     * Calculates a valid move using a simple deterministic strategy.
+     * Calculates a valid move using a simple brutforce deterministic strategy.
      * @param timeLimit Time constraint.
      * @param maxDepth Depth constraint.
      * @return A valid move or a dummy move if none found.
