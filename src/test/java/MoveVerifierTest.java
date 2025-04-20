@@ -170,14 +170,14 @@ public class MoveVerifierTest {
 
     @Test
     public void bombPhase(){
-        Move move = new Move(1, 1, 0, 1);
+        Move move = new Move(3, 3, 0, 1);
         Move moveFalse = new Move(0, 0, 0, 1);
 
         boolean resultTrue = MoveVerifier.isValid(move, map, gameState2);
         boolean resultFalse1 = MoveVerifier.isValid(move, map, gameState2NoBombs);
         boolean resultFalse2 = MoveVerifier.isValid(moveFalse, map, gameState2);
 
-        //assertTrue(resultTrue);
+        assertTrue(resultTrue);
         assertFalse(resultFalse1);
         assertFalse(resultFalse2);
     }
