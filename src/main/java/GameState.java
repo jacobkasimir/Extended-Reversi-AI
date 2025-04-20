@@ -12,7 +12,7 @@ public class GameState {
         this.numberPlayers = numberPlayers;
         this.setGamePhase(gamePhase);
         for (int i = 1; i <= numberPlayers; i++) {
-            Player p = new Player(bombs, overwrites, i, phase1);
+            Player p = new Player(bombs, overwrites, i, true);
             this.setPlayer(p, i);
         }
     }
