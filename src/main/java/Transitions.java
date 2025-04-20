@@ -1,3 +1,7 @@
+/*
+ * The Transitions class stores all the data for the transitions.
+ * It provides simple methods for using transitions.
+ */
 public class Transitions{
     private Position[][][] transitions;
     
@@ -5,6 +9,14 @@ public class Transitions{
         this.transitions = new Position[width][height][8];
     }
 
+    
+    /** 
+     * Returns the next tile with the corresponding direction
+     * @param x The x-coordinate of the current tile
+     * @param y The y-coordinate of the current tile
+     * @param direc The direction from the current tile
+     * @return Position The Position-object of the next tile 
+     */
     public Position getNextTile(int x, int y, int direc) {
         if(direc < 9 && direc >= 0){
             if(transitions[x][y][direc] == null){
@@ -48,9 +60,19 @@ public class Transitions{
                 return new Position(res.x(), res.y(), (res.direc()+4) % 8);
             }
         }
-        return new Position(0,0,1); //Fehlerfall
+        return new Position(0,0,0); //Error!
     }
 
+    
+    /** 
+     * Sets a new transition in the transitions-matrix
+     * @param xTile The x-coordinate of the first position
+     * @param yTile The y-coordinate of the first position
+     * @param direcTile The direction for the first position
+     * @param xNextTile The x-coordinate of the second position
+     * @param yNextTile The y-coordinate of the second position
+     * @param direcNextTile The direction for the second position
+     */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
         if(direcTile < 9 && direcTile > 0 && direcNextTile < 9 && direcNextTile > 0){ 
             transitions[xTile][yTile][direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
