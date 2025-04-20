@@ -176,8 +176,12 @@ public class MoveVerifierTest {
         boolean resultTrue = MoveVerifier.isValid(move, map, gameState2);
         boolean resultFalse1 = MoveVerifier.isValid(move, map, gameState2NoBombs);
         boolean resultFalse2 = MoveVerifier.isValid(moveFalse, map, gameState2);
-
+        
+        //debugging:
         assertFalse(gameState2.isPhase1());
+        assertTrue(GameRules.hasBomb(gameState2, move));
+
+
         //assertTrue(resultTrue);
         assertFalse(resultFalse1);
         assertFalse(resultFalse2);
