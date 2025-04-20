@@ -59,7 +59,6 @@ public class MapController{
      * @param mapString The data sent by the server
      */
     private void initMap(String[] mapString){
-        //initialize map
         String[][] newMap = new String[width][height]; //array that holds all map entries as Strings
         for (int i = 0; i < height; i++) {
             String[] temp = mapString[i].split(" ");
@@ -81,7 +80,6 @@ public class MapController{
      * @param mapString The data sent by the server
      */
     private void initTransitions(String[] transitionsString){
-        //initialize transitions
         String[][] newTransition = new String[transitionsString.length][7]; //array that holds all transitions as Strings
         for (int i = 0; i < transitionsString.length; i++) {
             newTransition[i] = transitionsString[i].split(" ");
