@@ -180,6 +180,7 @@ public class MoveVerifierTest {
         //debugging:
         assertFalse(gameState2.isPhase1());
         assertTrue(GameRules.hasBomb(gameState2, move));
+        assertTrue(gameState2.getPlayer(move.getPlayer()).isInGame());
 
 
         //assertTrue(resultTrue);
