@@ -32,6 +32,7 @@ public class GameRules {
     }
 
     public static boolean checkSpecial(GameState state, Move move, MapController map){
+        if(!state.isPhase1()) return move.getSpecial() == 0;
         switch(map.getTile(move.getX(), move.getY())){
             case 'b': {
                 return move.getSpecial() == 20 || move.getSpecial() == 21;

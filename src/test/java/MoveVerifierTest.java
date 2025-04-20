@@ -170,7 +170,7 @@ public class MoveVerifierTest {
 
     @Test
     public void bombPhase(){
-        Move move = new Move(3, 3, 0, 1);
+        Move move = new Move(3, 6, 0, 1);
         Move moveFalse = new Move(0, 0, 0, 1);
 
         boolean resultTrue = MoveVerifier.isValid(move, map, gameState2);
