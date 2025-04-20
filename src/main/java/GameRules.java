@@ -66,7 +66,7 @@ public class GameRules {
                 else if (helpCompare('c', currentPosition, map)) search = false;
                 else if (helpCompare('i', currentPosition, map)) search = false;
                 else if (helpCompare('b', currentPosition, map)) search = false;
-                //Expansion stones und holes ?????
+                else if (helpCompare('-', currentPosition, map)) search = false;
                 else {
                     tilesPassed++;
                 }
