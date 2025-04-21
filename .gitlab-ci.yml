@@ -26,9 +26,9 @@ test:
  
 javadoc:
   stage: docs
-  image: openjdk:21
   script:
     - ./gradlew clean javadoc
   artifacts:
+    when: always 
     paths:
       - build/docs/javadoc
