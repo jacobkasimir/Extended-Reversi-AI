@@ -1,16 +1,16 @@
 stages:
   - build
   - test
-  - docs
 
 build:
   stage: build
   script:
-    - ./gradlew clean build
+    - ./gradlew clean build javadoc
   artifacts:
     paths:
       - bin/*.jar
       - build/classes/java/main
+      - build/docs/javadoc               
 
 test:
   stage: test
@@ -22,13 +22,3 @@ test:
       junit: build/test-results/test/*.xml
     paths:
       - build/reports/tests/test
-
- 
-javadoc:
-  stage: docs
-  script:
-    - ./gradlew clean javadoc
-  artifacts:
-    when: always 
-    paths:
-      - build/docs/javadoc
