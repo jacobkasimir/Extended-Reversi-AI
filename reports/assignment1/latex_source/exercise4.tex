@@ -1,0 +1,23 @@
+\section{Exercise 4}
+\textit{Task: Devise and implement a data structure that represents a map.} \newline
+
+\noindent In this task we had to implement a data structure for the map and the associated transitions. Furthermore this data structure must be modular, have a fast access and a small memory requirement. \newline
+\noindent To have a small memory requirement we split the map data from the transitions data into two separate classes, the \texttt{Map} and \texttt{Transitions} classes. By doing this we will save us the memory needed for the transitions when duplicating the map to calculate moves. To manage both classes and provide access to the data in a modular way, we implemented the class \texttt{MapController}.
+
+\begin{itemize}
+    \item \textbf{\texttt{Map} class}\\
+    For the map data structure, we used a two dimensional array of chars which is initialized in the constructor. The class provides the simplest methods for interacting with the map data: \texttt{getTile(int x, int y)} and \texttt{setTile(int x, int y, char c)}.
+    
+    \item \textbf{\texttt{Transitions} class}\\
+    For this class we used a three dimensional array of the type \texttt{Position} which is a record class which we implemented. An object of the \texttt{Position} class contains \texttt{int} values for the x-axis, y-axis and the current direction. The first and second dimension are a copy of the map and represent the x- and y-axis. The third dimension has the length eight which stores for every tile and direction the next \texttt{Position} object. This array is again initialized in the constructor. The class provides also simple methods for using transitions.
+    \begin{itemize}
+        \item \textbf{\texttt{setTransition(int xTile, int yTile, int direcTile,}} \newline \textbf{\texttt{ int xNextTile, int yNextTile, int direcNextTile):}}\\
+        Sets a new transition in the transitions array. Is used for the initialization phase.
+        
+        \item \textbf{\texttt{Position getNextTile(int x, int y, int direc):}}\\
+        Returns the next tile from a given position. Either the given direction has a transition or the next tile is neighboring or there is no possible next tile. In the last case the method returns null.
+    \end{itemize}
+    
+    \item \textbf{\texttt{MapController} class}\\
+    This class contains each an attribute of the classes \texttt{Map} and \texttt{Transitions}. It provides getter and setter methods for both map and transitions as well as the routine for initialization of both map and transitions. For that it gets two \texttt{String} arrays from its constructor which contain the data. This data than has to separated and saved in both classes.
+\end{itemize}

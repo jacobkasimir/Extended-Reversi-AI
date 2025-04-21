@@ -1,0 +1,34 @@
+\section{Exercise 6}
+\textit{Task: Network Protocol Implementation}\newline
+
+\noindent In this task we focused on establishing, maintaining, and correctly interpreting communication with the game server based on the given protocol specification.
+
+\begin{itemize}
+    \item \textbf{\texttt{Main} class and method} \\
+    We implemented a client application that supports various command-line flags, including \texttt{-h/--help} for displaying usage information, \texttt{-s/--server} for specifying the target server (hostname or IPv4/IPv6), and \texttt{-p/--port} for providing the port number. These flags are parsed by the \texttt{main} method, which uses a switch-like structure to validate and assign values to the corresponding configuration variables before invoking \texttt{TCPClient.\allowbreak connect(InetAddress\allowbreak\ server,\allowbreak int\ port)}.
+
+    To support all common input formats (hostnames, IPv4, IPv6), we used \texttt{InetAddress.getAllByName()}, which resolves the given server input into one or more IP addresses. We selected the first resolved address to ensure broad compatibility. Basic error handling is provided for invalid flags or missing values, as well as for exceptions thrown during connection setup.
+
+    \item \textbf{\texttt{TCPClient} class and the \texttt{connect} method} \\
+    \texttt{TCPClient.\allowbreak connect(InetAddress\allowbreak\ server,\allowbreak int\ port)} establishes the connection to the server, which opens a \texttt{Socket} to the given host and port. Communication is handled via \texttt{DataInputStream(socket.\allowbreak getInputStream())} and \texttt{DataOutputStream(socket.\allowbreak getOutputStream())}, which provide access to the socket's input and output streams.
+
+    Once the connection is established, a \texttt{GameClient} instance is created, and a message of type~1 (containing the group number, here: 5) is sent to the server. The core logic of the \texttt{connect} method is structured around a message type switch. Incoming messages are parsed and handled based on their type, as defined in the protocol. Each type conveys specific information about the current game state or other players' actions.
+
+    The goal of this method is to interpret and persist all relevant game data in a structured and efficient manner, making it accessible to other modules within the client. Message types~3,~6,~7,~8, and~9 are especially important for tracking the player's identity, opponents' moves, disqualifications, and phase transitions.
+
+    During this development stage, message types~2,~4, and~5 were particularly relevant. Type~2 includes the initial game state (e.g., map layout), which is parsed and stored by the \texttt{GameClient}. When the server sends a move request (type~4), the client responds within the specified time limit using a valid move (type~5), generated via a simple brute-force strategy as implemented in \texttt{calculateMove(int\allowbreak timeLimit,\allowbreak int\allowbreak maxDepth)}.
+
+    \item \textbf{\texttt{GameClient} class} \\
+    Serving as a modular interface between the \texttt{TCPClient} and the core game logic, this class is responsible for parsing incoming messages, storing protocol-relevant data in structured form, and providing a set of methods for interacting with this data.
+
+    \begin{itemize}
+        \item \textbf{\texttt{init()}:} Parses the initial message (type~2) and sets up the game state, including map structure (including height, width and transitions), player count, available bombs and their radius as well as the amount of override stones.
+        \item \textbf{\texttt{calculateMove(int timeLimit, int maxDepth)}:} Iterates through the map to locate and return the first valid move. This acts as a simple move generator.
+        \item \textbf{\texttt{update(Move move)}:} Updates the game state and internal representation of the map based on a given move (not yet implemented).
+        \item \textbf{Game state accessors:} Provide structured access to internal state variables such as player ID, phase status, and disqualification flags.
+    \end{itemize}
+\end{itemize}
+
+\noindent
+We verified the correctness of our implementation by extensively testing the \texttt{init()} method in the \texttt{GameClient} class. Since all other logic components currently depend on the data initialized through this method, the focus of our validation was on the correct interpretation and parsing of protocol message type~2. Further message types will be addressed and tested as soon as the related game mechanics are implemented.
+
