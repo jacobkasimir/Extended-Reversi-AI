@@ -1,0 +1,31 @@
+\section{Exercise 5}
+\textit{Task: Algorithm for Valid Moves.}\newline
+
+
+\noindent In this exercise, we designed and implemented an algorithm that decides whether a proposed move in our board game is valid in both the building phase (phase 1) and the elimination phase (phase 2). We began by extracting and formalizing the following rules from the game specification:
+
+\begin{enumerate}
+    \item \textbf{Map boundaries and holes}: The move must stay within the map’s dimensions and may not land on a hole tile.
+    \item \textbf{Player validity}: The player must exist, be active, and depending on the phase have available overwrites (phase 1) or bombs (phase 2).
+    \item \textbf{Special tiles}: Choice (\texttt{c}) and bonus (\texttt{b}) tiles require extra parameters (chosen color or bonus stone) that must be validated against the game state.
+    \item \textbf{Occupation and captures}: A normal placement must enclose at least one opponent or expansion stone; overriding an occupied tile requires an overwrite token or expansion rule.
+    \item \textbf{Phase logic}: In phase 1, a move either captures stones or consumes an overwrite; in phase 2, only bomb availability is checked.
+\end{enumerate}
+
+\noindent To enforce these rules, we implemented each check as a static method in the \textit{GameRules} class. For example:
+\begin{itemize}
+  \item \textbf{\texttt{insideMap():}} checks that the move’s coordinates lie within the map.
+  \item \textbf{\texttt{isNotHole()}} ensures the destination is not a hole.
+  \item \textbf{\texttt{validMove():}} verifies the player number and active status.
+  \item \textbf{\texttt{checkSpecial():}} validates the extra parameter for \texttt{c} and \texttt{b} tiles.
+  \item \textbf{\texttt{capturing():}} scans in eight directions from the target position using our \texttt{Position} record and \texttt{MapController.getNextTile()} to detect valid captures.
+  \item \textbf{\texttt{hasOverwrite():}} and \texttt{hasBomb()} query the \texttt{GameState} for the player’s remaining resources.
+\end{itemize}
+
+\noindent We then centralized the overall decision logic in \texttt{MoveVerifier.isValid()}. This method first applies the general checks (map bounds, non‐hole, special tile validity, player status) and then dispatches to phase‐specific rules:
+\begin{itemize}
+    \item \textbf{Phase 1}: If the tile is empty, require at least one capture; if it is occupied by an expansion or special tile, require an overwrite plus either a capture or an expansion placement.
+    \item \textbf{Phase 2}: Require that the player has at least one bomb.
+\end{itemize}
+
+\noindent This modular structure many focused rule methods combined in a single verifier ensures clarity, ease of testing, and straightforward adaptability for future rule changes. Automated tests confirm that every rule and edge case behaves as specified.
