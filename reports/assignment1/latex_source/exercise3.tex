@@ -1,0 +1,13 @@
+\section{Exercise 3}
+\textit{Task: Creating three different game maps.} 
+
+\begin{enumerate}
+    \item \textbf{Infinity:} Over different gameplays with the standard riversi board, we have noticed that it is very helpful to occupy the border tiles. Then your opponents do not have any chance to reclaim these tiles without the help of bonus fields. Therefore, we decided to design a map which theoretically has no borders. With the help of a very long list of transitions, we achieved a flawless transition between all the border tiles. This means that your placed border stones are no longer safely protected. To give each player an almost equal chance at the start of the game, we created this special square of stones in the middle of the map. Finally, we spiced up the map with some choice and inversion tiles.
+    
+    \item \textbf{1v1:} Our next idea was to split up the players into different regions on the map. We hope that it comes to temporary winners for each small battleground and then we can see a final fight in the middle of the map. On their way to the middle, the players can collect an extra bonus tile as tiny milestones. We tested this map with only ai players and it was very entertaining to watch until the first player could not make a move anymore.
+    
+    \item \textbf{Dynamic: } The last map is a more simple idea. Every Player has their starting stones in two areas directly next to another player. This means that similar to the \textbf{1v1} map, each player has to first stand up against only one enemy. In the center of the map is a large open area filled with occasional holes, bonus tiles, expansion stones, inversion tiles and choice tiles. The eight holes are connected with transitions to help build a more dynamic game flow. We intentionally left out transitions to the edges of the map to build there strategic positions. Each player starts one of their areas in one of the four corners. With all these details we hope to achieve a very dynamic game flow.
+\end{enumerate}
+
+\noindent We used the \texttt{mapinfo} tool to verify that all three maps are valid and you cannot bomb the whole area in phase 2.\\
+\noindent We are very excited about the upcoming matches on our maps to see if our hopes for interesting games become reality.

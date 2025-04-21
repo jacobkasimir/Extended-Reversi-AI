@@ -1,0 +1,20 @@
+\section{Exercise 2}
+\textit{Task: Check out the provided toolset.} \newline
+
+\noindent Before we started implementing the first parts of the riversi game project, we tried out all the binaries from the pm repository. Together with the detailed game rules description, this gave us a better understanding of the game structure and all the different rules. \newline
+
+\noindent We started a local server and connected different ai clients. We also connected a player so that we can participate in the matches. This gave us our first riversi playing experience. Another benefit of the binaries is that we can test and validate our self-created game maps. We were able to check whether the game experience was fun. This lead us to several improvements in our map designs. The \texttt{mapinfo} tool also helped us to find redundant entries in one of our transition list.
+\newline
+
+\noindent In detail, we discovered the following detailed functionalities for each binary:
+
+\begin{itemize}
+    \item \textbf{\texttt{server.exe}} \newline
+    This sets up a local server that manages the game progress. It also takes on the role of the gamemaster or referee. We understand it as a simulation of the server that will control the official gameplays against the other groups in the near future. At the start you can load your preferred map file or you can choose to play with the standard riversi map. There are also several other parameters that set requirements for the game. For example, you can set a time limit for each player.
+    \item \textbf{\texttt{client.exe}} \newline
+    We used the player binary to actually participate in the matches ourselves. You must connect with the right port of the local server that has been set up beforehand. Then you can play and control the moves of one player in the current game.
+    \item \textbf{\texttt{ai.exe}} \newline
+    The ai must also be connected to the local server. Then it represents an opponent which does not need to be controlled. It takes its own decisions and tries to outperform other ai players or us. The goal of our project is to build our own ai that can defeat this pre-built one. This binary has many different parameters that influence its behaviour. But most of them will be better to understand when we have more background knowledge on how to implement the ai algorithms exactly.
+    \item \textbf{\texttt{mapinfo.exe}} \newline
+    The mapinfo tool is useful to validate the designed map files and check for formal correctness. It also performs an analysis on the map to provide some interesting facts, such as the potential amount of area that can be bombed in phase 2. 
+\end{itemize}
