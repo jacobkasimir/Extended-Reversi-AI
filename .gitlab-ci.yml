@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - docs
 
 build:
   stage: build
@@ -21,3 +22,13 @@ test:
       junit: build/test-results/test/*.xml
     paths:
       - build/reports/tests/test
+
+ 
+javadoc:
+  stage: docs
+  image: openjdk:21
+  script:
+    - ./gradlew clean javadoc
+  artifacts:
+    paths:
+      - build/docs/javadoc
