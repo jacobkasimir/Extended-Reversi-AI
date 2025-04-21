@@ -9,14 +9,15 @@ The project is implemented in Java and organized using the following directory s
 /src      → Source code  
 /bin      → Compiled classes and executable .jar  
 /maps     → Game maps  
-/reports  → LaTeX reports  
+/reports  → LaTeX reports
+/presentations → Presentations on our progress
 
 The compiled .jar files lies in the /bin directory
 
 **🚀 Running the Client**
 To run the client, navigate to the project root and use the following command:
 
-`java -jar bin/GameClient.jar --server <host> --port <port>`
+`java -jar bin/swp2025 group5.jar --server <host> --port <port>`
 
 🔤 Available Command-Line Flags
 `--help / -h`: Show help information with descriptions of all available flags.
