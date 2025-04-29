@@ -78,5 +78,26 @@ public class Transitions{
             transitions[xTile][yTile][direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
         }
     }
+
+    public boolean equals(Transitions other){
+        if(this.transitions.length == other.transitions.length){
+            for (int i = 0; i < this.transitions.length; i++) {
+                if(this.transitions[i].length != other.transitions[i].length) return false;
+
+                for (int j = 0; j < this.transitions[i].length; j++) {
+                    if(this.transitions[i][j].length != other.transitions[i][j].length) return false;
+                    
+                    for (int k = 0; k < this.transitions[i][j].length; k++) {
+                        if(this.transitions[i][j][k] != null && other.transitions[i][j][k] == null) return false;
+                        if(this.transitions[i][j][k] == null && other.transitions[i][j][k] != null) return false;
+                        else if(this.transitions[i][j][k] != null && other.transitions[i][j][k] != null &&
+                                !this.transitions[i][j][k].equals(other.transitions[i][j][k])) return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
     
 }

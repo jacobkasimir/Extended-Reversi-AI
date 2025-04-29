@@ -150,4 +150,10 @@ public class MapController{
             }
         }
     }
+
+    //Für Testingggggg
+    public boolean equals(MapController other){
+        return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
+            this.map.equals(other.map) && this.transitions.equals(other.transitions);
+    }
 }
