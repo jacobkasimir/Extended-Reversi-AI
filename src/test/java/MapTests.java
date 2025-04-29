@@ -1,4 +1,5 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 public class MapTests {
@@ -360,8 +361,11 @@ public class MapTests {
             }, 
             8, 8, 0);
 
-            overlappingController.updateMap(new Move(6, 7, 0, 2), true);
+            GameState state = new GameState(2, 0, 0, 0, (byte)1);
+            assertTrue(MoveVerifier.isValid(new Move(6, 7, 0, 2), overlappingController, state));
 
+            overlappingController.updateMap(new Move(6, 7, 0, 2), true);
+            
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     System.err.print(overlappingController.getTile(i, j));
