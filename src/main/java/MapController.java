@@ -162,7 +162,7 @@ public class MapController{
 
             for (int i = 0; i < 8; i++) {
                 currentPosition = new Position(move.getX(), move.getY(), i);
-                for (int j = 0; j < directionCounts[i]; j++) {
+                for (int j = 0; j < directionCounts[i]+1; j++) {
                     setTile(currentPosition.x(), currentPosition.y(), (char)(move.getPlayer() + '0'));
                     currentPosition = getNextTile(currentPosition);
                 }

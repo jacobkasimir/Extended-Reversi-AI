@@ -111,7 +111,7 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            null, 
+            new String[]{}, 
             8, 8, 0);
 
             choiceTestController.updateMap(new Move(5, 3, 2, 1), true);
@@ -127,7 +127,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                null, 
+                new String[]{}, 
                 8, 8, 0));
     } 
     
@@ -145,7 +145,7 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            null, 
+            new String[]{}, 
             8, 8, 0);
 
             inversionTestController.updateMap(new Move(5, 3, 0, 1), true);
@@ -161,7 +161,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                null, 
+                new String[]{}, 
                 8, 8, 0));
     }
  
@@ -180,7 +180,7 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            null,
+            new String[]{},
             8, 8, 0);
 
             overrideTileController.updateMap(new Move(3, 3, 0, 2), true);
@@ -196,7 +196,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                null, 
+                new String[]{}, 
                 8, 8, 0));
     }
  
@@ -215,7 +215,7 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            null, 
+            new String[]{}, 
             8, 8, 0);                                                                                                                                               
 
             expansionTileController.updateMap(new Move(6, 4, 0, 1), true);
@@ -231,7 +231,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                null, 
+                new String[]{}, 
                 8, 8, 0));
     }
  
