@@ -77,7 +77,7 @@ public class Transitions{
      * @param direcNextTile The direction for the second position
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
-        if(direcTile < 9 && direcTile > 0 && direcNextTile < 9 && direcNextTile > 0){ 
+        if(direcTile < 9 && direcTile >= 0 && direcNextTile < 9 && direcNextTile >= 0){ 
             transitions[xTile][yTile][direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
         }
     }
