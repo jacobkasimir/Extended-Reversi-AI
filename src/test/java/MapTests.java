@@ -342,7 +342,7 @@ public class MapTests {
     }
     
     @Test
-    public void twoDirectionCapturingTest(){
+    public void Overlapping2Test(){
         //checks for overlapping capturing
         MapController overlappingController = new MapController(
             new String[]{
@@ -350,9 +350,9 @@ public class MapTests {
                 "0 0 0 0 0 0 1 0", 
                 "0 2 0 0 0 0 1 0", 
                 "0 0 1 0 0 0 1 0",
-                "0 0 2 1 1 1 2 1",
+                "0 0 2 1 2 1 1 1",
                 "0 0 0 0 1 0 1 0", 
-                "0 0 0 0 0 1 1 0", 
+                "0 0 0 0 0 0 1 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
             new String[]{
@@ -371,13 +371,13 @@ public class MapTests {
 
             assertEquals(overlappingController, new MapController(
                 new String[]{
-                    "0 0 0 0 0 0 1 0", 
-                    "0 0 0 0 0 0 1 0", 
-                    "0 2 0 0 0 0 1 0", 
-                    "0 0 2 0 0 0 1 0",
-                    "0 0 2 2 1 1 2 1",
-                    "0 0 0 0 2 0 2 0", 
-                    "0 0 0 0 0 2 2 0", 
+                    "0 0 0 0 0 0 2 0", 
+                    "0 0 0 0 0 0 2 0", 
+                    "0 2 0 0 0 0 2 0", 
+                    "0 0 1 0 0 0 2 0",
+                    "0 0 2 1 2 2 2 2",
+                    "0 0 0 0 1 0 2 0", 
+                    "0 0 0 0 0 1 2 0", 
                     "0 0 0 0 0 0 2 0"
                 }, 
                 new String[]{
