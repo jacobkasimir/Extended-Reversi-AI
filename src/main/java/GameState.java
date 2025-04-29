@@ -127,7 +127,18 @@ public class GameState {
      * @param move the Move object representing the latest action to apply.
      */
     public void updateState(Move move, MapController map){
-        // TODO: implement state update logic for future exercises
+        
+        if(isPhase1()){
+            if(GameRules.occupied(move, map) || GameRules.isExpansion(map, move)){
+                this.getPlayer(move.getPlayer()).setNumberOverwrites(this.getPlayer(move.getPlayer()).getNumberOverwrites() - 1);
+            }else if (move.getSpecial() == 20) {
+                this.getPlayer(move.getPlayer()).setNumberBombs(this.getPlayer(move.getPlayer()).getNumberBombs() + 1);
+            }else if (move.getSpecial() == 21) {
+                this.getPlayer(move.getPlayer()).setNumberOverwrites(this.getPlayer(move.getPlayer()).getNumberOverwrites() + 1);
+            }
+        }else{
+            this.getPlayer(move.getPlayer()).setNumberBombs(this.getPlayer(move.getPlayer()).getNumberBombs() - 1);
+        }
     }
 }
 
