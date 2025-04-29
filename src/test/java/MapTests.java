@@ -253,38 +253,21 @@ public class MapTests {
             new String[]{},
             8, 8, 1);
 
-            //bombController.updateMap(new Move(3, 4, 0, 1), false);
+            bombController.updateMap(new Move(3, 4, 0, 1), false);
 
             assertEquals(bombController, new MapController(
                 new String[]{
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0", 
-                    "0 0 0 1 2 0 0 0",
-                    "0 0 2 2 1 0 0 0",
-                    "0 0 1 2 0 1 0 0", 
+                    "0 0 - - - 0 0 0",
+                    "0 0 - - - 0 0 0",
+                    "0 0 - - - 1 0 0", 
                     "0 0 2 2 1 2 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                // new String[]{
-                //     "0 0 0 0 0 0 0 0", 
-                //     "0 0 0 0 0 0 0 0", 
-                //     "0 0 0 0 0 0 0 0", 
-                //     "0 0 - - - 0 0 0",
-                //     "0 0 - - - 0 0 0",
-                //     "0 0 - - - 1 0 0", 
-                //     "0 0 2 2 1 2 0 0", 
-                //     "0 0 0 0 0 0 0 0"
-                // }, 
                 new String[]{}, 
                 8, 8, 1));
-
-                // String[]
-                // for(int i = 0; i < bombController.getWidth(); i++){
-                //     for (int j = 0; j < bombController.getHeight(); j++) {
-                //         assertEquals(expected, actual);
-                //     }
-                // }
     }
  
     
