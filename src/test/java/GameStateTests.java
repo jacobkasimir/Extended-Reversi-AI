@@ -43,8 +43,8 @@ public class GameStateTests {
     @Test
     public void decrementBombs(){
 
-        GameState state = new GameState(3, 3, 1, 2, (byte) 2);
-        Move move = new Move(4, 4, 0, 3);
+        GameState state = new GameState(2, 3, 1, 2, (byte) 2);
+        Move move = new Move(4, 4, 0, 2);
 
         state.updateState(move, map);
 
@@ -52,13 +52,13 @@ public class GameStateTests {
             //throw new Error("Test not valid.");
         }
 
-        assertEquals(1-1, state.getPlayer(3).getNumberBombs());
+        assertEquals(1-1, state.getPlayer(2).getNumberBombs());
     }
 
     @Test
     public void bonusIncrementBombs(){
 
-        GameState state = new GameState(3, 3, 1, 2, (byte) 2);
+        GameState state = new GameState(2, 3, 1, 2, (byte) 2);
         Move move = new Move(2, 5, 20, 1);
 
         state.updateState(move, map);
@@ -67,13 +67,13 @@ public class GameStateTests {
             //throw new Error("Test not valid.");
         }
 
-        assertEquals(1+1, state.getPlayer(3).getNumberBombs());
+        assertEquals(1+1, state.getPlayer(1).getNumberBombs());
     }
 
     @Test
-    public void bonusIncrementOverwrites(){//TODO
+    public void bonusIncrementOverwrites(){
 
-        GameState state = new GameState(3, 3, 1, 2, (byte) 2);
+        GameState state = new GameState(2, 3, 1, 2, (byte) 2);
         Move move = new Move(2, 5, 21, 1);
 
         state.updateState(move, map);
@@ -82,7 +82,7 @@ public class GameStateTests {
             //throw new Error("Test not valid.");
         }
 
-        assertEquals(3+1, state.getPlayer(3).getNumberOverwrites());
+        assertEquals(3+1, state.getPlayer(1).getNumberOverwrites());
     }
 
 }
