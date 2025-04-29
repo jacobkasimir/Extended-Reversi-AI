@@ -152,7 +152,11 @@ public class MapController{
     }
 
     //Für Testingggggg
-    public boolean equals(MapController other){
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof MapController)) return false;
+        MapController other = (MapController) obj;
+
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
             this.map.equals(other.map) && this.transitions.equals(other.transitions);
     }
