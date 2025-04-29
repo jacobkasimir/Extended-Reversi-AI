@@ -40,6 +40,7 @@ public class GameStateTests {
         assertEquals(3-1, state.getPlayer(1).getNumberOverwrites());
     }
 
+    @Test
     public void decrementBombs(){
 
         GameState state = new GameState(3, 3, 1, 2, (byte) 2);
@@ -54,6 +55,7 @@ public class GameStateTests {
         assertEquals(1-1, state.getPlayer(3).getNumberBombs());
     }
 
+    @Test
     public void bonusIncrementBombs(){
 
         GameState state = new GameState(3, 3, 1, 2, (byte) 2);
@@ -68,6 +70,7 @@ public class GameStateTests {
         assertEquals(1+1, state.getPlayer(3).getNumberBombs());
     }
 
+    @Test
     public void bonusIncrementOverwrites(){//TODO
 
         GameState state = new GameState(3, 3, 1, 2, (byte) 2);
