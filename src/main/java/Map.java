@@ -29,4 +29,18 @@ public class Map {
         map[x][y] = c;
     }
 
+    public boolean equals(Map other){
+        if(this.map.length == other.map.length){
+            for (int i = 0; i < this.map.length; i++) {
+                if(this.map[i].length != other.map[i].length) return false;
+
+                for (int j = 0; j < this.map[i].length; j++) {
+                    if(this.map[i][j] != other.map[i][j]) return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
 }
