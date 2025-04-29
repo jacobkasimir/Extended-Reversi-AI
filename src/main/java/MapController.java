@@ -130,6 +130,24 @@ public class MapController{
      * @param move The played move
      */
     public void updateMap(Move move, boolean isPhase1){
-        // Noch nicht fertig
+        if(isPhase1){
+
+        }
+        else {
+            bombing(move.getX(), move.getY(), bombRadius);
+        }
+    }
+
+    private void bombing(int x, int y, int radius){
+        if(GameRules.insideMap(new Move(x, y, 0, 0), this)){
+            setTile(x, y, '-');
+        }
+
+        if(radius > 0){
+            for (int i = 0; i < 8; i++) {
+                Position newPosition = getNextTile(new Position(x, y, i));
+                bombing(newPosition.x(), newPosition.y(), radius-1);
+            }
+        }
     }
 }
