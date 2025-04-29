@@ -14,6 +14,11 @@ The project is implemented in Java and organized using the following directory s
 
 The compiled .jar files lies in the /bin directory
 
+**📀 Compiling Create .jar file**
+To compile the project and generate the .jar file, use the following command from the project root:
+
+`gradle assemble`
+
 **🚀 Running the Client**
 To run the client, navigate to the project root and use the following command:
 
