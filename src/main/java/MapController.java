@@ -129,12 +129,15 @@ public class MapController{
      * Updates the map for the given move
      * @param move The played move
      */
-    public void updateMap(Move move, boolean isPhase1){
+    public void updateMap(Move move, boolean isPhase1, GameState state){
         if(isPhase1){
             int[] directionCounts = new int[8];
             boolean search;
+            boolean isChoice = getTile(move.getX(), move.getY()) == 'c';
+            boolean isInversion = getTile(move.getX(), move.getY()) == 'i';
             int tilesPassed;
             Position currentPosition;
+
             for (int i = 0; i < 8; i++) {
                 currentPosition = new Position(move.getX(), move.getY(), i);
                 search = true;
@@ -169,6 +172,9 @@ public class MapController{
                     currentPosition = getNextTile(currentPosition);
                 }
             }
+
+            if(isChoice) choiceHandling(move);
+            if(isInversion) inversionHandling(move, state);
         }
         else {
             bombing(move.getX(), move.getY(), bombRadius);
@@ -186,6 +192,28 @@ public class MapController{
                 if(newPosition != null) bombing(newPosition.x(), newPosition.y(), radius-1);
             }
         }
+    }
+
+    private void choiceHandling(Move move){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if(getTile(i, j) == (char)(move.getPlayer() + '0')) setTile(i, j, (char)(move.getSpecial() + '0'));
+                if(getTile(i, j) == (char)(move.getSpecial() + '0')) setTile(i, j, (char)(move.getPlayer() + '0'));
+            }
+        }
+    }
+
+    private void inversionHandling(Move move, GameState state){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if(isPlayer(getTile(i, j))) setTile(i, j, (char)(((getTile(i, j)-'0') % state.getNumberPlayers()+1)+'0'));
+            }
+        }
+    }
+
+    private boolean isPlayer(char c){
+        if(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x') return false;
+        else return true;
     }
 
     //for Testing
