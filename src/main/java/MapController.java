@@ -131,7 +131,7 @@ public class MapController{
      */
     public void updateMap(Move move, boolean isPhase1){
         if(isPhase1){
-
+            
         }
         else {
             bombing(move.getX(), move.getY(), bombRadius);
@@ -151,7 +151,7 @@ public class MapController{
         }
     }
 
-    //Für Testingggggg
+    //for Testing
     @Override
     public boolean equals(Object obj){
         if(!(obj instanceof MapController)) return false;

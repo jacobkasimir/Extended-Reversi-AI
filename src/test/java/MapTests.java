@@ -235,7 +235,6 @@ public class MapTests {
                 8, 8, 0));
     }
  
-    
     @Test
     public void bombTest(){
         //checks for correct bomb handling
@@ -268,6 +267,40 @@ public class MapTests {
                 }, 
                 new String[]{}, 
                 8, 8, 1));
+    }
+
+    @Test
+    public void bombTestWithBorder(){
+        //checks for correct bomb handling
+        MapController bombController = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 1 2 0 0 0",
+                "0 0 2 2 1 0 0 0",
+                "0 0 1 2 0 1 0 0", 
+                "0 0 2 2 1 2 0 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{},
+            8, 8, 3);
+
+            bombController.updateMap(new Move(2, 5, 0, 1), false);
+
+            assertEquals(bombController, new MapController(
+                new String[]{
+                    "0 0 0 0 0 0 0 0", 
+                    "0 0 0 0 0 0 0 0", 
+                    "- - - - - - 0 0", 
+                    "- - - - - - 0 0",
+                    "- - - - - - 0 0",
+                    "- - - - - - 0 0", 
+                    "- - - - - - 0 0", 
+                    "- - - - - - 0 0"
+                }, 
+                new String[]{}, 
+                8, 8, 3));
     }
  
     
