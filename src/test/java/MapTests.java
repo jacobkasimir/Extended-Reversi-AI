@@ -362,6 +362,13 @@ public class MapTests {
 
             overlappingController.updateMap(new Move(6, 7, 0, 2), true);
 
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    System.out.print(overlappingController.getTile(i, j));
+                }
+                System.out.println("");
+            }
+
             assertEquals(overlappingController, new MapController(
                 new String[]{
                     "0 0 0 0 0 0 2 0", 
