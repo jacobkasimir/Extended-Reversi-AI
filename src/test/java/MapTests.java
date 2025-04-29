@@ -342,6 +342,51 @@ public class MapTests {
     }
     
     @Test
+    public void twoDirectionCapturingTest(){
+        //checks for overlapping capturing
+        MapController overlappingController = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 1 0", 
+                "0 0 0 0 0 0 1 0", 
+                "0 2 0 0 0 0 1 0", 
+                "0 0 1 0 0 0 1 0",
+                "0 0 2 1 1 1 2 1",
+                "0 0 0 0 1 0 1 0", 
+                "0 0 0 0 0 1 1 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{
+                "6 0 0 <-> 7 4 2"
+            }, 
+            8, 8, 0);
+
+            overlappingController.updateMap(new Move(6, 7, 0, 2), true);
+
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    System.err.print(overlappingController.getTile(i, j));
+                }
+                System.err.println("");
+            }
+
+            assertEquals(overlappingController, new MapController(
+                new String[]{
+                    "0 0 0 0 0 0 1 0", 
+                    "0 0 0 0 0 0 1 0", 
+                    "0 2 0 0 0 0 1 0", 
+                    "0 0 2 0 0 0 1 0",
+                    "0 0 2 2 1 1 2 1",
+                    "0 0 0 0 2 0 2 0", 
+                    "0 0 0 0 0 2 2 0", 
+                    "0 0 0 0 0 0 2 0"
+                }, 
+                new String[]{
+                    "6 0 0 <-> 7 4 2"
+                },  
+                8, 8, 0));
+    }
+
+    @Test
     public void overlappingTest(){
         //checks for overlapping capturing
         MapController overlappingController = new MapController(
