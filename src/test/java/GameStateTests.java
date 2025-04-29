@@ -46,13 +46,13 @@ public class GameStateTests {
         GameState state = new GameState(2, 3, 1, 2, (byte) 2);
         Move move = new Move(4, 4, 0, 2);
 
-        state.updateState(move, map);
-
         assertFalse(state.isPhase1());
 
         if (!MoveVerifier.isValid(move, map, state)) {
             throw new Error("Test not valid.");
         }
+
+        state.updateState(move, map);
 
         assertEquals(1-1, state.getPlayer(2).getNumberBombs());
     }
@@ -63,11 +63,11 @@ public class GameStateTests {
         GameState state = new GameState(2, 3, 1, 2, (byte) 2);
         Move move = new Move(2, 5, 20, 1);
 
-        state.updateState(move, map);
-
         if (!MoveVerifier.isValid(move, map, state)) {
-            //throw new Error("Test not valid.");
+            throw new Error("Test not valid.");
         }
+
+        state.updateState(move, map);
 
         assertEquals(1+1, state.getPlayer(1).getNumberBombs());
     }
@@ -78,11 +78,11 @@ public class GameStateTests {
         GameState state = new GameState(2, 3, 1, 2, (byte) 2);
         Move move = new Move(2, 5, 21, 1);
 
-        state.updateState(move, map);
-
         if (!MoveVerifier.isValid(move, map, state)) {
-            //throw new Error("Test not valid.");
+            throw new Error("Test not valid.");
         }
+
+        state.updateState(move, map);
 
         assertEquals(3+1, state.getPlayer(1).getNumberOverwrites());
     }
