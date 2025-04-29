@@ -146,7 +146,7 @@ public class MapController{
         if(radius > 0){
             for (int i = 0; i < 8; i++) {
                 Position newPosition = getNextTile(new Position(x, y, i));
-                bombing(newPosition.x(), newPosition.y(), radius-1);
+                if(newPosition != null) bombing(newPosition.x(), newPosition.y(), radius-1);
             }
         }
     }
