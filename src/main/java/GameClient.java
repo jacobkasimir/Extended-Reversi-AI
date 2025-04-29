@@ -55,7 +55,7 @@ public class GameClient {
      */
     public void updateGame(Move move) {
         this.gameState.updateState(move, this.mapController);
-        this.mapController.updateMap(move), gameState.isPhase1();
+        this.mapController.updateMap(move, gameState.isPhase1());
     }
 
     /**
