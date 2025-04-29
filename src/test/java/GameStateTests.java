@@ -60,7 +60,7 @@ public class GameStateTests {
     @Test
     public void bonusIncrementBombs(){
 
-        GameState state = new GameState(2, 3, 1, 2, (byte) 2);
+        GameState state = new GameState(2, 3, 1, 2, (byte) 1);
         Move move = new Move(2, 5, 20, 1);
 
         if (!MoveVerifier.isValid(move, map, state)) {
@@ -75,7 +75,7 @@ public class GameStateTests {
     @Test
     public void bonusIncrementOverwrites(){
 
-        GameState state = new GameState(2, 3, 1, 2, (byte) 2);
+        GameState state = new GameState(2, 3, 1, 2, (byte) 1);
         Move move = new Move(2, 5, 21, 1);
 
         if (!MoveVerifier.isValid(move, map, state)) {
