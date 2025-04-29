@@ -362,7 +362,7 @@ public class MapTests {
             8, 8, 0);
 
             GameState state = new GameState(2, 0, 0, 0, (byte)1);
-            assertEquals(overlappingController.getNextTile(new Position(0,6, 0)), null);
+            assertEquals(overlappingController.getNextTile(new Position(6,0, 0)), new Position(7,4,6));
             assertTrue(MoveVerifier.isValid(new Move(6, 7, 0, 2), overlappingController, state));
 
             overlappingController.updateMap(new Move(6, 7, 0, 2), true);
