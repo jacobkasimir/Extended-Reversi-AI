@@ -126,7 +126,7 @@ public class GameState {
      * Refreshes the game state based on the provided move.
      * @param move the Move object representing the latest action to apply.
      */
-    public void refreshState(Move move){
+    public void updateState(Move move){
         // TODO: implement state update logic for future exercises
     }
 }

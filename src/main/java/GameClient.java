@@ -54,8 +54,8 @@ public class GameClient {
      * @param move The move to apply.
      */
     public void updateGame(Move move) {
-        this.mapController.refreshMap(move);
-        this.gameState.refreshState(move);
+        this.mapController.updateMap(move);
+        this.gameState.updateState(move);
     }
 
     /**

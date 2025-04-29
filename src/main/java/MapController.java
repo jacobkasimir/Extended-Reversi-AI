@@ -43,15 +43,6 @@ public class MapController{
         return bombRadius;
     }
 
-
-    
-    /** 
-     * Updates the map for the given move
-     * @param move The played move
-     */
-    public void refreshMap(Move move){
-        // Noch nicht fertig
-    }
     
     
     /** 
@@ -94,8 +85,6 @@ public class MapController{
         }
     }
 
-
-    
     
     /** 
      * @param x The x-coordinate of the required tile
@@ -133,5 +122,14 @@ public class MapController{
      */
     public void setTransition(Position p1, Position p2) {
         transitions.setTransition(p1.x(), p1.y(), p1.direc(), p2.x(), p2.y(), p2.direc());
+    }
+
+    
+    /** 
+     * Updates the map for the given move
+     * @param move The played move
+     */
+    public void updateMap(Move move){
+        // Noch nicht fertig
     }
 }
