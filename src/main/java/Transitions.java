@@ -2,6 +2,9 @@
  * The Transitions class stores all the data for the transitions.
  * It provides simple methods for using transitions.
  */
+
+import java.util.Arrays;
+
 public class Transitions{
     private Position[][][] transitions;
     
@@ -79,7 +82,10 @@ public class Transitions{
         }
     }
 
-    public boolean equals(Transitions other){
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof Transitions)) return false;
+        Transitions other = (Transitions) obj;
         if(this.transitions.length == other.transitions.length){
             for (int i = 0; i < this.transitions.length; i++) {
                 if(this.transitions[i].length != other.transitions[i].length) return false;
@@ -98,6 +104,11 @@ public class Transitions{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode(){
+        return Arrays.deepHashCode(transitions);
     }
     
 }
