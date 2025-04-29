@@ -364,9 +364,9 @@ public class MapTests {
 
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
-                    System.out.print(overlappingController.getTile(i, j));
+                    System.err.print(overlappingController.getTile(i, j));
                 }
-                System.out.println("");
+                System.err.println("");
             }
 
             assertEquals(overlappingController, new MapController(
