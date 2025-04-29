@@ -276,7 +276,7 @@ public class MapTests {
                 //     "0 0 2 2 1 2 0 0", 
                 //     "0 0 0 0 0 0 0 0"
                 // }, 
-                null, 
+                new String[]{}, 
                 8, 8, 1));
 
                 // String[]
