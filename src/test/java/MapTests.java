@@ -43,7 +43,7 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            null, 
+            new String[]{}, 
             8, 8, 0);
 
         basicTestController.updateMap(new Move(2, 4, 0, 1), true);
@@ -59,7 +59,7 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            null, 
+            new String[]{}, 
             8, 8, 0));
     }
 
