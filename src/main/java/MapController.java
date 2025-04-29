@@ -129,7 +129,7 @@ public class MapController{
      * Updates the map for the given move
      * @param move The played move
      */
-    public void updateMap(Move move){
+    public void updateMap(Move move, boolean isPhase1){
         // Noch nicht fertig
     }
 }
