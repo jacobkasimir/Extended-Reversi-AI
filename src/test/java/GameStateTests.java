@@ -48,8 +48,10 @@ public class GameStateTests {
 
         state.updateState(move, map);
 
+        assertFalse(state.isPhase1());
+
         if (!MoveVerifier.isValid(move, map, state)) {
-            //throw new Error("Test not valid.");
+            throw new Error("Test not valid.");
         }
 
         assertEquals(1-1, state.getPlayer(2).getNumberBombs());
