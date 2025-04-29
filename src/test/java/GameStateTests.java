@@ -79,7 +79,7 @@ public class GameStateTests {
             throw new Error("Test not valid.");
         }
 
-        assertEquals(3+1, state.getPlayer(3).getNumberOverwrites);
+        assertEquals(3+1, state.getPlayer(3).getNumberOverwrites());
     }
 
 }
