@@ -131,7 +131,42 @@ public class MapController{
      */
     public void updateMap(Move move, boolean isPhase1){
         if(isPhase1){
-            
+            int[] directionCounts = new int[8];
+            boolean search;
+            int tilesPassed;
+            Position currentPosition;
+            for (int i = 0; i < 8; i++) {
+                currentPosition = new Position(move.getX(), move.getY(), i);
+                search = true;
+                tilesPassed = 0;
+                while(search){
+                    currentPosition = getNextTile(currentPosition);
+                    if(currentPosition == null) break;
+                    if(String.valueOf(move.getPlayer()).equals(String.valueOf(this.getTile(currentPosition.x(), currentPosition.y())))){
+                        if(tilesPassed > 0) {
+                            if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()) directionCounts[i] = tilesPassed;
+                            search = false;
+                        }
+                        else search = false;
+                    } 
+                    else if (helpCompare('0', currentPosition)) search = false;
+                    else if (helpCompare('c', currentPosition)) search = false;
+                    else if (helpCompare('i', currentPosition)) search = false;
+                    else if (helpCompare('b', currentPosition)) search = false;
+                    else if (helpCompare('-', currentPosition)) search = false;
+                    else {
+                        tilesPassed++;
+                    }
+                }
+            }
+
+            for (int i = 0; i < 8; i++) {
+                currentPosition = new Position(move.getX(), move.getY(), i);
+                for (int j = 0; j < directionCounts[i]; j++) {
+                    setTile(currentPosition.x(), currentPosition.y(), (char)(move.getPlayer() + '0'));
+                    currentPosition = getNextTile(currentPosition);
+                }
+            }
         }
         else {
             bombing(move.getX(), move.getY(), bombRadius);
@@ -159,5 +194,9 @@ public class MapController{
 
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
             this.map.equals(other.map) && this.transitions.equals(other.transitions);
+    }
+
+    private boolean helpCompare(char c, Position currentPosition){
+        return (getTile(currentPosition.x(), currentPosition.y()) == c);
     }
 }

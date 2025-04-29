@@ -304,7 +304,7 @@ public class MapTests {
     }
     
     @Test
-    public void bombTestWithBorderANdTransition(){
+    public void bombTestWithBorderAndTransition(){
         //checks for correct bomb handling
         MapController bombController = new MapController(
             new String[]{
