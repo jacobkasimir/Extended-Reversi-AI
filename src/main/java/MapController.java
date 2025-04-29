@@ -174,7 +174,7 @@ public class MapController{
             }
 
             if(isChoice) choiceHandling(move);
-            if(isInversion) inversionHandling(move, state);
+            if(isInversion) inversionHandling(state);
         }
         else {
             bombing(move.getX(), move.getY(), bombRadius);
@@ -194,7 +194,7 @@ public class MapController{
         }
     }
 
-    private void choiceHandling(Move move){
+    public void choiceHandling(Move move){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if(getTile(i, j) == (char)(move.getPlayer() + '0')) setTile(i, j, (char)(move.getSpecial() + '0'));
@@ -203,7 +203,7 @@ public class MapController{
         }
     }
 
-    private void inversionHandling(Move move, GameState state){
+    private void inversionHandling(GameState state){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if(isPlayer(getTile(i, j))) setTile(i, j, (char)(((getTile(i, j)-'0') % state.getNumberPlayers()+1)+'0'));

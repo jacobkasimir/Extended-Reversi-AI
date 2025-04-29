@@ -136,6 +136,41 @@ public class MapTests {
                 new String[]{}, 
                 8, 8, 0));
     } 
+
+    @Test 
+    public void choiceHandlingTest(){
+        //checks for correct choice tile handling
+        MapController choiceTestController = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 2 0 0 0 0", 
+                "0 0 0 1 1 1 0 0",
+                "0 0 0 2 1 0 0 0",
+                "0 0 0 2 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{}, 
+            8, 8, 0);
+
+            
+            choiceTestController.choiceHandling(new Move(5, 3,2,1));
+
+            assertEquals(choiceTestController, new MapController(
+                new String[]{
+                    "0 0 0 0 0 0 0 0", 
+                    "0 0 0 0 0 0 0 0", 
+                    "0 0 0 1 0 0 0 0", 
+                    "0 0 0 2 2 2 0 0",
+                    "0 0 0 1 2 0 0 0",
+                    "0 0 0 1 0 0 0 0", 
+                    "0 0 0 0 0 0 0 0", 
+                    "0 0 0 0 0 0 0 0"
+                }, 
+                new String[]{}, 
+                8, 8, 0));
+    } 
     
     @Test 
     public void inversionTileTest(){
