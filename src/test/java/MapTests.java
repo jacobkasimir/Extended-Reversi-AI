@@ -1,4 +1,5 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 public class MapTests {
@@ -114,6 +115,9 @@ public class MapTests {
             }, 
             new String[]{}, 
             8, 8, 0);
+
+            assertTrue(MoveVerifier.isValid(new Move(5, 3, 2, 1), choiceTestController, 
+            new GameState(2,2,0,0,(byte)1)));
 
             choiceTestController.updateMap(new Move(5, 3, 2, 1), true,
             new GameState(2,0,0,0,(byte)1));
