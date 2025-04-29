@@ -14,7 +14,7 @@ public class GameStateTests {
                 "0 0 0 0 0 2 0 0", 
                 "0 0 0 1 2 0 0 0",
                 "0 0 0 2 1 0 0 0",
-                "0 0 c 0 0 0 0 0", 
+                "0 0 b 0 0 0 0 0", 
                 "0 0 0 c 0 x 0 x", 
                 "0 0 0 b 0 0 0 0"}, 
             new String[]{
@@ -74,7 +74,7 @@ public class GameStateTests {
     public void bonusIncrementOverwrites(){//TODO
 
         GameState state = new GameState(3, 3, 1, 2, (byte) 2);
-        Move move = new Move(2, 5, 21, 3);
+        Move move = new Move(2, 5, 21, 1);
 
         state.updateState(move, map);
 
