@@ -211,14 +211,14 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 1 2 2 0 0",
                 "0 0 0 2 1 2 x 0",
-                "0 0 0 0 1 0 1 0", 
-                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 1 0 2 0", 
+                "0 0 0 0 0 0 1 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
             new String[]{}, 
             8, 8, 0);                                                                                                                                               
 
-            expansionTileController.updateMap(new Move(6, 4, 0, 1), true);
+            expansionTileController.updateMap(new Move(6, 3, 0, 1), true);
 
             assertEquals(expansionTileController, new MapController(
                 new String[]{
@@ -226,9 +226,9 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 1 1 1 1 0",
-                    "0 0 0 2 1 1 1 0",
+                    "0 0 0 2 1 1 x 0",
                     "0 0 0 0 1 0 1 0", 
-                    "0 0 0 0 0 0 0 0", 
+                    "0 0 0 0 0 0 1 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
                 new String[]{}, 
