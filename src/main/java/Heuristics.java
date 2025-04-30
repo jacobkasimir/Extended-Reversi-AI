@@ -13,7 +13,7 @@ public class Heuristics {
             }
 
         }
-        return result/((double) map.getHeight()*map.getWidth());
+        return result/(map.getHeight()*map.getWidth());
     }
 
 }
