@@ -106,7 +106,7 @@ public class Transitions{
     }
 
     private Position getTransition(int x, int y, int direction){
-        return transitionsArray[(width*9*(y+1))+((x+1)*8)+direction];
+        return transitionsArray[(width*8*(y+1))+((x+1)*8)+direction];
     }
 
     @Override
