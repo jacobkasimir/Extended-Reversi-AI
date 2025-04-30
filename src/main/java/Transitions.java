@@ -16,7 +16,7 @@ public class Transitions{
 
 
     private Transitions(){
-        
+
     }
 
     public static Transitions getInstance(){
@@ -101,7 +101,7 @@ public class Transitions{
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
         if(direcTile < 9 && direcTile >= 0 && direcNextTile < 9 && direcNextTile >= 0){ 
-            transitionsArray[(width*9*(yTile+1))+((xTile+1)*8)+direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
+            transitionsArray[(width*8*(yTile+1))+((xTile+1)*8)+direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
         }
     }
 
