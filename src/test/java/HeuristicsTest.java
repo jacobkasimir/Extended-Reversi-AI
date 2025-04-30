@@ -45,7 +45,7 @@ public class HeuristicsTest {
         GameState state = new GameState(8, 1, 1, 1, (byte) 1);
         state.setOurPlayerId((byte) 6);
 
-        assertEquals(0.1, Heuristics.amountOfOwnTiles(map, state));
+        assertEquals(1.0/8, Heuristics.amountOfOwnTiles(map, state));
     }
 
     @Test
