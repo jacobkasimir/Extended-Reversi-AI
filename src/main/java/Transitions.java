@@ -102,6 +102,7 @@ public class Transitions{
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
         if(direcTile < 8 && direcTile >= 0 && direcNextTile < 8 && direcNextTile >= 0){ 
             transitionsArray[(width*8*(yTile+1))+((xTile+1)*8)+direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
+            transitionsArray[(width*8*(yNextTile+1))+((xNextTile+1)*8)+direcNextTile] = new Position(xTile, yTile, direcTile);
         }
     }
 
