@@ -89,7 +89,7 @@ public class HeuristicsTest {
         GameState state = new GameState(8, 1, 1, 1, (byte) 1);
         state.setOurPlayerId((byte) 6);
 
-        assertEquals(1.0/8, Heuristics.amountOfOwnTilesToOthers(map, state));
+        assertEquals(8.0/56, Heuristics.amountOfOwnTilesToOthers(map, state));
     }
 
     @Test
