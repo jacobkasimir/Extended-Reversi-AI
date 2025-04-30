@@ -47,7 +47,7 @@ public class MapTests {
             new String[]{}, 
             8, 8, 0);
 
-        basicTestController.updateMap(new Move(2, 4, 0, 1), true, 
+        basicTestController.updateMap(new Move(2, 4, 0, 1), 
         new GameState(2,0,0,0,(byte)1));
 
         assertEquals(basicTestController, new MapController(
@@ -82,7 +82,8 @@ public class MapTests {
             new String[]{"0 0 6 <-> 7 0 2"}, 
             8, 8, 0);
 
-            transitionTestController.updateMap(new Move(6, 0, 0, 1), true, new GameState(2,0,0,0,(byte)1));
+            transitionTestController.updateMap(new Move(6, 0, 0, 1), 
+            new GameState(2,0,0,0,(byte)1));
 
             assertEquals(transitionTestController, new MapController(
                 new String[]{
@@ -119,7 +120,7 @@ public class MapTests {
             assertTrue(MoveVerifier.isValid(new Move(5, 3, 2, 1), choiceTestController, 
             new GameState(2,2,0,0,(byte)1)));
 
-            choiceTestController.updateMap(new Move(5, 3, 2, 1), true,
+            choiceTestController.updateMap(new Move(5, 3, 2, 1),
             new GameState(2,0,0,0,(byte)1));
 
             assertEquals(choiceTestController, new MapController(
@@ -189,7 +190,7 @@ public class MapTests {
             new String[]{}, 
             8, 8, 0);
 
-            inversionTestController.updateMap(new Move(5, 3, 0, 1), true, 
+            inversionTestController.updateMap(new Move(5, 3, 0, 1), 
             new GameState(3,0,0,0,(byte)1));
 
             assertEquals(inversionTestController, new MapController(
@@ -225,7 +226,7 @@ public class MapTests {
             new String[]{},
             8, 8, 0);
 
-            overrideTileController.updateMap(new Move(3, 3, 0, 2), true, 
+            overrideTileController.updateMap(new Move(3, 3, 0, 2), 
             new GameState(2,1,0,0,(byte)1));
 
             assertEquals(overrideTileController, new MapController(
@@ -261,7 +262,7 @@ public class MapTests {
             new String[]{}, 
             8, 8, 0);                                                                                                                                               
 
-            expansionTileController.updateMap(new Move(6, 3, 0, 1), true, 
+            expansionTileController.updateMap(new Move(6, 3, 0, 1), 
             new GameState(2,0,0,0,(byte)1));
 
             assertEquals(expansionTileController, new MapController(
@@ -296,7 +297,7 @@ public class MapTests {
             new String[]{},
             8, 8, 1);
 
-            bombController.updateMap(new Move(3, 4, 0, 1), false, 
+            bombController.updateMap(new Move(3, 4, 0, 1), 
             new GameState(2,0,2,1,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -331,7 +332,7 @@ public class MapTests {
             new String[]{},
             8, 8, 3);
 
-            bombController.updateMap(new Move(2, 5, 0, 1), false, 
+            bombController.updateMap(new Move(2, 5, 0, 1), 
             new GameState(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -368,7 +369,7 @@ public class MapTests {
             },
             8, 8, 3);
 
-            bombController.updateMap(new Move(2, 5, 0, 1), false, 
+            bombController.updateMap(new Move(2, 5, 0, 1), 
             new GameState(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -407,7 +408,7 @@ public class MapTests {
             }, 
             8, 8, 0);
 
-            overlappingController.updateMap(new Move(6, 7, 0, 2), true, 
+            overlappingController.updateMap(new Move(6, 7, 0, 2), 
             new GameState(2,0,0,0,(byte)2));
 
             for (int i = 0; i < 8; i++) {
@@ -455,7 +456,7 @@ public class MapTests {
             }, 
             8, 8, 0);
 
-            allDirectionsController.updateMap(new Move(4, 3, 0, 2), true, 
+            allDirectionsController.updateMap(new Move(4, 3, 0, 2), 
             new GameState(2,0,0,0,(byte)1));
 
             assertEquals(allDirectionsController, new MapController(
