@@ -1,6 +1,6 @@
 public class Heuristics {
 
-    public static double amountOfOwnTiles(MapController map, GameState state){
+    public static double amountOfOwnTilesOverall(MapController map, GameState state){
 
         double result = 0;
 
@@ -14,6 +14,5 @@ public class Heuristics {
 
         }
         return result/(map.getHeight()*map.getWidth());
-    }
-
+    } 
 }
