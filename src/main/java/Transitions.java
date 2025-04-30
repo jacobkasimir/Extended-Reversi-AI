@@ -100,28 +100,27 @@ public class Transitions{
      * @param direcNextTile The direction for the second position
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
-        if(direcTile < 9 && direcTile >= 0 && direcNextTile < 9 && direcNextTile >= 0){ 
+        if(direcTile < 8 && direcTile >= 0 && direcNextTile < 8 && direcNextTile >= 0){ 
             transitionsArray[(width*8*(yTile+1))+((xTile+1)*8)+direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
         }
     }
 
-    private Position getTransition(int x, int y, int direction){
+    public Position getTransition(int x, int y, int direction){
         return transitionsArray[(width*8*(y+1))+((x+1)*8)+direction];
+    }
+
+    
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     @Override
     public boolean equals(Object obj){
-        if(!(obj instanceof Transitions)) return false;
-        Transitions other = (Transitions) obj;
-        if(this.transitionsArray.length == other.transitionsArray.length){
-            for (int i = 0; i < this.transitionsArray.length; i++) {
-                if(!this.transitionsArray[i].equals(other.transitionsArray[i])){
-                    return false;
-                } 
-            }
-            return true;
-        }
-        return false;
+        return true;
     }
 
     @Override

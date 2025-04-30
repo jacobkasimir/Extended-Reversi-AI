@@ -10,6 +10,7 @@ public class MapController{
     public MapController(String[] mapString, String[] transitionsString, int width, int height, int bombRadius){
         this.map = new Map(width, height);
         Transitions.getInstance().init(width, height);
+        
         this.height = height;
         this.width = width;
         this.bombRadius = bombRadius;
