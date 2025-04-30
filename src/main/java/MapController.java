@@ -106,7 +106,6 @@ public class MapController{
     }
 
     
-    
     /** 
      * @param p The Position-object of the current position
      * @return Position The next position after the transition
@@ -125,33 +124,39 @@ public class MapController{
     }
 
     
+
     /** 
      * Updates the map for the given move
      * @param move The played move
+     * @param state The associated GameState
      */
-    public void updateMap(Move move, boolean isPhase1, GameState state){
-        if(isPhase1){
-            int[] directionCounts = new int[8];
+    public void updateMap(Move move, GameState state){
+        if(state.isPhase1()){
+            int[] directionCounts = new int[8]; //holds the number of tiles for every direction that are captured by the move
             boolean search;
-            boolean isChoice = getTile(move.getX(), move.getY()) == 'c';
-            boolean isInversion = getTile(move.getX(), move.getY()) == 'i';
-            int tilesPassed;
-            Position currentPosition;
+            boolean isChoice = getTile(move.getX(), move.getY()) == 'c';    //Is the move placed on a choice tile?
+            boolean isInversion = getTile(move.getX(), move.getY()) == 'i'; //Is the move placed on an inversion tile?
+            int tilesPassed;    //holds the number of captured tiles for a specific direction
+            Position currentPosition; 
 
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 8; i++) { //search in every direction
                 currentPosition = new Position(move.getX(), move.getY(), i);
                 search = true;
                 tilesPassed = 0;
-                while(search){
-                    currentPosition = getNextTile(currentPosition);
-                    if(currentPosition == null) break;
+                while(search){  //counting the number of captured tiles in a specific direction (i)
+                    currentPosition = getNextTile(currentPosition); //updates the currentPosition for direction i
+                    if(currentPosition == null) break;  //checks if nextTile is out of map
                     if(String.valueOf(move.getPlayer()).equals(String.valueOf(this.getTile(currentPosition.x(), currentPosition.y())))){
+                        //case that the currentPosition is occupied by a tile owned by the player
                         if(tilesPassed > 0) {
-                            if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()) directionCounts[i] = tilesPassed;
+                            if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()){ //check that found tile is not the starting tile
+                                directionCounts[i] = tilesPassed;
+                            }
                             search = false;
                         }
                         else search = false;
                     } 
+                    //termination conditions for a direction
                     else if (helpCompare('0', currentPosition)) search = false;
                     else if (helpCompare('c', currentPosition)) search = false;
                     else if (helpCompare('i', currentPosition)) search = false;
@@ -163,6 +168,7 @@ public class MapController{
                 }
             }
 
+            //updating captured tiles 
             for (int i = 0; i < 8; i++) {
                 currentPosition = new Position(move.getX(), move.getY(), i);
                 for (int j = 0; j < directionCounts[i]+1; j++) {
@@ -173,14 +179,15 @@ public class MapController{
                 }
             }
 
-            if(isChoice) choiceHandling(move);
-            if(isInversion) inversionHandling(state);
+            if(isChoice) choiceHandling(move);  //update if choice tile
+            if(isInversion) inversionHandling(state);   //update if inversion tile
         }
         else {
-            bombing(move.getX(), move.getY(), bombRadius);
+            bombing(move.getX(), move.getY(), bombRadius);  //handles bombing (phase 2)
         }
     }
 
+    //handles bombing
     private void bombing(int x, int y, int radius){
         if(GameRules.insideMap(new Move(x, y, 0, 0), this)){
             setTile(x, y, '-');
@@ -194,6 +201,7 @@ public class MapController{
         }
     }
 
+    //handles choice tiles (switching the tiles)
     public void choiceHandling(Move move){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -203,6 +211,7 @@ public class MapController{
         }
     }
 
+    //handles inversion tiles (switching the tiles)
     private void inversionHandling(GameState state){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -211,10 +220,18 @@ public class MapController{
         }
     }
 
+    //checks if 'c' is a player
     private boolean isPlayer(char c){
         if(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x') return false;
         else return true;
     }
+
+    //compares the char values
+    private boolean helpCompare(char c, Position currentPosition){
+        return (getTile(currentPosition.x(), currentPosition.y()) == c);
+    }
+
+
 
     //for Testing
     @Override
@@ -224,9 +241,5 @@ public class MapController{
 
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
             this.map.equals(other.map) && this.transitions.equals(other.transitions);
-    }
-
-    private boolean helpCompare(char c, Position currentPosition){
-        return (getTile(currentPosition.x(), currentPosition.y()) == c);
     }
 }
