@@ -2,15 +2,14 @@
  * The MapController is the interface for other classes to interact with the map and transitions
  */
 public class MapController{
-    private Map map;
-    private Transitions transitions;
-    private int bombRadius;
-    private int width;
-    private int height;
+    private final Map map;
+    private final int bombRadius;
+    private final int width;
+    private final int height;
 
     public MapController(String[] mapString, String[] transitionsString, int width, int height, int bombRadius){
         this.map = new Map(width, height);
-        this.transitions = new Transitions(width, height);
+        Transitions.getInstance().init(width, height);
         this.height = height;
         this.width = width;
         this.bombRadius = bombRadius;
@@ -60,7 +59,7 @@ public class MapController{
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                this.map.setTile(i, j, newMap[i][j].charAt(0));
+                setTile(i, j, newMap[i][j].charAt(0));
             }
         }
     }
@@ -77,10 +76,10 @@ public class MapController{
         }
 
         for (int i = 0; i < newTransition.length; i++) {
-            this.transitions.setTransition(Integer.parseInt(newTransition[i][0]), Integer.parseInt(newTransition[i][1]), Integer.parseInt(newTransition[i][2]), 
+            setTransition(Integer.parseInt(newTransition[i][0]), Integer.parseInt(newTransition[i][1]), Integer.parseInt(newTransition[i][2]), 
             Integer.parseInt(newTransition[i][4]), Integer.parseInt(newTransition[i][5]), Integer.parseInt(newTransition[i][6]));
 
-            this.transitions.setTransition(Integer.parseInt(newTransition[i][4]), Integer.parseInt(newTransition[i][5]), Integer.parseInt(newTransition[i][6]), 
+            setTransition(Integer.parseInt(newTransition[i][4]), Integer.parseInt(newTransition[i][5]), Integer.parseInt(newTransition[i][6]), 
             Integer.parseInt(newTransition[i][0]), Integer.parseInt(newTransition[i][1]), Integer.parseInt(newTransition[i][2]));
         }
     }
@@ -92,7 +91,7 @@ public class MapController{
      * @return char The value stored at the required tile
      */
     public char getTile(int x, int y) {
-       return map.getTile(x, y);
+       return this.map.getTile(x, y);
     }
 
     
@@ -102,7 +101,7 @@ public class MapController{
      * @param c The value that is to be set
      */
     public void setTile(int x, int y, char c) {
-        map.setTile(x, y, c);
+        this.map.setTile(x, y, c);
     }
 
     
@@ -111,7 +110,7 @@ public class MapController{
      * @return Position The next position after the transition
      */
     public Position getNextTile(Position p) {
-        return transitions.getNextTile(p.x(), p.y(), p.direc());
+        return Transitions.getInstance().getNextTile(p.x(), p.y(), p.direc());
     }
 
     
@@ -119,8 +118,8 @@ public class MapController{
      * @param p1 The first position for the transition
      * @param p2 The second position for the transition
      */
-    public void setTransition(Position p1, Position p2) {
-        transitions.setTransition(p1.x(), p1.y(), p1.direc(), p2.x(), p2.y(), p2.direc());
+    public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
+        Transitions.getInstance().setTransition(xTile, yTile, direcTile, xNextTile, yNextTile, direcNextTile);
     }
 
     
@@ -240,6 +239,6 @@ public class MapController{
         MapController other = (MapController) obj;
 
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
-            this.map.equals(other.map) && this.transitions.equals(other.transitions);
+            this.map.equals(other.map) && Transitions.getInstance().equals(Transitions.getInstance());
     }
 }

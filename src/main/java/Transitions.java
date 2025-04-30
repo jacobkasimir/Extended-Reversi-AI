@@ -6,10 +6,33 @@
 import java.util.Arrays;
 
 public class Transitions{
-    private Position[][][] transitions;
-    
-    public Transitions(int width, int height){
-        this.transitions = new Position[width][height][8];
+    private static Transitions instance;
+    private static boolean isInitialized = false;
+
+    private Position[] transitionsArray;
+    private int width;
+    private int height;
+
+
+
+    private Transitions(){
+        
+    }
+
+    public static Transitions getInstance(){
+        if(instance == null){
+            instance = new Transitions();
+        } 
+        return instance;
+    }
+
+    public void init(int width, int height){
+        if(!isInitialized){
+            isInitialized = true;
+            this.transitionsArray = new Position[width*height*8];
+            this.width = width;
+            this.height = height;
+        }
     }
 
     
@@ -22,7 +45,7 @@ public class Transitions{
      */
     public Position getNextTile(int x, int y, int direc) {
         if(direc < 9 && direc >= 0){
-            if(transitions[x][y][direc] == null){
+            if(getTransition(x, y, direc) == null){
                 switch (direc) {
                     case 0: 
                         y--;
@@ -55,11 +78,11 @@ public class Transitions{
                     default:
                         return null;
                 }
-                if(x < 0 || x > transitions.length-1 || y < 0 || y > transitions[1].length-1) return null;
+                if(x < 0 || x > width-1 || y < 0 || y > height-1) return null;
                 else return new Position(x, y, direc);
             }
             else {
-                Position res = transitions[x][y][direc];   
+                Position res = getTransition(x, y, direc);   
                 return new Position(res.x(), res.y(), (res.direc()+4) % 8);
             }
         }
@@ -68,7 +91,7 @@ public class Transitions{
 
     
     /** 
-     * Sets a new transition in the transitions-matrix
+     * Sets a new transition in the transitionsArray-matrix
      * @param xTile The x-coordinate of the first position
      * @param yTile The y-coordinate of the first position
      * @param direcTile The direction for the first position
@@ -78,28 +101,23 @@ public class Transitions{
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
         if(direcTile < 9 && direcTile >= 0 && direcNextTile < 9 && direcNextTile >= 0){ 
-            transitions[xTile][yTile][direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
+            transitionsArray[(width*9*(yTile+1))+((xTile+1)*8)+direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
         }
+    }
+
+    private Position getTransition(int x, int y, int direction){
+        return transitionsArray[(width*9*(y+1))+((x+1)*8)+direction];
     }
 
     @Override
     public boolean equals(Object obj){
         if(!(obj instanceof Transitions)) return false;
         Transitions other = (Transitions) obj;
-        if(this.transitions.length == other.transitions.length){
-            for (int i = 0; i < this.transitions.length; i++) {
-                if(this.transitions[i].length != other.transitions[i].length) return false;
-
-                for (int j = 0; j < this.transitions[i].length; j++) {
-                    if(this.transitions[i][j].length != other.transitions[i][j].length) return false;
-                    
-                    for (int k = 0; k < this.transitions[i][j].length; k++) {
-                        if(this.transitions[i][j][k] != null && other.transitions[i][j][k] == null) return false;
-                        if(this.transitions[i][j][k] == null && other.transitions[i][j][k] != null) return false;
-                        else if(this.transitions[i][j][k] != null && other.transitions[i][j][k] != null &&
-                                !this.transitions[i][j][k].equals(other.transitions[i][j][k])) return false;
-                    }
-                }
+        if(this.transitionsArray.length == other.transitionsArray.length){
+            for (int i = 0; i < this.transitionsArray.length; i++) {
+                if(!this.transitionsArray[i].equals(other.transitionsArray[i])){
+                    return false;
+                } 
             }
             return true;
         }
@@ -108,7 +126,7 @@ public class Transitions{
 
     @Override
     public int hashCode(){
-        return Arrays.deepHashCode(transitions);
+        return Arrays.deepHashCode(transitionsArray);
     }
     
 }
