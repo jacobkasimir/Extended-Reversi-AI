@@ -27,12 +27,12 @@ public class Transitions{
     }
 
     public void init(int width, int height){
-        if(!isInitialized){
+        //if(!isInitialized){
             isInitialized = true;
             this.transitionsArray = new Position[width*height*8];
             this.width = width;
             this.height = height;
-        }
+        //}
     }
 
     
