@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 public class HeuristicsTest {
 
     @Test
-    public void amountOfOwnTilesTestOverall1(){
+    public void amountOfOwnTilesOverallTest1(){
         MapController map = new MapController(
             new String[]{
                 "1 1 1 1 1 1 1 1", 
@@ -27,7 +27,7 @@ public class HeuristicsTest {
     }
 
     @Test
-    public void amountOfOwnTilesTestOverall2(){
+    public void amountOfOwnTilesOverallTest2(){
         MapController map = new MapController(
             new String[]{
                 "1 1 1 1 1 1 1 1", 
@@ -49,7 +49,7 @@ public class HeuristicsTest {
     }
 
     @Test
-    public void amountOfOwnTilesTestOverall3(){
+    public void amountOfOwnTilesOverallTest3(){
         MapController map = new MapController(
             new String[]{
                 "1 - 1 0 2 3 3 1", 
