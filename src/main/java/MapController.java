@@ -124,7 +124,7 @@ public class MapController{
     }
 
     
-    
+
     /** 
      * Updates the map for the given move
      * @param move The played move
@@ -152,8 +152,9 @@ public class MapController{
                             if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()){ //check that found tile is not the starting tile
                                 directionCounts[i] = tilesPassed;
                             }
+                            search = false;
                         }
-                        search = false;
+                        else search = false;
                     } 
                     //termination conditions for a direction
                     else if (helpCompare('0', currentPosition)) search = false;
