@@ -118,8 +118,12 @@ public class MapController{
 
     
     /** 
-     * @param p1 The first position for the transition
-     * @param p2 The second position for the transition
+     * @param xTile The x-coordinate of the first position
+     * @param yTile The y-coordinate of the first position
+     * @param direcTile The direction for the first position
+     * @param xNextTile The x-coordinate of the second position
+     * @param yNextTile The y-coordinate of the second position
+     * @param direcNextTile The direction for the second position
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
         transitions.setTransition(xTile, yTile, direcTile, xNextTile, yNextTile, direcNextTile);
