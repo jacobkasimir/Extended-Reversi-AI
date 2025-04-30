@@ -3,14 +3,16 @@
  */
 public class MapController{
     private final Map map;
+    private final Transitions transitions;
     private final int bombRadius;
     private final int width;
     private final int height;
 
     public MapController(String[] mapString, String[] transitionsString, int width, int height, int bombRadius){
         this.map = new Map(width, height);
-        Transitions.getInstance().init(width, height);
-        
+        //Transitions.getInstance().init(width, height);
+        this.transitions = new Transitions(width, height);
+
         this.height = height;
         this.width = width;
         this.bombRadius = bombRadius;
@@ -111,7 +113,7 @@ public class MapController{
      * @return Position The next position after the transition
      */
     public Position getNextTile(Position p) {
-        return Transitions.getInstance().getNextTile(p.x(), p.y(), p.direc());
+        return transitions.getNextTile(p.x(), p.y(), p.direc());
     }
 
     
@@ -120,7 +122,7 @@ public class MapController{
      * @param p2 The second position for the transition
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
-        Transitions.getInstance().setTransition(xTile, yTile, direcTile, xNextTile, yNextTile, direcNextTile);
+        transitions.setTransition(xTile, yTile, direcTile, xNextTile, yNextTile, direcNextTile);
     }
 
     
@@ -240,6 +242,6 @@ public class MapController{
         MapController other = (MapController) obj;
 
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
-            this.map.equals(other.map) && Transitions.getInstance().equals(Transitions.getInstance());
+            this.map.equals(other.map) && transitions.equals(transitions);
     }
 }

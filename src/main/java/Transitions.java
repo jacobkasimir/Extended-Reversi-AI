@@ -15,13 +15,15 @@ public class Transitions{
 
 
 
-    private Transitions(){
-
+    public Transitions(int width, int height){
+        this.transitionsArray = new Position[width*height*8];
+        this.width = width;
+        this.height = height;
     }
 
     public static Transitions getInstance(){
         if(instance == null){
-            instance = new Transitions();
+           // instance = new Transitions();
         } 
         return instance;
     }
