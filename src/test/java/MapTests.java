@@ -409,14 +409,7 @@ public class MapTests {
             8, 8, 0);
 
             overlappingController.updateMap(new Move(6, 7, 0, 2), 
-            new GameState(2,0,0,0,(byte)2));
-
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    System.err.print(overlappingController.getTile(i, j));
-                }
-                System.err.println("");
-            }
+            new GameState(2,0,0,0,(byte)1));
 
             assertEquals(overlappingController, new MapController(
                 new String[]{
