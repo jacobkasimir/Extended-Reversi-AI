@@ -21,6 +21,7 @@ public class Heuristics {
                 
                 if(map.getTile(x, y) != '-'){
 
+                    borderCount = 0;
                     for (int i = 0; i < 11; i++) { //11 = 8 + 3 = directions + auch "naechste runde" checken
                         
                         currentPosition = new Position(x, y, i);
