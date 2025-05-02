@@ -53,7 +53,7 @@ public class MapController{
 
     
     /** 
-     * @return ArrayList<Coordinate> The ArrayList that holds all the Coordinates of our occupied tiles
+     * @return ArrayList<> The ArrayList that holds all the Coordinates of our occupied tiles
      */
     public ArrayList<Coordinate> getOurTiles() {
         return ourTiles;
