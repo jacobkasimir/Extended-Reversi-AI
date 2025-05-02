@@ -202,6 +202,7 @@ public class HeuristicsTest {
 
         Heuristics heuristics = new Heuristics(map);
 
+        assertEquals(4, heuristics.findCorners(map).size());
         assertEquals(result, heuristics.findCorners(map));
     } 
 
