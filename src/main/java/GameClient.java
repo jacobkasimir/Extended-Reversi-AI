@@ -65,6 +65,7 @@ public class GameClient {
     public void setOurPlayerId(byte id) {
         this.gameState.setOurPlayerId(id);
         this.mapController.resetOurTiles(id);
+        
         System.out.println("Spieler-ID erhalten: " + id);
     }
 

@@ -50,8 +50,10 @@ public class MapController{
         return bombRadius;
     }
 
+
+    
     /** 
-     * @return ArrayList<Coordinate> the tiles that are occupied by us
+     * @return ArrayList<Coordinate> The ArrayList that holds all the Coordinates of our occupied tiles
      */
     public ArrayList<Coordinate> getOurTiles() {
         return ourTiles;
@@ -256,6 +258,11 @@ public class MapController{
         }
     }
 
+    
+    /** 
+     * resets the ArrayList that holds alll the Positions of our occupied tiles
+     * @param ourPlayerId The Id we are given
+     */
     //resets ourTiles
     public void resetOurTiles(int ourPlayerId){
         ourTiles.clear();

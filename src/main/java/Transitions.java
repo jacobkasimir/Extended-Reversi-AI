@@ -10,8 +10,8 @@ public class Transitions{
     //private static boolean isInitialized = false;
 
     private Position[] transitionsArray;
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
 
 
@@ -49,36 +49,29 @@ public class Transitions{
         if(direc < 9 && direc >= 0){
             if(getTransition(x, y, direc) == null){
                 switch (direc) {
-                    case 0: 
-                        y--;
-                        break;
-                    case 1: 
+                    case 0 -> y--;
+                    case 1 -> { 
                         x++;
                         y--;
-                        break;
-                    case 2: 
-                        x++;
-                        break;
-                    case 3: 
+                    }
+                    case 2 -> x++; 
+                    case 3 -> {
                         x++;
                         y++;
-                        break;
-                    case 4: 
-                        y++;
-                        break;
-                    case 5: 
+                    }
+                    case 4 -> y++;
+                    case 5 -> { 
                         x--;
                         y++;
-                        break;
-                    case 6: 
-                        x--;
-                        break;
-                    case 7: 
+                    }
+                    case 6 -> x--; 
+                    case 7 -> {
                         x--;
                         y--;
-                        break;
-                    default:
+                    }
+                    default -> {
                         return null;
+                    }
                 }
                 if(x < 0 || x > width-1 || y < 0 || y > height-1) return null;
                 else return new Position(x, y, direc);
