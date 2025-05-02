@@ -108,7 +108,7 @@ public class Transitions{
         }
     }
 
-    public Position getTransition(int x, int y, int direction){
+    private Position getTransition(int x, int y, int direction){
         return transitionsArray[(width*8*y)+(x*8)+direction];
     }
 

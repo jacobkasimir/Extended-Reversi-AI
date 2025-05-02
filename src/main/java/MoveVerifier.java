@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
  */
@@ -28,5 +30,17 @@ public class MoveVerifier {
         }else{
             return GameRules.hasBomb(state, move);
         }
+    }
+
+    public static ArrayList<Move> allMovesPhase2(MapController controller, GameState state){
+        ArrayList<Move> res = new ArrayList<>();
+        for (int i = 0; i < controller.getWidth(); i++) {
+            for (int j = 0; j < controller.getHeight(); j++) {
+                if(controller.getTile(i, j) != '-'){
+                    res.add(new Move(i, j, 0, state.getOurPlayerId()));
+                }
+            }
+        }
+        return res;
     }
 }
