@@ -6,8 +6,8 @@
 import java.util.Arrays;
 
 public class Transitions{
-    private static Transitions instance;
-    private static boolean isInitialized = false;
+    //private static Transitions instance;
+    //private static boolean isInitialized = false;
 
     private Position[] transitionsArray;
     private int width;
@@ -21,21 +21,21 @@ public class Transitions{
         this.height = height;
     }
 
-    public static Transitions getInstance(){
-        if(instance == null){
-           // instance = new Transitions();
-        } 
-        return instance;
-    }
+    // public static Transitions getInstance(){
+    //     if(instance == null){
+    //        // instance = new Transitions();
+    //     } 
+    //     return instance;
+    // }
 
-    public void init(int width, int height){
-        //if(!isInitialized){
-            isInitialized = true;
-            this.transitionsArray = new Position[width*height*8];
-            this.width = width;
-            this.height = height;
-        //}
-    }
+    // public void init(int width, int height){
+    //     //if(!isInitialized){
+    //         isInitialized = true;
+    //         this.transitionsArray = new Position[width*height*8];
+    //         this.width = width;
+    //         this.height = height;
+    //     //}
+    // }
 
     
     /** 
