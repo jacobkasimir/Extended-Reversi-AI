@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+
 public class MoveVerifierTest {
 
     private MapController map;
@@ -180,5 +182,18 @@ public class MoveVerifierTest {
         assertTrue(resultTrue);
         assertFalse(resultFalse1);
         assertFalse(resultFalse2);
+    }
+
+    @Test
+    public void allMovesPhase1(){
+        ArrayList<Move> test = new ArrayList<>();
+        GameState gamestateTest = gameState1;
+        gamestateTest.setOurPlayerId((byte) 1);
+        test.add(new Move(2, 4, 0, 1));
+        test.add(new Move(2, 3, 0, 1));
+        test.add(new Move(3, 4, 0, 1));
+        test.add(new Move(4, 1, 0, 1));
+        test.add(new Move(5, 2, 0, 1));
+       assertIterableEquals(test,MoveVerifier.allMovesPhase1(map, gameState1));
     }
 }

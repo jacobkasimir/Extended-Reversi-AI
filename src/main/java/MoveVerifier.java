@@ -36,11 +36,57 @@ public class MoveVerifier {
         ArrayList<Move> res = new ArrayList<>();
         for (int i = 0; i < controller.getWidth(); i++) {
             for (int j = 0; j < controller.getHeight(); j++) {
-                if(controller.getTile(i, j) != '-'){
+                if(controller.getTile(i, j) != '-' && state.getPlayer(state.getOurPlayerId()).getNumberBombs()>0){
                     res.add(new Move(i, j, 0, state.getOurPlayerId()));
                 }
             }
         }
         return res;
     }
+
+    public static ArrayList<Move> allMovesPhase1(MapController controller, GameState state){ //Problem: Overrides auf expansion stones außerhalb
+        ArrayList<Move> res = new ArrayList<>();
+        ArrayList<Coordinate> ourTiles = controller.getOurTiles();
+        int ourId = state.getOurPlayerId();
+        for(Coordinate c : ourTiles){
+            int tilesPassed;
+            boolean search;
+            Position currentPosition;
+            for(int i = 0; i < 8; i++) {
+                currentPosition = new Position(c.x(), c.y(), i);
+                search = true;
+                tilesPassed = 0;
+                while(search){
+                    currentPosition = controller.getNextTile(currentPosition);
+                    if (currentPosition == null) break;
+                    int currentTile = controller.getTile(currentPosition.x(), currentPosition.y());
+                    Move posMove = new Move(currentPosition.x(), currentPosition.y(), 0, ourId);
+                    if(GameRules.isNotHole(posMove, controller) && GameRules.insideMap(posMove, controller)){
+                        if(GameRules.occupied(posMove, controller)){
+                            if(tilesPassed > 0 && GameRules.hasOverwrite(state, posMove) || GameRules.isExpansion(controller, posMove)) {
+                               res.add(posMove);
+                                tilesPassed++;
+                            }
+                        }else{
+                            if(tilesPassed > 0 && currentTile == 'b'){
+                                res.add(new Move(currentPosition.x(), currentPosition.y(), 20, ourId));
+                                res.add(new Move(currentPosition.x(), currentPosition.y(), 21, ourId));
+                            }else if(tilesPassed >0 && currentTile == 'c'){
+                                for(int j = 1; i <= state.getNumberPlayers();i++){
+                                    res.add(new Move(currentPosition.x(), currentPosition.y(), j, ourId));
+                                }
+                            }else{
+                                if (c.x() != posMove.getX() || c.y() != posMove.getY()) res.add(posMove);
+                            }
+                            search = false;
+                        }
+                    }else{
+                            search = false;
+                        }
+                }
+            }
+        }
+        return res;
+    }
+
 }
