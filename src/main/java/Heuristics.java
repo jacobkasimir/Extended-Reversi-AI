@@ -8,7 +8,7 @@ public class Heuristics {
         corners = findCorners(map);
     }
 
-    private ArrayList<Coordinate> findCorners(MapController map){
+    public ArrayList<Coordinate> findCorners(MapController map){
         
         ArrayList<Coordinate> result = new ArrayList<>();
         int borderCount = 0;
