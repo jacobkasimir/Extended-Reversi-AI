@@ -136,4 +136,46 @@ public class HeuristicsTest {
         assertEquals(6.0/40, Heuristics.amountOfOwnTilesToOthers(map, state));
     }
 
+    @Test
+    public void amountOfCornersCapturedTest1(){
+        MapController map = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        MapController mapOccupied = new MapController(
+            new String[]{
+                "1 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 1"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        GameState state = new GameState(4, 1, 1, 1, (byte) 1);
+
+        Heuristics heuristics = new Heuristics(map);
+
+        double result = heuristics.amountOfCornersCaptured(mapOccupied, state);
+
+        assertEquals(result, 0.5);
+
+    }
+
+
+
 }
