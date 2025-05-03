@@ -8,6 +8,7 @@ public class Heuristics {
         corners = findCorners(map);
     }
 
+    //can be private but public for using in unit tests
     public ArrayList<Coordinate> findCorners(MapController map){
         
         ArrayList<Coordinate> result = new ArrayList<>();

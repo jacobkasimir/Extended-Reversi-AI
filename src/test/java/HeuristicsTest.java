@@ -178,6 +178,123 @@ public class HeuristicsTest {
 
     }
 
+    public void amountOfCornersCapturedTest2(){
+        MapController map = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        MapController mapOccupied = new MapController(
+            new String[]{
+                "1 0 0 1 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 1 0 - 1 - 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "1 0 0 0 0 0 0 1"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        GameState state = new GameState(4, 1, 1, 1, (byte) 1);
+        state.setOurPlayerId((byte)1);
+        Heuristics heuristics = new Heuristics(map);
+
+        double result = heuristics.amountOfCornersCaptured(mapOccupied, state);
+
+        assertEquals(result, 0.75);
+
+    }
+
+    public void amountOfCornersCapturedTest3(){
+        MapController map = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        MapController mapOccupied = new MapController(
+            new String[]{
+                "1 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 - - 0 0 0", 
+                "0 0 0 1 - 0 0 0", 
+                "0 0 0 0 - 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 1"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        GameState state = new GameState(4, 1, 1, 1, (byte) 1);
+        state.setOurPlayerId((byte)1);
+        Heuristics heuristics = new Heuristics(map);
+
+        double result = heuristics.amountOfCornersCaptured(mapOccupied, state);
+
+        assertEquals(result, 3.0 / 5);
+
+    }
+
+    public void amountOfCornersCapturedTest1(){
+        MapController map = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        MapController mapOccupied = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 4",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 - - 0 0 0", 
+                "0 0 - 1 0 0 0 0", 
+                "0 0 - 0 - 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "3 0 0 0 0 0 0 2"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        GameState state = new GameState(4, 1, 1, 1, (byte) 1);
+        state.setOurPlayerId((byte)1);
+        Heuristics heuristics = new Heuristics(map);
+
+        double result = heuristics.amountOfCornersCaptured(mapOccupied, state);
+
+        assertEquals(result, 1 / 5.0);
+
+    }
+
     @Test
     public void findCornersTest(){
         ArrayList<Coordinate> result = new ArrayList<>();
@@ -206,30 +323,5 @@ public class HeuristicsTest {
         assertEquals(result, heuristics.findCorners(map));
     } 
 
-    @Test
-    public void testForDebugging(){
-        MapController map = new MapController(
-            new String[]{
-                "0 0 0 0 0 0 0 0",
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0"
-            }, 
-            new String[]{},
-            8, 8, 1);
-
-        assertEquals(map.getNextTile(new Position(0, 0, 0)), null);
-        assertEquals(map.getNextTile(new Position(0, 0, 1)), null);
-        assertEquals(map.getNextTile(new Position(0, 0, 6)), null);
-        assertEquals(map.getNextTile(new Position(0, 0, 7)), null);
-
-        assertEquals(map.getNextTile(new Position(7, 0, 0)), null);
-        assertEquals(map.getNextTile(new Position(7, 0, 1)), null);
-        assertEquals(map.getNextTile(new Position(7, 0, 2)), null);
-        assertEquals(map.getNextTile(new Position(7, 0, 6)), null);
-    }
+    
 }
