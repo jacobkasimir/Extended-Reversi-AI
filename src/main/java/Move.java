@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * Represents a move made by a player on the board.
  * Contains coordinates, special field value, and player ID.
@@ -46,4 +48,19 @@ public class Move {
     public int getPlayer() {
         return player;
     }
+
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Move)) return false;
+    Move m = (Move) o;
+    return x == m.x && y == m.y &&
+           special == m.special && player == m.player;
+}
+
+@Override
+public int hashCode() {
+    return Objects.hash(x, y, special, player);
+}
+
 }

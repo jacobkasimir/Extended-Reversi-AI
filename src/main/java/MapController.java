@@ -1,9 +1,15 @@
+
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  * The MapController is the interface for other classes to interact with the map and transitions
  */
 public class MapController{
     private final Map map;
     private final Transitions transitions;
+    private ArrayList<Coordinate> ourTiles;
+    private ArrayList<Coordinate> expansionTiles;
     private final int bombRadius;
     private final int width;
     private final int height;
@@ -12,12 +18,17 @@ public class MapController{
         this.map = new Map(width, height);
         this.transitions = new Transitions(width, height);
 
+        ourTiles = new ArrayList<>();
+
         this.height = height;
         this.width = width;
         this.bombRadius = bombRadius;
 
         initMap(mapString);
         initTransitions(transitionsString);
+
+        initExpansionTiles();
+
     }
     
     
@@ -44,7 +55,11 @@ public class MapController{
         return bombRadius;
     }
 
+
     
+    public ArrayList<Coordinate> getOurTiles() {
+        return ourTiles;
+    }
     
     /** 
      * Initializes the map by translating the message sent by the server
@@ -77,13 +92,28 @@ public class MapController{
             newTransition[i] = transitionsString[i].split(" ");
         }
 
-        for (int i = 0; i < newTransition.length; i++) {
-            setTransition(Integer.parseInt(newTransition[i][0]), Integer.parseInt(newTransition[i][1]), Integer.parseInt(newTransition[i][2]), 
-            Integer.parseInt(newTransition[i][4]), Integer.parseInt(newTransition[i][5]), Integer.parseInt(newTransition[i][6]));
-
-            setTransition(Integer.parseInt(newTransition[i][4]), Integer.parseInt(newTransition[i][5]), Integer.parseInt(newTransition[i][6]), 
-            Integer.parseInt(newTransition[i][0]), Integer.parseInt(newTransition[i][1]), Integer.parseInt(newTransition[i][2]));
+        for (String[] newTransition1 : newTransition) {
+            setTransition(Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), 
+                Integer.parseInt(newTransition1[2]), Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]));
+            setTransition(Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]), 
+                Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), Integer.parseInt(newTransition1[2]));
         }
+    }
+
+    private void initExpansionTiles(){
+        expansionTiles = new ArrayList<>();
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (getTile(i, j) == 'x') {
+                    expansionTiles.add(new Coordinate(i, j));
+                }
+            }
+        }
+    }
+
+    public ArrayList<Coordinate> getExpansionTiles() {
+        return expansionTiles;
     }
 
     
@@ -137,6 +167,11 @@ public class MapController{
      */
     public void updateMap(Move move, GameState state){
         if(state.isPhase1()){
+            // removing expansion Tiles out of expansionTiles
+            if (getTile(move.getX(), move.getY()) == 'x') {
+                expansionTiles.remove(new Coordinate(move.getX(), move.getY()));
+            }
+
             int[] directionCounts = new int[8]; //holds the number of tiles for every direction that are captured by the move
             boolean search;
             boolean isChoice = getTile(move.getX(), move.getY()) == 'c';    //Is the move placed on a choice tile?
@@ -179,13 +214,34 @@ public class MapController{
                 for (int j = 0; j < directionCounts[i]+1; j++) {
                     if(getTile(currentPosition.x(), currentPosition.y()) != 'x'){
                         setTile(currentPosition.x(), currentPosition.y(), (char)(move.getPlayer() + '0'));
+                        //updating ourTiles
+                        if(move.getPlayer() == state.getOurPlayerId() && j > 0){
+                            ourTiles.add(new Coordinate(currentPosition.x(), currentPosition.y()));
+                        }
                     }
                     currentPosition = getNextTile(currentPosition);
                 }
             }
+            if(move.getPlayer() == state.getOurPlayerId()){
+                ourTiles.add(new Coordinate(move.getX(), move.getY()));
+            }
+            
 
-            if(isChoice) choiceHandling(move);  //update if choice tile
-            if(isInversion) inversionHandling(state);   //update if inversion tile
+            if(isChoice) {
+                choiceHandling(move);  //update if choice tile
+                resetOurTiles(state.getOurPlayerId());
+            } else if(isInversion) {
+                inversionHandling(state);   //update if inversion tile
+                resetOurTiles(state.getOurPlayerId());
+            } else if(move.getPlayer() != state.getOurPlayerId()){
+                List<Coordinate> toRemove = new ArrayList<>();
+                for(Coordinate c : ourTiles){
+                    if(map.getTile(c.x(), c.y()) != state.getOurPlayerId() +'0'){
+                        toRemove.add(c);
+                    }
+                }
+                ourTiles.removeAll(toRemove);
+            }
         }
         else {
             bombing(move.getX(), move.getY(), bombRadius);  //handles bombing (phase 2)
@@ -225,6 +281,23 @@ public class MapController{
         }
     }
 
+    
+    /** 
+     * resets the ArrayList that holds alll the Positions of our occupied tiles
+     * @param ourPlayerId The Id we are given
+     */
+    //resets ourTiles
+    public void resetOurTiles(int ourPlayerId){
+        ourTiles.clear();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if(map.getTile(i, j) == ourPlayerId + '0'){
+                    ourTiles.add(new Coordinate(i, j));
+                }
+            }
+        }
+    }
+
     //checks if 'c' is a player
     private boolean isPlayer(char c){
         if(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x') return false;
@@ -247,4 +320,6 @@ public class MapController{
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
             this.map.equals(other.map) && transitions.equals(transitions);
     }
+
+   
 }

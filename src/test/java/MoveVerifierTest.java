@@ -1,6 +1,11 @@
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class MoveVerifierTest {
 
     private MapController map;
@@ -180,5 +185,148 @@ public class MoveVerifierTest {
         assertTrue(resultTrue);
         assertFalse(resultFalse1);
         assertFalse(resultFalse2);
+    }
+
+    @Test
+    public void allMovesPhase1_easy(){
+        ArrayList<Move> test = new ArrayList<>();
+        GameState gamestateTest = gameState1;
+        gamestateTest.setOurPlayerId((byte) 1);
+        map.resetOurTiles(1);
+        test.add(new Move(2, 4, 0, 1));
+        test.add(new Move(2, 5, 0, 1));
+        test.add(new Move(3, 4, 0, 1));
+        test.add(new Move(3, 5, 0, 1));
+        test.add(new Move(4, 3, 0, 1));
+        test.add(new Move(5, 3, 0, 1));
+        test.add(new Move(4, 2, 0, 1));
+        test.add(new Move(5,6,0,1));
+        test.add(new Move(7,6,0,1));
+        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map, gamestateTest);
+        ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map, gamestateTest);
+        assertEquals(new HashSet<>(test), new HashSet<>(res));
+        assertEquals(new HashSet<>(test), new HashSet<>(brutforce));
+    }
+
+    @Test
+    public void allMovesPhase1_bonus(){
+        ArrayList<Move> test = new ArrayList<>();
+        GameState gamestateTest = gameState1;
+        gamestateTest.setOurPlayerId((byte) 1);
+        MapController map2 = new MapController(
+            new String[]{
+                "- - - - - - - -", 
+                "0 0 0 0 0 0 1 2", 
+                "0 0 0 0 0 2 1 0", 
+                "0 0 0 1 2 b 0 0",
+                "0 0 0 2 1 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 c 0 x 0 x", 
+                "0 0 0 b 0 0 0 0"}, 
+            new String[]{
+                "7 7 2 <-> 0 0 6", 
+                "7 1 1 <-> 0 7 5"}, 
+            8, 
+            8, 
+            0
+        );
+        map2.resetOurTiles(1);
+        test.add(new Move(2, 4, 0, 1));
+        test.add(new Move(2, 5, 0, 1));
+        test.add(new Move(3, 4, 0, 1));
+        test.add(new Move(3, 5, 0, 1));
+        test.add(new Move(4, 3, 0, 1));
+        test.add(new Move(5, 3, 20, 1));
+        test.add(new Move(5, 3, 21, 1));
+        test.add(new Move(4, 2, 0, 1));
+        test.add(new Move(5,6,0,1));
+        test.add(new Move(7,6,0,1));
+        test.add(new Move(0,7,0,1));
+        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map2, gamestateTest);
+        ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map2, gamestateTest);
+        assertEquals(new HashSet<>(test), new HashSet<>(res));
+        assertEquals(new HashSet<>(test), new HashSet<>(brutforce));
+    }
+
+    @Test
+    public void allMovesPhase1_random(){
+        ArrayList<Move> test = new ArrayList<>();
+        GameState gamestateTest = gameState1;
+        gamestateTest.setOurPlayerId((byte) 1);
+        MapController map3 = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0",
+                "0 1 2 0 0 0 3 0",
+                "0 0 c 0 4 0 0 0",
+                "0 0 0 i 0 0 0 0",
+                "0 0 5 0 0 0 0 0",
+                "0 6 0 0 0 x 0 0",
+                "0 0 0 0 7 0 0 0",
+                "0 0 0 0 0 0 0 0"}, 
+            new String[]{
+                "0 1 0 <-> 7 7 2",
+                "1 6 0 <-> 0 6 2",
+                "5 2 3 <-> 5 5 4",
+                "2 2 0 <-> 2 5 0",
+                "3 3 2 <-> 7 1 6",
+                "0 7 4 <-> 4 7 0",
+                "7 0 6 <-> 7 3 2",
+                "4 4 1 <-> 6 6 5",
+                "2 7 3 <-> 2 4 7",
+                "7 2 5 <-> 3 2 1"
+            },
+            8, 
+            8, 
+            0
+        );
+        map3.resetOurTiles(1);
+        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest);
+        ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
+        assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
+    }
+
+    private static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameState state) {
+
+        Set<Move> moves = new LinkedHashSet<>();
+        int width   = controller.getWidth();
+        int height  = controller.getHeight();
+        int ownId   = state.getOurPlayerId();
+        int numPlayers = state.getNumberPlayers();
+    
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                char tile = (char) controller.getTile(x, y);
+    
+                //Bonus zwei für Bombe und Override
+                if (tile == 'b') {
+                    Move mBomb = new Move(x, y, 20, ownId);
+                    if (MoveVerifier.isValid(mBomb, controller, state)) {
+                        moves.add(mBomb);
+                    }
+                    Move mOverride = new Move(x, y, 21, ownId);
+                    if (MoveVerifier.isValid(mOverride, controller, state)) {
+                        moves.add(mOverride);
+                    }
+                }
+                //Choice für jede Player-ID einmal
+                else if (tile == 'c') {
+                    for (int choice = 1; choice <= numPlayers; choice++) {
+                        Move m = new Move(x, y, choice, ownId);
+                        if (MoveVerifier.isValid(m, controller, state)) {
+                            moves.add(m);
+                        }
+                    }
+                }
+                // Normales Feld, Expansion, Override 
+                else {
+                    Move m = new Move(x, y, 0, ownId);
+                    if (MoveVerifier.isValid(m, controller, state)) {
+                        moves.add(m);
+                    }
+                }
+            }
+        }
+
+        return new ArrayList<>(moves);
     }
 }
