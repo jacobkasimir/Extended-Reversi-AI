@@ -9,6 +9,7 @@ public class MapController{
     private final Map map;
     private final Transitions transitions;
     private ArrayList<Coordinate> ourTiles;
+    private ArrayList<Coordinate> expansionTiles;
     private final int bombRadius;
     private final int width;
     private final int height;
@@ -16,6 +17,7 @@ public class MapController{
     public MapController(String[] mapString, String[] transitionsString, int width, int height, int bombRadius){
         this.map = new Map(width, height);
         this.transitions = new Transitions(width, height);
+
         ourTiles = new ArrayList<>();
 
         this.height = height;
@@ -24,6 +26,9 @@ public class MapController{
 
         initMap(mapString);
         initTransitions(transitionsString);
+
+        initExpansionTiles();
+
     }
     
     
@@ -95,6 +100,18 @@ public class MapController{
         }
     }
 
+    private void initExpansionTiles(){
+        expansionTiles = new ArrayList<>();
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (getTile(i, j) == 'x') {
+                    expansionTiles.add(new Coordinate(i, j));
+                }
+            }
+        }
+    }
+
     
     /** 
      * @param x The x-coordinate of the required tile
@@ -146,6 +163,11 @@ public class MapController{
      */
     public void updateMap(Move move, GameState state){
         if(state.isPhase1()){
+            // removing expansion Tiles out of expansionTiles
+            if (getTile(move.getX(), move.getY()) == 'x') {
+                expansionTiles.remove(new Coordinate(move.getX(), move.getY()));
+            }
+
             int[] directionCounts = new int[8]; //holds the number of tiles for every direction that are captured by the move
             boolean search;
             boolean isChoice = getTile(move.getX(), move.getY()) == 'c';    //Is the move placed on a choice tile?
