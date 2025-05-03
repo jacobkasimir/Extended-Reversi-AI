@@ -48,6 +48,8 @@ public class MoveVerifier {
         ArrayList<Move> res = new ArrayList<>();
         ArrayList<Coordinate> ourTiles = controller.getOurTiles();
         int ourId = state.getOurPlayerId();
+
+
         for(Coordinate c : ourTiles){
             int tilesPassed;
             boolean search;
@@ -64,9 +66,12 @@ public class MoveVerifier {
                     if(GameRules.isNotHole(posMove, controller) && GameRules.insideMap(posMove, controller)){
                         if(GameRules.occupied(posMove, controller)){
                             if((tilesPassed > 0 && GameRules.hasOverwrite(state, posMove)) || GameRules.isExpansion(controller, posMove)) {
-                               res.add(posMove);
+                                res.add(posMove);
+                                if(currentTile == 48 + ourId) search = false;
                                 tilesPassed++;
                             }
+                            if(currentTile == 48 + ourId) search = false;
+                            tilesPassed++;
                         }else{
                             if(tilesPassed > 0 && currentTile == 'b'){
                                 res.add(new Move(currentPosition.x(), currentPosition.y(), 20, ourId));
@@ -76,7 +81,7 @@ public class MoveVerifier {
                                     res.add(new Move(currentPosition.x(), currentPosition.y(), j, ourId));
                                 }
                             }else{
-                                if (c.x() != posMove.getX() || c.y() != posMove.getY()) res.add(posMove);
+                                if (tilesPassed > 0 && (c.x() != posMove.getX() || c.y() != posMove.getY())) res.add(posMove);
                             }
                             search = false;
                         }
