@@ -44,7 +44,7 @@ public class MoveVerifier {
         return res;
     }
 
-    public static ArrayList<Move> allMovesPhase1(MapController controller, GameState state){ //Problem: Overrides auf expansion stones außerhalb
+    public static ArrayList<Move> allMovesPhase1(MapController controller, GameState state){
         ArrayList<Move> res = new ArrayList<>();
         ArrayList<Coordinate> ourTiles = controller.getOurTiles();
         int ourId = state.getOurPlayerId();
@@ -63,7 +63,7 @@ public class MoveVerifier {
                     Move posMove = new Move(currentPosition.x(), currentPosition.y(), 0, ourId);
                     if(GameRules.isNotHole(posMove, controller) && GameRules.insideMap(posMove, controller)){
                         if(GameRules.occupied(posMove, controller)){
-                            if(tilesPassed > 0 && GameRules.hasOverwrite(state, posMove) || GameRules.isExpansion(controller, posMove)) {
+                            if((tilesPassed > 0 && GameRules.hasOverwrite(state, posMove)) || GameRules.isExpansion(controller, posMove)) {
                                res.add(posMove);
                                 tilesPassed++;
                             }
@@ -72,7 +72,7 @@ public class MoveVerifier {
                                 res.add(new Move(currentPosition.x(), currentPosition.y(), 20, ourId));
                                 res.add(new Move(currentPosition.x(), currentPosition.y(), 21, ourId));
                             }else if(tilesPassed >0 && currentTile == 'c'){
-                                for(int j = 1; i <= state.getNumberPlayers();i++){
+                                for(int j = 1; i <= state.getNumberPlayers();j++){
                                     res.add(new Move(currentPosition.x(), currentPosition.y(), j, ourId));
                                 }
                             }else{

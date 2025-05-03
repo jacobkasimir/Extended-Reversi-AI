@@ -190,10 +190,14 @@ public class MoveVerifierTest {
         GameState gamestateTest = gameState1;
         gamestateTest.setOurPlayerId((byte) 1);
         test.add(new Move(2, 4, 0, 1));
-        test.add(new Move(2, 3, 0, 1));
-        test.add(new Move(3, 4, 0, 1));
-        test.add(new Move(4, 1, 0, 1));
-        test.add(new Move(5, 2, 0, 1));
+        test.add(new Move(2, 5, 0, 1));
+        test.add(new Move(3, 3, 0, 1));
+        test.add(new Move(1, 4, 0, 1));
+        test.add(new Move(3, 2, 0, 1));
+        test.add(new Move(4, 2, 0, 1));
+        for(Move m : MoveVerifier.allMovesPhase1(map, gameState1)){
+            System.out.println(m.getX() + m.getY());
+        }
        assertIterableEquals(test,MoveVerifier.allMovesPhase1(map, gameState1));
     }
 }
