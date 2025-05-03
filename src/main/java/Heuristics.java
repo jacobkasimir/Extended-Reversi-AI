@@ -25,7 +25,7 @@ public class Heuristics {
                         currentPosition = new Position(x, y, i);
                         nextTile = map.getNextTile(currentPosition);
 
-                        if (currentPosition != null && map.getTile(nextTile.x(), nextTile.y()) != '-') {
+                        if (nextTile != null && map.getTile(nextTile.x(), nextTile.y()) != '-') {
                             break;
                         }
 
