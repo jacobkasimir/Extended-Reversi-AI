@@ -15,12 +15,15 @@ public class Heuristics {
         Position nextTile1;
         Position currentPosition2;
         Position nextTile2;
+        boolean currentIsCorner;
 
         for (int x = 0; x < map.getWidth(); x++) {
             
             for (int y = 0; y < map.getHeight(); y++) {
                 
                 if(map.getTile(x, y) != '-'){
+
+                    currentIsCorner = true;
 
                     for (int i = 0; i < 4; i++) {
                         
@@ -31,11 +34,15 @@ public class Heuristics {
 
                         if (nextTile1 != null && map.getTile(nextTile1.x(), nextTile1.y()) != '-') {
                             if (nextTile2 != null && map.getTile(nextTile2.x(), nextTile2.y()) != '-') {
+                                currentIsCorner = false;
                                 break;
                             }
                         }
-                        result.add(new Coordinate(x, y));
+                        
                     }
+                    if (currentIsCorner) {
+                        result.add(new Coordinate(x, y));
+                    } 
                 }
             }
         }

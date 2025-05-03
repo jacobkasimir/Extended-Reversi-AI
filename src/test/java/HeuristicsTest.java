@@ -226,5 +226,10 @@ public class HeuristicsTest {
         assertEquals(map.getNextTile(new Position(0, 0, 1)), null);
         assertEquals(map.getNextTile(new Position(0, 0, 6)), null);
         assertEquals(map.getNextTile(new Position(0, 0, 7)), null);
+
+        assertEquals(map.getNextTile(new Position(7, 0, 0)), null);
+        assertEquals(map.getNextTile(new Position(7, 0, 1)), null);
+        assertEquals(map.getNextTile(new Position(7, 0, 2)), null);
+        assertEquals(map.getNextTile(new Position(7, 0, 6)), null);
     }
 }
