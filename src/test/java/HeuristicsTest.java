@@ -1,5 +1,7 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
 
 public class HeuristicsTest {
@@ -136,4 +138,190 @@ public class HeuristicsTest {
         assertEquals(6.0/40, Heuristics.amountOfOwnTilesToOthers(map, state));
     }
 
+    @Test
+    public void amountOfCornersCapturedTest1(){
+        MapController map = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        MapController mapOccupied = new MapController(
+            new String[]{
+                "1 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 1"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        GameState state = new GameState(4, 1, 1, 1, (byte) 1);
+        state.setOurPlayerId((byte)1);
+        Heuristics heuristics = new Heuristics(map);
+
+        double result = heuristics.amountOfCornersCaptured(mapOccupied, state);
+
+        assertEquals(result, 0.5);
+
+    }
+
+    public void amountOfCornersCapturedTest2(){
+        MapController map = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 - 0 - 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "1 0 0 0 0 0 0 1"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        MapController mapOccupied = new MapController(
+            new String[]{
+                "1 0 0 1 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 1 0 - 1 - 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "1 0 0 0 0 0 0 1"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        GameState state = new GameState(4, 1, 1, 1, (byte) 1);
+        state.setOurPlayerId((byte)1);
+        Heuristics heuristics = new Heuristics(map);
+
+        double result = heuristics.amountOfCornersCaptured(mapOccupied, state);
+
+        assertEquals(result, 0.75);
+
+    }
+
+    public void amountOfCornersCapturedTest3(){
+        MapController map = new MapController(
+            new String[]{
+                "2 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 4 0", 
+                "0 0 0 - - 0 0 0", 
+                "0 0 0 0 - 0 0 0", 
+                "0 0 0 0 - 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 1"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        MapController mapOccupied = new MapController(
+            new String[]{
+                "1 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 - - 0 0 0", 
+                "0 0 0 1 - 0 0 0", 
+                "0 0 0 0 - 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 1"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        GameState state = new GameState(4, 1, 1, 1, (byte) 1);
+        state.setOurPlayerId((byte)1);
+        Heuristics heuristics = new Heuristics(map);
+
+        double result = heuristics.amountOfCornersCaptured(mapOccupied, state);
+
+        assertEquals(result, 3.0 / 5);
+
+    }
+
+    public void amountOfCornersCapturedTest4(){
+        MapController map = new MapController(
+            new String[]{
+                "1 0 0 0 0 0 0 4",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 - - 0 0 0", 
+                "0 0 - 3 0 0 0 0", 
+                "0 0 - 0 - 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "3 0 0 0 0 0 0 1"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        MapController mapOccupied = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 4",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 - - 0 0 0", 
+                "0 0 - 1 0 0 0 0", 
+                "0 0 - 0 - 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "3 0 0 0 0 0 0 2"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        GameState state = new GameState(4, 1, 1, 1, (byte) 1);
+        state.setOurPlayerId((byte)1);
+        Heuristics heuristics = new Heuristics(map);
+
+        double result = heuristics.amountOfCornersCaptured(mapOccupied, state);
+
+        assertEquals(result, 1 / 5.0);
+
+    }
+
+    @Test
+    public void findCornersTest(){
+        ArrayList<Coordinate> result = new ArrayList<>();
+        result.add(new Coordinate(0, 0));
+        result.add(new Coordinate(0, 7));
+        result.add(new Coordinate(7, 0));
+        result.add(new Coordinate(7, 7));
+
+        MapController map = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        Heuristics heuristics = new Heuristics(map);
+
+        assertEquals(4, heuristics.findCorners(map).size());
+        assertEquals(result, heuristics.findCorners(map));
+    } 
+
+    
 }
