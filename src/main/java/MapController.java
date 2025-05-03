@@ -112,6 +112,10 @@ public class MapController{
         }
     }
 
+    public ArrayList<Coordinate> getExpansionTiles() {
+        return expansionTiles;
+    }
+
     
     /** 
      * @param x The x-coordinate of the required tile
