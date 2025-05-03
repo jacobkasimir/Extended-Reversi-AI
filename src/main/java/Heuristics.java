@@ -11,8 +11,10 @@ public class Heuristics {
     public ArrayList<Coordinate> findCorners(MapController map){
         
         ArrayList<Coordinate> result = new ArrayList<>();
-        Position currentPosition;
-        Position nextTile;
+        Position currentPosition1;
+        Position nextTile1;
+        Position currentPosition2;
+        Position nextTile2;
 
         for (int x = 0; x < map.getWidth(); x++) {
             
@@ -22,11 +24,15 @@ public class Heuristics {
 
                     for (int i = 0; i < 4; i++) {
                         
-                        currentPosition = new Position(x, y, i);
-                        nextTile = map.getNextTile(currentPosition);
+                        currentPosition1 = new Position(x, y, i);
+                        nextTile1 = map.getNextTile(currentPosition1);
+                        currentPosition2 = new Position(x, y, i+4);
+                        nextTile2 = map.getNextTile(currentPosition2);
 
-                        if (nextTile != null && map.getTile(nextTile.x(), nextTile.y()) != '-') {
-                            break;
+                        if (nextTile1 != null && map.getTile(nextTile1.x(), nextTile1.y()) != '-') {
+                            if (nextTile2 != null && map.getTile(nextTile2.x(), nextTile2.y()) != '-') {
+                                break;
+                            }
                         }
 
                     }
