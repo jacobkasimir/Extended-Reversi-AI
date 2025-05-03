@@ -186,7 +186,7 @@ public class MoveVerifierTest {
     }
 
     @Test
-    public void allMovesPhase1(){
+    public void allMovesPhase1_easy(){
         ArrayList<Move> test = new ArrayList<>();
         GameState gamestateTest = gameState1;
         gamestateTest.setOurPlayerId((byte) 1);
@@ -198,7 +198,47 @@ public class MoveVerifierTest {
         test.add(new Move(4, 3, 0, 1));
         test.add(new Move(5, 3, 0, 1));
         test.add(new Move(4, 2, 0, 1));
+        test.add(new Move(5,6,0,1));
+        test.add(new Move(7,6,0,1));
         ArrayList<Move> res = MoveVerifier.allMovesPhase1(map, gamestateTest);
+        assertEquals(new HashSet<>(test), new HashSet<>(res));
+    }
+
+    @Test
+    public void allMovesPhase1_bonus(){
+        ArrayList<Move> test = new ArrayList<>();
+        GameState gamestateTest = gameState1;
+        gamestateTest.setOurPlayerId((byte) 1);
+        MapController map2 = new MapController(
+            new String[]{
+                "- - - - - - - -", 
+                "0 0 0 0 0 0 1 2", 
+                "0 0 0 0 0 2 1 0", 
+                "0 0 0 1 2 b 0 0",
+                "0 0 0 2 1 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 c 0 x 0 x", 
+                "0 0 0 b 0 0 0 0"}, 
+            new String[]{
+                "7 7 2 <-> 0 0 6", 
+                "7 1 1 <-> 0 7 5"}, 
+            8, 
+            8, 
+            0
+        );
+        map2.resetOurTiles(1);
+        test.add(new Move(2, 4, 0, 1));
+        test.add(new Move(2, 5, 0, 1));
+        test.add(new Move(3, 4, 0, 1));
+        test.add(new Move(3, 5, 0, 1));
+        test.add(new Move(4, 3, 0, 1));
+        test.add(new Move(5, 3, 20, 1));
+        test.add(new Move(5, 3, 21, 1));
+        test.add(new Move(4, 2, 0, 1));
+        test.add(new Move(5,6,0,1));
+        test.add(new Move(7,6,0,1));
+        test.add(new Move(0,7,0,1));
+        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map2, gamestateTest);
         assertEquals(new HashSet<>(test), new HashSet<>(res));
     }
 }
