@@ -93,15 +93,8 @@ public class GameClient {
      * @return A valid move or a dummy move if none found.
      */
     public Move calculateMove(int timeLimit, int maxDepth) {
-        for (int i = 0; i < mapController.getWidth(); i++) {
-            for (int j = 0; j < mapController.getHeight(); j++) {
-                Move possibleMove = new Move(i, j, 0, gameState.getOurPlayerId());
-                if (MoveVerifier.isValid(possibleMove, mapController, gameState)) {
-                    return possibleMove;
-                }
-            }
-        }
-        return new Move(0, 0, 0, 0); // No possible moves
+        if(gameState.isPhase1()) return MoveVerifier.allMovesPhase1(mapController, gameState).getFirst();
+        else return MoveVerifier.allMovesPhase2(mapController, gameState).getFirst();
     }
 
     /**
