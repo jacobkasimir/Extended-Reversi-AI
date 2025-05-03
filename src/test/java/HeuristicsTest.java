@@ -206,7 +206,7 @@ public class HeuristicsTest {
         assertEquals(result, heuristics.findCorners(map));
     } 
 
-
+    @Test
     public void testForDebugging(){
         MapController map = new MapController(
             new String[]{
