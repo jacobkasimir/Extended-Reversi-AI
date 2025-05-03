@@ -186,9 +186,9 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0", 
+                "0 0 0 - 0 - 0 0", 
                 "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0"
+                "1 0 0 0 0 0 0 1"
             }, 
             new String[]{},
             8, 8, 1);
@@ -220,14 +220,14 @@ public class HeuristicsTest {
     public void amountOfCornersCapturedTest3(){
         MapController map = new MapController(
             new String[]{
-                "0 0 0 0 0 0 0 0",
+                "2 0 0 0 0 0 0 0",
                 "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 4 0", 
+                "0 0 0 - - 0 0 0", 
+                "0 0 0 0 - 0 0 0", 
+                "0 0 0 0 - 0 0 0", 
                 "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0"
+                "0 0 0 0 0 0 0 1"
             }, 
             new String[]{},
             8, 8, 1);
@@ -256,17 +256,17 @@ public class HeuristicsTest {
 
     }
 
-    public void amountOfCornersCapturedTest1(){
+    public void amountOfCornersCapturedTest4(){
         MapController map = new MapController(
             new String[]{
-                "0 0 0 0 0 0 0 0",
+                "1 0 0 0 0 0 0 4",
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0", 
+                "0 0 0 - - 0 0 0", 
+                "0 0 - 3 0 0 0 0", 
+                "0 0 - 0 - 0 0 0", 
                 "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0", 
-                "0 0 0 0 0 0 0 0"
+                "3 0 0 0 0 0 0 1"
             }, 
             new String[]{},
             8, 8, 1);
