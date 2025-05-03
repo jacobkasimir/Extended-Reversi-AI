@@ -11,7 +11,6 @@ public class Heuristics {
     public ArrayList<Coordinate> findCorners(MapController map){
         
         ArrayList<Coordinate> result = new ArrayList<>();
-        int borderCount = 0;
         Position currentPosition;
         Position nextTile;
 
@@ -21,23 +20,17 @@ public class Heuristics {
                 
                 if(map.getTile(x, y) != '-'){
 
-                    borderCount = 0;
-                    for (int i = 0; i < 11; i++) { //11 = 8 + 3 = directions + auch "naechste runde" checken
+                    for (int i = 0; i < 4; i++) {
                         
                         currentPosition = new Position(x, y, i);
                         nextTile = map.getNextTile(currentPosition);
 
-                        if (nextTile == null || map.getTile(nextTile.x(), nextTile.y()) == '-') {
-                            borderCount++;
-                        }else{
-                            borderCount = 0;
-                        }
-
-                        if (borderCount >= 4) {
-                            result.add(new Coordinate(currentPosition.x(), currentPosition.y()));
+                        if (currentPosition != null && map.getTile(nextTile.x(), nextTile.y()) != '-') {
                             break;
                         }
+
                     }
+                    result.add(new Coordinate(x, y));
                 }
             }
         }
