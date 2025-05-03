@@ -222,8 +222,9 @@ public class HeuristicsTest {
             new String[]{},
             8, 8, 1);
 
-        Position position = new Position(0, 0, 0);
-
-        assertEquals(map.getNextTile(position), null);
+        assertEquals(map.getNextTile(new Position(0, 0, 0)), null);
+        assertEquals(map.getNextTile(new Position(0, 0, 1)), null);
+        assertEquals(map.getNextTile(new Position(0, 0, 6)), null);
+        assertEquals(map.getNextTile(new Position(0, 0, 7)), null);
     }
 }
