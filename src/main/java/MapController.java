@@ -1,22 +1,34 @@
+
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  * The MapController is the interface for other classes to interact with the map and transitions
  */
 public class MapController{
-    private Map map;
-    private Transitions transitions;
-    private int bombRadius;
-    private int width;
-    private int height;
+    private final Map map;
+    private final Transitions transitions;
+    private ArrayList<Coordinate> ourTiles;
+    private ArrayList<Coordinate> expansionTiles;
+    private final int bombRadius;
+    private final int width;
+    private final int height;
 
     public MapController(String[] mapString, String[] transitionsString, int width, int height, int bombRadius){
         this.map = new Map(width, height);
         this.transitions = new Transitions(width, height);
+
+        ourTiles = new ArrayList<>();
+
         this.height = height;
         this.width = width;
         this.bombRadius = bombRadius;
 
         initMap(mapString);
         initTransitions(transitionsString);
+
+        initExpansionTiles();
+
     }
     
     
@@ -45,14 +57,9 @@ public class MapController{
 
 
     
-    /** 
-     * Updates the map for the given move
-     * @param move The played move
-     */
-    public void refreshMap(Move move){
-        // Noch nicht fertig
+    public ArrayList<Coordinate> getOurTiles() {
+        return ourTiles;
     }
-    
     
     /** 
      * Initializes the map by translating the message sent by the server
@@ -69,7 +76,7 @@ public class MapController{
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                this.map.setTile(i, j, newMap[i][j].charAt(0));
+                setTile(i, j, newMap[i][j].charAt(0));
             }
         }
     }
@@ -85,17 +92,30 @@ public class MapController{
             newTransition[i] = transitionsString[i].split(" ");
         }
 
-        for (int i = 0; i < newTransition.length; i++) {
-            this.transitions.setTransition(Integer.parseInt(newTransition[i][0]), Integer.parseInt(newTransition[i][1]), Integer.parseInt(newTransition[i][2]), 
-            Integer.parseInt(newTransition[i][4]), Integer.parseInt(newTransition[i][5]), Integer.parseInt(newTransition[i][6]));
-
-            this.transitions.setTransition(Integer.parseInt(newTransition[i][4]), Integer.parseInt(newTransition[i][5]), Integer.parseInt(newTransition[i][6]), 
-            Integer.parseInt(newTransition[i][0]), Integer.parseInt(newTransition[i][1]), Integer.parseInt(newTransition[i][2]));
+        for (String[] newTransition1 : newTransition) {
+            setTransition(Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), 
+                Integer.parseInt(newTransition1[2]), Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]));
+            setTransition(Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]), 
+                Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), Integer.parseInt(newTransition1[2]));
         }
     }
 
+    private void initExpansionTiles(){
+        expansionTiles = new ArrayList<>();
 
-    
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (getTile(i, j) == 'x') {
+                    expansionTiles.add(new Coordinate(i, j));
+                }
+            }
+        }
+    }
+
+    public ArrayList<Coordinate> getExpansionTiles() {
+        return expansionTiles;
+    }
+
     
     /** 
      * @param x The x-coordinate of the required tile
@@ -103,7 +123,7 @@ public class MapController{
      * @return char The value stored at the required tile
      */
     public char getTile(int x, int y) {
-       return map.getTile(x, y);
+       return this.map.getTile(x, y);
     }
 
     
@@ -113,10 +133,9 @@ public class MapController{
      * @param c The value that is to be set
      */
     public void setTile(int x, int y, char c) {
-        map.setTile(x, y, c);
+        this.map.setTile(x, y, c);
     }
 
-    
     
     /** 
      * @param p The Position-object of the current position
@@ -128,10 +147,179 @@ public class MapController{
 
     
     /** 
-     * @param p1 The first position for the transition
-     * @param p2 The second position for the transition
+     * @param xTile The x-coordinate of the first position
+     * @param yTile The y-coordinate of the first position
+     * @param direcTile The direction for the first position
+     * @param xNextTile The x-coordinate of the second position
+     * @param yNextTile The y-coordinate of the second position
+     * @param direcNextTile The direction for the second position
      */
-    public void setTransition(Position p1, Position p2) {
-        transitions.setTransition(p1.x(), p1.y(), p1.direc(), p2.x(), p2.y(), p2.direc());
+    public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
+        transitions.setTransition(xTile, yTile, direcTile, xNextTile, yNextTile, direcNextTile);
     }
+
+    
+
+    /** 
+     * Updates the map for the given move
+     * @param move The played move
+     * @param state The associated GameState
+     */
+    public void updateMap(Move move, GameState state){
+        if(state.isPhase1()){
+            // removing expansion Tiles out of expansionTiles
+            if (getTile(move.getX(), move.getY()) == 'x') {
+                expansionTiles.remove(new Coordinate(move.getX(), move.getY()));
+            }
+
+            int[] directionCounts = new int[8]; //holds the number of tiles for every direction that are captured by the move
+            boolean search;
+            boolean isChoice = getTile(move.getX(), move.getY()) == 'c';    //Is the move placed on a choice tile?
+            boolean isInversion = getTile(move.getX(), move.getY()) == 'i'; //Is the move placed on an inversion tile?
+            int tilesPassed;    //holds the number of captured tiles for a specific direction
+            Position currentPosition; 
+
+            for (int i = 0; i < 8; i++) { //search in every direction
+                currentPosition = new Position(move.getX(), move.getY(), i);
+                search = true;
+                tilesPassed = 0;
+                while(search){  //counting the number of captured tiles in a specific direction (i)
+                    currentPosition = getNextTile(currentPosition); //updates the currentPosition for direction i
+                    if(currentPosition == null) break;  //checks if nextTile is out of map
+                    if(String.valueOf(move.getPlayer()).equals(String.valueOf(this.getTile(currentPosition.x(), currentPosition.y())))){
+                        //case that the currentPosition is occupied by a tile owned by the player
+                        if(tilesPassed > 0) {
+                            if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()){ //check that found tile is not the starting tile
+                                directionCounts[i] = tilesPassed;
+                            }
+                            search = false;
+                        }
+                        else search = false;
+                    } 
+                    //termination conditions for a direction
+                    else if (helpCompare('0', currentPosition)) search = false;
+                    else if (helpCompare('c', currentPosition)) search = false;
+                    else if (helpCompare('i', currentPosition)) search = false;
+                    else if (helpCompare('b', currentPosition)) search = false;
+                    else if (helpCompare('-', currentPosition)) search = false;
+                    else {
+                        tilesPassed++;
+                    }
+                }
+            }
+
+            //updating captured tiles 
+            for (int i = 0; i < 8; i++) {
+                currentPosition = new Position(move.getX(), move.getY(), i);
+                for (int j = 0; j < directionCounts[i]+1; j++) {
+                    if(getTile(currentPosition.x(), currentPosition.y()) != 'x'){
+                        setTile(currentPosition.x(), currentPosition.y(), (char)(move.getPlayer() + '0'));
+                        //updating ourTiles
+                        if(move.getPlayer() == state.getOurPlayerId() && j > 0){
+                            ourTiles.add(new Coordinate(currentPosition.x(), currentPosition.y()));
+                        }
+                    }
+                    currentPosition = getNextTile(currentPosition);
+                }
+            }
+            if(move.getPlayer() == state.getOurPlayerId()){
+                ourTiles.add(new Coordinate(move.getX(), move.getY()));
+            }
+            
+
+            if(isChoice) {
+                choiceHandling(move);  //update if choice tile
+                resetOurTiles(state.getOurPlayerId());
+            } else if(isInversion) {
+                inversionHandling(state);   //update if inversion tile
+                resetOurTiles(state.getOurPlayerId());
+            } else if(move.getPlayer() != state.getOurPlayerId()){
+                List<Coordinate> toRemove = new ArrayList<>();
+                for(Coordinate c : ourTiles){
+                    if(map.getTile(c.x(), c.y()) != state.getOurPlayerId() +'0'){
+                        toRemove.add(c);
+                    }
+                }
+                ourTiles.removeAll(toRemove);
+            }
+        }
+        else {
+            bombing(move.getX(), move.getY(), bombRadius);  //handles bombing (phase 2)
+        }
+    }
+
+    //handles bombing
+    private void bombing(int x, int y, int radius){
+        if(GameRules.insideMap(new Move(x, y, 0, 0), this)){
+            setTile(x, y, '-');
+        }
+
+        if(radius > 0){
+            for (int i = 0; i < 8; i++) {
+                Position newPosition = getNextTile(new Position(x, y, i));
+                if(newPosition != null) bombing(newPosition.x(), newPosition.y(), radius-1);
+            }
+        }
+    }
+
+    //handles choice tiles (switching the tiles)
+    public void choiceHandling(Move move){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if(getTile(i, j) == ((char)(move.getPlayer() + '0'))) setTile(i, j, ((char)(move.getSpecial() + '0')));
+                else if(getTile(i, j) == ((char)(move.getSpecial() + '0'))) setTile(i, j, ((char)(move.getPlayer() + '0')));
+            }
+        }
+    }
+
+    //handles inversion tiles (switching the tiles)
+    private void inversionHandling(GameState state){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if(isPlayer(getTile(i, j))) setTile(i, j, (char)(((getTile(i, j)-'0') % state.getNumberPlayers()+1)+'0'));
+            }
+        }
+    }
+
+    
+    /** 
+     * resets the ArrayList that holds alll the Positions of our occupied tiles
+     * @param ourPlayerId The Id we are given
+     */
+    //resets ourTiles
+    public void resetOurTiles(int ourPlayerId){
+        ourTiles.clear();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if(map.getTile(i, j) == ourPlayerId + '0'){
+                    ourTiles.add(new Coordinate(i, j));
+                }
+            }
+        }
+    }
+
+    //checks if 'c' is a player
+    private boolean isPlayer(char c){
+        if(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x') return false;
+        else return true;
+    }
+
+    //compares the char values
+    private boolean helpCompare(char c, Position currentPosition){
+        return (getTile(currentPosition.x(), currentPosition.y()) == c);
+    }
+
+
+
+    //for Testing
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof MapController)) return false;
+        MapController other = (MapController) obj;
+
+        return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
+            this.map.equals(other.map) && transitions.equals(transitions);
+    }
+
+   
 }
