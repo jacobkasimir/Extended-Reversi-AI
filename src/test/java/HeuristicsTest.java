@@ -206,4 +206,24 @@ public class HeuristicsTest {
         assertEquals(result, heuristics.findCorners(map));
     } 
 
+
+    public void testForDebugging(){
+        MapController map = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0",
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0"
+            }, 
+            new String[]{},
+            8, 8, 1);
+
+        Position position = new Position(0, 0, 0);
+
+        assertEquals(map.getNextTile(position), null);
+    }
 }
