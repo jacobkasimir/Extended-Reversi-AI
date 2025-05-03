@@ -34,9 +34,8 @@ public class Heuristics {
                                 break;
                             }
                         }
-
+                        result.add(new Coordinate(x, y));
                     }
-                    result.add(new Coordinate(x, y));
                 }
             }
         }
