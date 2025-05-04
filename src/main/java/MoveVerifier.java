@@ -81,7 +81,7 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
                 boolean isOwn = tile == ('0' + ourId);
 
                 if (GameRules.occupied(move, controller)) {
-                    if (GameRules.isExpansion(controller, move) ||
+                    if (//GameRules.isExpansion(controller, move) ||
                         (tilesPassed > 0 && GameRules.hasOverwrite(state, move))) {
                         res.add(move);
                     }
