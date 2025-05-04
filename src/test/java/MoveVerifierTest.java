@@ -285,6 +285,50 @@ public class MoveVerifierTest {
         assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
     }
 
+    @Test
+    public void allMovesPhase1_ExpansionStones(){
+        ArrayList<Move> test = new ArrayList<>();
+        ArrayList<Move> tester = new ArrayList<>();
+        GameState gamestateTest =         gameState1 = new GameState(8, 0, 1, 3, (byte) 1);
+        gamestateTest.setOurPlayerId((byte) 5);
+        MapController map3 = new MapController(
+            new String[]{
+"0 0 2 1 1 1 - - - - - - - - 0 3 4 3 0 0",
+"0 0 2 1 0 0 - - - - - - - - 0 0 4 3 0 0",
+"0 0 2 1 0 0 - - - - - - - - 0 0 4 3 0 0",
+"0 0 0 0 0 0 - - - - - - - - 0 3 4 0 0 0",
+"0 0 0 0 0 0 0 - - - - - - 0 0 0 0 0 0 0",
+"- - - - - 0 b 0 0 0 0 0 0 b 0 - - - - -",
+"- - - - - - 0 0 0 0 0 0 0 0 - - - - - -",
+"- - - - - - 0 0 0 0 0 0 0 0 - - - - - -",
+"- - - - - - 0 0 0 5 x 0 0 0 - - - - - -",
+"- - - - - - 0 0 0 5 x 0 0 0 - - - - - -",
+"- - - - - - 0 0 0 0 0 0 0 0 - - - - - -",
+"- - - - - - 0 0 0 0 0 0 0 0 - - - - - -",
+"- - - - - 0 b 0 0 0 0 0 0 b 0 - - - - -",
+"0 0 0 0 0 0 0 - - - - - - 0 0 0 0 0 0 0",
+"0 0 6 0 0 0 - - - - - - - - 0 0 0 0 0 0",
+"0 0 6 6 0 0 - - - - - - - - 0 8 7 7 7 0",
+"0 0 6 6 0 0 - - - - - - - - 0 8 8 7 0 0",
+"0 0 0 6 0 0 - - - - - - - - 0 8 0 0 0 0",
+"0 0 0 0 0 0 - - - - - - - - 0 0 0 0 0 0"}, 
+            new String[]{},
+            8, 
+            8, 
+            0
+        );
+        map3.resetOurTiles(5);
+        tester.add(new Move(11, 7, 0, 5));
+        tester.add(new Move(11, 8, 0, 5));
+        tester.add(new Move(11, 9, 0, 5));
+        tester.add(new Move(11, 10, 0, 5));
+        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest);
+        ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
+        assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
+        assertEquals(new HashSet<>(tester), new HashSet<>(res));
+    }
+
+
     private static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameState state) {
 
         Set<Move> moves = new LinkedHashSet<>();
