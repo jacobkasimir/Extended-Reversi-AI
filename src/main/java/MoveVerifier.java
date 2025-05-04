@@ -55,7 +55,9 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
     int ourId = state.getOurPlayerId();
     //Alle Expansion stones sind mögliche Züge
     for(Coordinate e: expansions){
-        res.add(new Move(e.x(), e.y(), 0, ourId));
+        if(GameRules.hasOverwrite(state, new Move(e.x(),e.y(),0,ourId))){
+            res.add(new Move(e.x(), e.y(), 0, ourId));
+        }
     }
 
     //Tiefensuche für jeden unserer Steine in alle Richtungen
