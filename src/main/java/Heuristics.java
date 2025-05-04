@@ -9,6 +9,7 @@ public class Heuristics {
     }
 
     //can be private but public for using in unit tests
+    //TODO set to private
     public ArrayList<Coordinate> findCorners(MapController map){
         
         ArrayList<Coordinate> result = new ArrayList<>();
@@ -51,12 +52,12 @@ public class Heuristics {
         return result;
     }
 
-    public double amountOfCornersCaptured(MapController map, GameState state){
+    public double amountOfCornersCaptured(MapController map, byte playerId){
         
         double counter = 0;
 
         for (Coordinate coordinate : corners) {
-            if (map.getTile(coordinate.x(), coordinate.y()) == (state.getOurPlayerId() + '0')) {
+            if (map.getTile(coordinate.x(), coordinate.y()) == (playerId + '0')) {
                 counter++;
             }
         }
@@ -68,14 +69,14 @@ public class Heuristics {
         }
     }
 
-    public static double amountOfOwnTilesOverall(MapController map, GameState state){
+    public static double amountOfOwnTilesOverall(MapController map, byte playerId){
 
         double own = 0;
 
         for (int x = 0; x < map.getWidth(); x++) {
             
             for (int y = 0; y < map.getHeight(); y++) {
-                if (map.getTile(x, y) == (state.getOurPlayerId() + '0')) {
+                if (map.getTile(x, y) == (playerId + '0')) {
                     own++;
                 }
             }
@@ -84,7 +85,7 @@ public class Heuristics {
         return own/(map.getHeight()*map.getWidth());
     } 
 
-    public static double amountOfOwnTilesToOthers(MapController map, GameState state){
+    public static double amountOfOwnTilesToOthers(MapController map, byte playerId){
         
         double own = 0;
         int other = 0;
@@ -92,7 +93,7 @@ public class Heuristics {
         for (int x = 0; x < map.getWidth(); x++) {
             
             for (int y = 0; y < map.getHeight(); y++) {
-                if (map.getTile(x, y) == (state.getOurPlayerId() + '0')) {
+                if (map.getTile(x, y) == (playerId + '0')) {
                     own++;
                 }else if (isPlayer(map.getTile(x, y))) {
                     other++;
