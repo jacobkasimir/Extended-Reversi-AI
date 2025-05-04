@@ -337,7 +337,7 @@ public class HeuristicsTest {
         GameState state = new GameState(4, 3, 2, 2, (byte) 1);
         state.getPlayer(1).setNumberOverwrites(1);
 
-        assertEquals(3, Heuristics.numberOfBombs(state, (byte) 2));
-        assertEquals(1, Heuristics.numberOfBombs(state, (byte) 1));
+        assertEquals(3, Heuristics.numberOfOverrides(state, (byte) 2));
+        assertEquals(1, Heuristics.numberOfOverrides(state, (byte) 1));
     }
 }
