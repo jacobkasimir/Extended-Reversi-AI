@@ -313,8 +313,8 @@ public class MoveVerifierTest {
 "0 0 0 6 0 0 - - - - - - - - 0 8 0 0 0 0",
 "0 0 0 0 0 0 - - - - - - - - 0 0 0 0 0 0"}, 
             new String[]{},
-            8, 
-            8, 
+            19, 
+            19, 
             0
         );
         map3.resetOurTiles(5);
