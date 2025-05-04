@@ -323,5 +323,21 @@ public class HeuristicsTest {
         assertEquals(result, heuristics.findCorners(map));
     } 
 
-    
+    @Test
+    public void numberOfBombsTest(){
+        GameState state = new GameState(4, 3, 2, 2, (byte) 1);
+        state.getPlayer(1).setNumberBombs(3);
+
+        assertEquals(2, Heuristics.numberOfBombs(state, (byte) 2));
+        assertEquals(3, Heuristics.numberOfBombs(state, (byte) 1));
+    }
+
+    @Test
+    public void numberOfOverridesTest(){
+        GameState state = new GameState(4, 3, 2, 2, (byte) 1);
+        state.getPlayer(1).setNumberOverwrites(1);
+
+        assertEquals(3, Heuristics.numberOfBombs(state, (byte) 2));
+        assertEquals(1, Heuristics.numberOfBombs(state, (byte) 1));
+    }
 }
