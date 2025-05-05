@@ -1,0 +1,120 @@
+\section*{Exercise 1}
+\textit{Task: Finding Successor States}
+
+\noindent The goal of this task was to develop a more efficient algorithm for generating all possible valid moves in a given Phase 1 game state as in Phase 2 essentially every move is valid if it is not placed on a hole so that algorithm is not very interesting and just uses a brute-force tactic. Initially, we relied on a simple brute-force approach from the previous week for Phase 1 too, which iteratively evaluated every tile on the board by checking whether a move was valid through \texttt{MoveVerifier.isValid()}. While this ensured correctness, the method suffered from inefficiencies, especially on larger maps, due to redundant and unnecessary checks.\\
+
+\noindent In order to improve performance, we first experimented with a prefiltering strategy. The idea was to reduce the number of candidate tiles by eliminating positions that were not adjacent to captured tiles, as these are unlikely to yield valid moves. However, during implementation we discovered that nearly every precheck we performed had to be revalidated by \texttt{MoveVerifier.isValid()}, leading to duplicated logic. Ultimately, the additional overhead caused our prefiltering approach to perform worse than the original brute-force implementation in benchmarking tests (see Figures~\ref{fig:time_per_move_median_standard}, \ref{fig:time_per_move_median_1v1}, \ref{fig:time_per_move_median_infinity}).\\
+
+\noindent As a result, we pivoted towards a more focused algorithm, which directly encodes the underlying game rules to avoid redundant checks. Our final approach uses a directional depth-first search (DFS) strategy from each of the player’s currently occupied tiles. It incrementally explores all eight directions, evaluating tile-by-tile whether a move is valid based on selected game rules such as occupation status, map boundaries, and tile types. In addition, expansion stones are considered valid moves if overwrite stones are available. This search-based method ensures that each candidate move is constructed with minimal overhead and no reliance on broad validation functions, significantly improving performance and avoiding duplicate effort — especially on larger maps.\\
+
+\noindent The implemented method \texttt{allMovesPhase1(MapController controller, GameState state)} is divided into two main parts:\\
+
+\noindent \textbf{1. Expansion tile checks:}  
+First, the method iterates through all available expansion tiles using:
+
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small, breaklines=false]
+for(Coordinate e : expansions) {
+    if(GameRules.hasOverwrite(state, new Move(e.x(), e.y(), 0, ourId))) {
+        res.add(new Move(e.x(), e.y(), 0, ourId));
+    }
+}
+\end{lstlisting}
+
+This is important because we want all these Moves to be valid and won’t check expansion tiles that are completely separated from our tiles and can be distributed randomly on the map, which would lead to checking every tile. As this is what we want to avoid with our tactic, we hold a list of currently available expansion stones and add those moves to our list of possible Moves if we have at least one overwrite stone left.
+
+\vspace{1em}
+\noindent \textbf{2. Directional DFS from each of our tiles:}  
+For each of the player’s own tiles, the algorithm explores all eight directions. The search continues tile by tile until it reaches a boundary, a hole, or is stopped based on game-specific conditions. Each direction is explored using:
+
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small, breaklines=false]
+Position pos = new Position(c.x(), c.y(), dir);
+int tilesPassed = 0;
+boolean search = true;
+while (search) {
+    pos = controller.getNextTile(pos);
+    if (pos == null) break;
+    Move move = new Move(pos.x(), pos.y(), 0, ourId);
+    if (!GameRules.isNotHole(move, controller) 
+        || !GameRules.insideMap(move, controller)) {
+        break;
+    }
+\end{lstlisting}
+\vspace{1em}
+Once a tile is found, different cases are distinguished:
+
+\begin{itemize}
+    \item \textbf{Occupied tile:}  
+    If the tile is occupied, it can potentially be overwritten (if the player has passed at least one opposing stone and has overwrite stones available). The check looks like this:
+
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small, breaklines=false]
+if (GameRules.occupied(move, controller)) {
+    if (tilesPassed > 0 && GameRules.hasOverwrite(state, move)) {
+        res.add(move);
+    }
+    if (isOwn) search = false;
+    tilesPassed++;
+}
+\end{lstlisting}
+
+If the tile is the player's own, the search stops in this direction afterwards.
+
+    \item \textbf{Empty or special tile:}  
+    If an empty or special tile is encountered after passing at least one opposing tile, a valid move may be added corresponding to the different possible values of the special attribute:
+
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small, breaklines=false]
+else {
+    if (tilesPassed > 0 && tile == 'b') {
+        res.add(new Move(pos.x(), pos.y(), 20, ourId));
+        res.add(new Move(pos.x(), pos.y(), 21, ourId));
+    } else if (tilesPassed > 0 && tile == 'c') {
+        for (int j = 1; j <= state.getNumberPlayers(); j++) {
+            res.add(new Move(pos.x(), pos.y(), j, ourId));
+        }
+    } else if (tilesPassed > 0 && (c.x() != move.getX() 
+               || c.y() != move.getY())) {
+        res.add(move);
+    }
+    search = false;
+}
+\end{lstlisting}
+\end{itemize}
+
+
+
+\noindent All generated moves are stored in a \texttt{LinkedHashSet} to ensure uniqueness. This is achieved by overriding the \texttt{equals()} and \texttt{hashCode()} methods in the \texttt{Move} class to compare based on coordinates, special value, and player ID.\\
+
+\noindent The results of the benchmark confirm the effectiveness of our DFS-based strategy. Figure~\ref{fig:time_per_move_median_standard} shows a significantly lower and more stable runtime per move compared to the alternative methods on the standard map and just slightly lower median runtime than the brute-force tactic as it is a very small map:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=7.4cm]{assignment2/plots/Plotting_Standard_FullGame_TimePerMove.png}
+    \hfill
+    \includegraphics[width=7cm]{assignment2/plots/Plotting_Standard_FullGame_Median.png}
+    \caption{Runtime per move across iterations (left) and median runtime per move (Standard map, width=height=8). DFS is clearly more stable as it has a lower variance (left) and is slightly more efficient (right).}
+    \label{fig:time_per_move_median_standard}
+\end{figure}
+
+\vspace{1em}
+\noindent Furthermore, the median runtime and variance/time per move over multiple iterations and map types consistently favors the DFS algorithm with a heavily decreasing median runtime with growing map sizes (see Figures~\ref{fig:time_per_move_median_infinity} and \ref{fig:time_per_move_median_1v1}).
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = 7.4cm]{assignment2/plots/Plotting_1v1_FullGame_TimePerMove_Player01.png}
+    \hfill
+    \includegraphics[width = 7cm]{assignment2/plots/Plotting_1v1_FullGame_Median_Player01.png}
+    \caption{Median runtime per move (1v1 map,width=height=20). DFS performs best overall.}
+    \label{fig:time_per_move_median_1v1}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = 7.4cm]{assignment2/plots/Plotting_Infinity_FullGame.png}
+    \hfill
+    \includegraphics[width = 7cm]{assignment2/plots/Plotting_Infinity_FullGame_Median.png}
+    \caption{Runtime per move across iterations (Infinity map, width=height=24). DFS is clearly more stable and outperforms other tactics clearly.}
+    \label{fig:time_per_move_median_infinity}
+\end{figure}
+
+\vspace{1em}
+\noindent In summary, the DFS-based successor state generation provides a well-balanced trade-off between correctness and efficiency. By encoding game logic directly into the traversal process, it avoids unnecessary function calls and duplicate logic. At the moment, our implementation simply returns the first element of the generated list of possible moves in both Phase 1 and Phase 2. While this approach guarantees a valid move, it does not consider the strategic quality of the move in a broader game context. In future iterations, we plan to introduce a heuristic evaluation function as a weighted sum of our single heuristics that assigns a value to each move based on the difference between the current and the resulting game state. This will allow us to rank all possible moves and systematically select the most promising one in each situation.
+

@@ -1,0 +1,22 @@
+\section*{Exercise 3}
+\textit{Task: Inventing and implementing five different heuristics}\\
+
+\noindent For this task we had to think about strategic positions on the map and other aspects that give you an advantage over your opponents. We always take a look at a individual game state and implemented several functions that give us a rating of certain aspects. Then we can combine the single functions to rate the state of the game. In our implementation, a game state consists of the information from a \texttt{GameState} and a \texttt{MapController} object. \\
+At this point, we have implemented the following five functions:
+\begin{itemize}
+    \item \textbf{\texttt{public static double amountOfOwnTilesOverall(MapController map, byte playerId)}} and \textbf{\texttt{public static double amountOfOwnTilesToOthers(MapController map, byte playerId)}}\\
+    These are two very similar functions that give us a rating about the number of stones already played by the specific player. The first function compares this number to the total size of the board and then returns a \textit{double} value $x \in [0,...,1]$.\\
+    We also compare the number of captured stones to the sum of occupied stones by all opponents. Again we get a \textit{double} $x \in [0,...,1]$ as the return value.\\
+    Although the two functions are closely related we hope to get the best from the average of both. We expect that our next task will be to implement the final heuristic. We think the weight of each function can then make a difference. But we will see. Maybe we observe that they are redundant, and then we would replace one function with a newer one to save computing capacity.
+    
+    \item \textbf{\texttt{public static int numberOfOverrides(GameState state, byte playerId)}} and \textbf{\texttt{public static int numberOfBombs(GameState state, byte playerId)}}\\
+    To achieve advantages in phase 2, we think it can be helpful to collect extra bombs from bonus fields. Additional override stones can support your game play in phase 1. These two functions might help us to target the bonus fields on the map. To control the choice between an extra bomb or an extra override stone, we have separated it into two functions. Then we need to find the perfect combination of them. Perhaps we can influence their effect on the final heuristic as the game progresses. 
+    
+    \item \textbf{\texttt{public double amountOfCornersCaptured(MapController map, byte playerId)}}\\
+    This is probably the most important function. As we have learned from assignment 1, the corners are very strategic positions on a map. There are no moves without the use of special tiles that can capture stones on the corners. Because there are lots of  maps next to the normal riversi map we define corners a little differently. We discovered that we can call a position a corner if each diagonal axis has at least one barrier (i.e. a hole or being outside of the map) as a neighbour. Then there is no chance of capturing that stone in a normal way.\\
+    To compute the value of the function efficiently we make use of the method \texttt{private ArrayList<Coordinate> findCorners(MapController map)}. There is a single function call in the constructor of the Heuristics class. This helps us to avoid redundant computations, as the topography of the map does not change during phase 1. When evaluating the function, we then only need to check for each previously identified corner whether it is occupied by the specific player.\\
+    Again, the function returns the percentage. This means that the return value is also a $x \in [0,...,1]$.
+\end{itemize}
+
+\noindent As mentioned above, most of our functions return a percentage value. We have made this decision to avoid differences between different map sizes. We will see in further implementations if this is a good design choice or if we should switch to computing the total values.\\
+Another possible plan for further improvement is to implement a function that evaluates the number of safe stones. We noticed that there are other positions besides the corners that can be occupied by safe stones (i.e. stones that cannot be captured in the usual way). Unfortunately, we realised this too late to get a running implementation before the deadline of this assignment. But it is an bullet point on our to-do list next to bug fixes.

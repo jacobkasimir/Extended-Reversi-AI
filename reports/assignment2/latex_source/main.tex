@@ -1,0 +1,63 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[a4paper]{geometry}
+
+\usepackage[utf8]{inputenc}            % Use utf8 input encoding
+%\usepackage[latin1]{inputenc}         % Use iso 8859-1 encoding
+\usepackage[T1]{fontenc}               % T1 fonts (support for accents/diacritics)
+\usepackage{lmodern}                   % font with proper T1 support and good glyph quality
+
+\usepackage{listings}                  % for (code) listings
+\usepackage{amsmath}                   % AMS math typesetting
+\usepackage{titlesec}
+
+\usepackage{hyperref}        % better references for PDF
+
+\usepackage{graphics}
+\usepackage{graphicx}
+
+\titleformat{\section}{\LARGE\bfseries}% hide redundant number
+            {}{0pt}{}
+
+\begin{document}
+
+\begin{center}
+	\rule{\textwidth}{0.1pt}\\[1cm]
+	
+	\Large SoftwareProjektPraktikum SS 2025\\\bf Assignment 02
+\end{center}
+
+
+\begin{center}
+
+	\rule{\textwidth}{0.1pt}\\[0.5cm]
+
+	{\Large Group - 5\\[5mm]} %EDIT
+
+	\begin{tabular}{lll}
+		%EDIT
+		Elias Witzenrath & 456703 & elias.witzenrath@rwth-aachen.de (Exercise 2) \\
+
+		Max Backhaus & 456881 & max.backhaus@rwth-aachen.de (Exercise 3)\\
+
+		Constantin Lemler & 456833 & constantin.lemler@rwth-aachen.de (Exercise 1)\\
+
+        Jacob Tietz & 457181 & jacob.tietz@rwth-aachen.de (Exercise 4) \\
+
+	\end{tabular}\\[0.5cm]
+
+	\rule{\textwidth}{0.1pt}\\[1cm]
+
+\end{center}
+
+% Uncomment next two lines for table of contents
+%\newpage
+%\tableofcontents
+
+\include{assignment2/exercise1}
+\include{assignment2/exercise2}
+\include{assignment2/exercise3}
+\include{assignment2/exercise4}
+
+
+\end{document}

@@ -1,0 +1,23 @@
+\section*{Exercise 2}
+\textit{Task: Full Gameplay Implementation.} 
+
+\noindent In this task we had to implement all necessary methods for handling the sixth message type from the server. For that we had to be able to update our Map and our GameState for a given move. Therefore we implemented the following: 
+
+\begin{itemize}
+    \item \textbf{\texttt{void updateGame(Move move)}} in \textbf{\texttt{GameClient}}. \\
+        It is called by the TCPClient and it only to calls the methods \textbf{\texttt{void updateMap(Move move, GameState state)}} in \textbf{\texttt{MapController}} and \textbf{\texttt{void updateState(Move move, MapController mapController)}} in \textbf{\texttt{GameState}}.
+        
+    \item \textbf{\texttt{void updateState(Move move, MapController mapController)}} in \textbf{\texttt{GameState}}. \\
+        It updates the GameState by increasing or decreasing the number of override tiles and bombs depending on the move. 
+        
+    \item \textbf{\texttt{void updateMap(Move move, GameState state)}} in \textbf{\texttt{MapController}}. \\
+        It updates the map by doing the following: \\
+        \begin{enumerate}
+            \item Checks which game phase is played. If it is phase two, the bomb area is recursively calculated and then updated on the map.
+            \item Searches in every direction the number of tiles that are occupied by this move in the specific direction and then saves that number in an array.
+            \item Flipping exactly the number of tiles noted in the second step in the corresponding direction to the given player Id. In parallel we update our newly included \textbf{\texttt{ourTiles - ArrayList<Coordinate>}} which holds all of our active occupied tiles.
+            \item At last we check if the move was placed on a inversion or choice tile. If so we swap the tiles accordingly.
+        \end{enumerate}
+\end{itemize}
+
+\noindent For this task we used the first time the "Test-First-Approach" which actually worked really well because we already had figured out most of the edge cases while writing the tests. Although you must say that implementing all these tests took quite a while. An example for such an edge case would be capturing in one direction tiles that then overlap the earlier captured tiles by crossing them from another direction due to a transition. This would lead to the problem that the capturing ends at the crossing although it might could go even further.\\
