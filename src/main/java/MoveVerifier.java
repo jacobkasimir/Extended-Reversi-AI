@@ -100,7 +100,7 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
                             res.add(new Move(pos.x(), pos.y(), j, ourId));
                         }
                     }
-                    //Leeres Feld + bereits occupied überlaufen
+                    //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
                     else if (tilesPassed > 0 && (c.x() != move.getX() || c.y() != move.getY())) {
                         res.add(move);
                     }
