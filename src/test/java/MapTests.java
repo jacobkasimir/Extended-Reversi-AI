@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -273,7 +274,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 1 1 1 1 0",
-                    "0 0 0 2 1 1 x 0",
+                    "0 0 0 2 1 1 1 0",
                     "0 0 0 0 1 0 1 0", 
                     "0 0 0 0 0 0 1 0", 
                     "0 0 0 0 0 0 0 0"
@@ -481,7 +482,7 @@ public class MapTests {
         game.init(lines);
         game.setOurPlayerId((byte)2);
 
-        ArrayList<Coordinate> coordinates = new ArrayList<>();
+        Set<Coordinate> coordinates = new LinkedHashSet<>();
         coordinates.add(new Coordinate(1, 2));
         coordinates.add(new Coordinate(2, 1));
 
@@ -510,7 +511,7 @@ public class MapTests {
         game.init(lines);
         game.setOurPlayerId((byte)2);
 
-        ArrayList<Coordinate> coordinates = new ArrayList<>();
+        Set<Coordinate> coordinates = new LinkedHashSet<>();
         coordinates.add(new Coordinate(0, 1));
         coordinates.add(new Coordinate(0, 3));
         coordinates.add(new Coordinate(2, 0));
