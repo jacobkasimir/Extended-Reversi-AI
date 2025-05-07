@@ -1,6 +1,8 @@
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /*
  * The MapController is the interface for other classes to interact with the map and transitions
@@ -8,8 +10,8 @@ import java.util.List;
 public class MapController{
     private final Map map;
     private final Transitions transitions;
-    private ArrayList<Coordinate> ourTiles;
-    private ArrayList<Coordinate> expansionTiles;
+    private Set<Coordinate> ourTiles;
+    private Set<Coordinate> expansionTiles;
     private final int bombRadius;
     private final int width;
     private final int height;
@@ -18,7 +20,7 @@ public class MapController{
         this.map = new Map(width, height);
         this.transitions = new Transitions(width, height);
 
-        ourTiles = new ArrayList<>();
+        ourTiles = new LinkedHashSet<>();
 
         this.height = height;
         this.width = width;
@@ -57,7 +59,7 @@ public class MapController{
 
 
     
-    public ArrayList<Coordinate> getOurTiles() {
+    public Set<Coordinate> getOurTiles() {
         return ourTiles;
     }
     
@@ -101,7 +103,7 @@ public class MapController{
     }
 
     private void initExpansionTiles(){
-        expansionTiles = new ArrayList<>();
+        expansionTiles = new LinkedHashSet<>();
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -112,7 +114,7 @@ public class MapController{
         }
     }
 
-    public ArrayList<Coordinate> getExpansionTiles() {
+    public Set<Coordinate> getExpansionTiles() {
         return expansionTiles;
     }
 
@@ -208,17 +210,21 @@ public class MapController{
                 }
             }
 
+            // if (getTile(move.getX(), move.getY()) == 'x') {
+            //     setTile(move.getX(), move.getY(), (char) ('0' + move.getPlayer()));
+            // }
+
             //updating captured tiles 
             for (int i = 0; i < 8; i++) {
                 currentPosition = new Position(move.getX(), move.getY(), i);
                 for (int j = 0; j < directionCounts[i]+1; j++) {
-                    if(getTile(currentPosition.x(), currentPosition.y()) != 'x'){
+                    //if(getTile(currentPosition.x(), currentPosition.y()) != 'x'){
                         setTile(currentPosition.x(), currentPosition.y(), (char)(move.getPlayer() + '0'));
                         //updating ourTiles
-                        if(move.getPlayer() == state.getOurPlayerId() && j > 0){
+                        if(move.getPlayer() == state.getOurPlayerId()){
                             ourTiles.add(new Coordinate(currentPosition.x(), currentPosition.y()));
                         }
-                    }
+                    //}
                     currentPosition = getNextTile(currentPosition);
                 }
             }
