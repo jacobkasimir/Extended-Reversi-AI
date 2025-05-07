@@ -50,8 +50,8 @@ public class MoveVerifier {
 
 public static ArrayList<Move> allMovesPhase1(MapController controller, GameState state) {
     Set<Move> res = new LinkedHashSet<>();          // Damit keine Duplikate eingefügt werden (siehe overwrite von equals in Move)
-    List<Coordinate> ourTiles = controller.getOurTiles();
-    List<Coordinate> expansions = controller.getExpansionTiles();
+    Set<Coordinate> ourTiles = controller.getOurTiles();
+    Set<Coordinate> expansions = controller.getExpansionTiles();
     int ourId = state.getOurPlayerId();
     //Alle Expansion stones sind mögliche Züge
     for(Coordinate e: expansions){
@@ -100,7 +100,7 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
                             res.add(new Move(pos.x(), pos.y(), j, ourId));
                         }
                     }
-                    //Leeres Feld + bereits occupied überlaufen
+                    //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
                     else if (tilesPassed > 0 && (c.x() != move.getX() || c.y() != move.getY())) {
                         res.add(move);
                     }
@@ -110,6 +110,51 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
         }
     }
     return new ArrayList<Move>(res);
+}
+
+public static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameState state) {
+
+    Set<Move> moves = new LinkedHashSet<>();
+    int width   = controller.getWidth();
+    int height  = controller.getHeight();
+    int ownId   = state.getOurPlayerId();
+    int numPlayers = state.getNumberPlayers();
+
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            char tile = (char) controller.getTile(x, y);
+
+            //Bonus zwei für Bombe und Override
+            if (tile == 'b') {
+                Move mBomb = new Move(x, y, 20, ownId);
+                if (MoveVerifier.isValid(mBomb, controller, state)) {
+                    moves.add(mBomb);
+                }
+                Move mOverride = new Move(x, y, 21, ownId);
+                if (MoveVerifier.isValid(mOverride, controller, state)) {
+                    moves.add(mOverride);
+                }
+            }
+            //Choice für jede Player-ID einmal
+            else if (tile == 'c') {
+                for (int choice = 1; choice <= numPlayers; choice++) {
+                    Move m = new Move(x, y, choice, ownId);
+                    if (MoveVerifier.isValid(m, controller, state)) {
+                        moves.add(m);
+                    }
+                }
+            }
+            // Normales Feld, Expansion, Override 
+            else {
+                Move m = new Move(x, y, 0, ownId);
+                if (MoveVerifier.isValid(m, controller, state)) {
+                    moves.add(m);
+                }
+            }
+        }
+    }
+
+    return new ArrayList<>(moves);
 }
 
 
