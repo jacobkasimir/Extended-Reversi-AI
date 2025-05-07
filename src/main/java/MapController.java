@@ -220,7 +220,7 @@ public class MapController{
                 for (int j = 0; j < directionCounts[i]+1; j++) {
                     //if(getTile(currentPosition.x(), currentPosition.y()) != 'x'){
                         //updating ourTiles and expansionTiles
-                        if (getTile(move.getX(), move.getY()) == 'x') {
+                        if (getTile(currentPosition.x(), currentPosition.y()) == 'x') {
                             expansionTiles.remove(new Coordinate(currentPosition.x(), currentPosition.y()));
                         }
                         if(move.getPlayer() == state.getOurPlayerId()){
