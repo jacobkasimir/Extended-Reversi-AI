@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SingleRulesTest {
     
     private MapController map;
-    private GameState gameState1;
-    private GameState gameState2;
+    private GameAttributes gameState1;
+    private GameAttributes gameState2;
 
 
     @BeforeEach
@@ -27,8 +27,8 @@ public class SingleRulesTest {
             8, 
             0);
 
-        gameState1 = new GameState(2, 1, 1, 3, (byte) 1);
-        gameState2 = new GameState(2, 0, 0, 3, (byte) 1);
+        gameState1 = new GameAttributes(2, 1, 1, 3, (byte) 1);
+        gameState2 = new GameAttributes(2, 0, 0, 3, (byte) 1);
         gameState2.playerDisqualified((byte) 2);
     }
 

@@ -40,7 +40,7 @@ public class GameRules {
      * @param move Represents a move made by a player on the board.
      * @return true if the player, who is making a move, has more than 0 bombs.
      */
-    public static boolean hasBomb(GameState state, Move move){
+    public static boolean hasBomb(GameAttributes state, Move move){
         return state.getPlayer(move.getPlayer()).getNumberBombs() > 0;
     }
 
@@ -50,7 +50,7 @@ public class GameRules {
      * @param move Represents a move made by a player on the board.
      * @return true, if the moving player has still an override
      */
-    public static boolean hasOverwrite(GameState state, Move move){
+    public static boolean hasOverwrite(GameAttributes state, Move move){
         return state.getPlayer(move.getPlayer()).getNumberOverwrites() > 0;
     }
 
@@ -60,7 +60,7 @@ public class GameRules {
      * @param state Gamestate: captures the phase, amount of players, and the player objects
      * @return true, if the player number is valid, meaning the player is participating
      */
-    public static boolean validMove(Move move, GameState state){
+    public static boolean validMove(Move move, GameAttributes state){
         if(move.getPlayer() < 1 || move.getPlayer() > state.getNumberPlayers()) return false;
         return state.getPlayer(move.getPlayer()).isInGame();
     }
@@ -82,7 +82,7 @@ public class GameRules {
      * @param map Instance of a Map Controller.
      * @return true, if all entries in the "special"-field of the move object are valid.
      */
-    public static boolean checkSpecial(GameState state, Move move, MapController map){
+    public static boolean checkSpecial(GameAttributes state, Move move, MapController map){
         if(!state.isPhase1()) return move.getSpecial() == 0;
         switch(map.getTile(move.getX(), move.getY())){
             case 'b': {

@@ -165,9 +165,9 @@ public class MapController{
     /** 
      * Updates the map for the given move
      * @param move The played move
-     * @param state The associated GameState
+     * @param state The associated GameAttributes
      */
-    public void updateMap(Move move, GameState state){
+    public void updateMap(Move move, GameAttributes state){
         if(state.isPhase1()){
             // removing expansion Tiles out of expansionTiles
             if (getTile(move.getX(), move.getY()) == 'x') {
@@ -283,7 +283,7 @@ public class MapController{
     }
 
     //handles inversion tiles (switching the tiles)
-    private void inversionHandling(GameState state){
+    private void inversionHandling(GameAttributes state){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if(isPlayer(getTile(i, j))) setTile(i, j, (char)(((getTile(i, j)-'0') % state.getNumberPlayers()+1)+'0'));
