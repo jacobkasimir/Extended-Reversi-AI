@@ -10,7 +10,7 @@ public class GameRules {
      * @return true if move is not a hole, false otherwise
      */
     public static boolean isNotHole(Move move, MapController map ){
-        return map.getTile(move.getX(), move.getY()) != '-';
+        return map.getTile(move.x(), move.y()) != '-';
     }
 
     /**
@@ -20,7 +20,7 @@ public class GameRules {
      * @return true if the x - and y - coordinate are inside the map.
      */
     public static boolean insideMap(Move move, MapController map){
-        return map.getWidth() > move.getX() && move.getX() >= 0 && map.getHeight() > move.getY() && move.getY() >= 0;
+        return map.getWidth() > move.x() && move.x() >= 0 && map.getHeight() > move.y() && move.y() >= 0;
     }
 
     /**
@@ -30,8 +30,8 @@ public class GameRules {
      * @return true, if the tile is occupied by another player or an extension stone
      */
     public static boolean occupied(Move move, MapController map){
-        return !(map.getTile(move.getX(), move.getY()) == '0' || map.getTile(move.getX(), move.getY()) == 'b' || 
-        map.getTile(move.getX(), move.getY()) == 'i' || map.getTile(move.getX(), move.getY()) == 'c');
+        return !(map.getTile(move.x(), move.y()) == '0' || map.getTile(move.x(), move.y()) == 'b' || 
+        map.getTile(move.x(), move.y()) == 'i' || map.getTile(move.x(), move.y()) == 'c');
     }
 
     /**
@@ -41,7 +41,7 @@ public class GameRules {
      * @return true if the player, who is making a move, has more than 0 bombs.
      */
     public static boolean hasBomb(GameState state, Move move){
-        return state.getPlayer(move.getPlayer()).getNumberBombs() > 0;
+        return state.getPlayer(move.player()).getNumberBombs() > 0;
     }
 
     /**
@@ -51,7 +51,7 @@ public class GameRules {
      * @return true, if the moving player has still an override
      */
     public static boolean hasOverwrite(GameState state, Move move){
-        return state.getPlayer(move.getPlayer()).getNumberOverwrites() > 0;
+        return state.getPlayer(move.player()).getNumberOverwrites() > 0;
     }
 
     /**
@@ -61,8 +61,8 @@ public class GameRules {
      * @return true, if the player number is valid, meaning the player is participating
      */
     public static boolean validMove(Move move, GameState state){
-        if(move.getPlayer() < 1 || move.getPlayer() > state.getNumberPlayers()) return false;
-        return state.getPlayer(move.getPlayer()).isInGame();
+        if(move.player() < 1 || move.player() > state.getNumberPlayers()) return false;
+        return state.getPlayer(move.player()).isInGame();
     }
 
     /**
@@ -72,7 +72,7 @@ public class GameRules {
      * @return true, if the tile is occupied by an expansion stone.
      */
     public static boolean isExpansion(MapController map, Move move){
-        return map.getTile(move.getX(), move.getY()) == 'x';
+        return map.getTile(move.x(), move.y()) == 'x';
     }
 
     /**
@@ -83,15 +83,15 @@ public class GameRules {
      * @return true, if all entries in the "special"-field of the move object are valid.
      */
     public static boolean checkSpecial(GameState state, Move move, MapController map){
-        if(!state.isPhase1()) return move.getSpecial() == 0;
-        switch(map.getTile(move.getX(), move.getY())){
+        if(!state.isPhase1()) return move.special() == 0;
+        switch(map.getTile(move.x(), move.y())){
             case 'b': {
-                return move.getSpecial() == 20 || move.getSpecial() == 21;
+                return move.special() == 20 || move.special() == 21;
             }
             case 'c': {
-                return move.getSpecial() >= 1 && move.getSpecial() <= state.getNumberPlayers();
+                return move.special() >= 1 && move.special() <= state.getNumberPlayers();
             }
-            default: return move.getSpecial() == 0;
+            default: return move.special() == 0;
         }
     }
 
@@ -107,15 +107,15 @@ public class GameRules {
         boolean search;
         Position currentPosition;
         for(int i = 0; i < 8; i++) {
-            currentPosition = new Position(move.getX(), move.getY(), i);
+            currentPosition = new Position(move.x(), move.y(), i);
             search = true;
             tilesPassed = 0;
             while(search){
                 currentPosition = map.getNextTile(currentPosition);
                 if (currentPosition == null) break;
-                if(String.valueOf(move.getPlayer()).equals(String.valueOf(map.getTile(currentPosition.x(), currentPosition.y())))){
+                if(String.valueOf(move.player()).equals(String.valueOf(map.getTile(currentPosition.x(), currentPosition.y())))){
                     if(tilesPassed > 0) {
-                        if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()) return true; //diese Abfrage muss eher und vor dem tile ckeck bzw. jetzt kann weg vllt
+                        if (currentPosition.x() != move.x() || currentPosition.y() != move.y()) return true; //diese Abfrage muss eher und vor dem tile ckeck bzw. jetzt kann weg vllt
                         search = false;
                     }
                     else search = false;
@@ -125,7 +125,7 @@ public class GameRules {
                 else if (helpCompare('i', currentPosition, map)) search = false;
                 else if (helpCompare('b', currentPosition, map)) search = false;
                 else if (helpCompare('-', currentPosition, map)) search = false;
-                else if (currentPosition.x() == move.getX() && currentPosition.y() == move.getY()) search = false;
+                else if (currentPosition.x() == move.x() && currentPosition.y() == move.y()) search = false;
                 else {
                     tilesPassed++;
                 }

@@ -130,14 +130,14 @@ public class GameState {
         
         if(isPhase1()){
             if(GameRules.occupied(move, map) || GameRules.isExpansion(map, move)){
-                this.getPlayer(move.getPlayer()).setNumberOverwrites(this.getPlayer(move.getPlayer()).getNumberOverwrites() - 1);
-            }else if (move.getSpecial() == 20) {
-                this.getPlayer(move.getPlayer()).setNumberBombs(this.getPlayer(move.getPlayer()).getNumberBombs() + 1);
-            }else if (move.getSpecial() == 21) {
-                this.getPlayer(move.getPlayer()).setNumberOverwrites(this.getPlayer(move.getPlayer()).getNumberOverwrites() + 1);
+                this.getPlayer(move.player()).setNumberOverwrites(this.getPlayer(move.player()).getNumberOverwrites() - 1);
+            }else if (move.special() == 20) {
+                this.getPlayer(move.player()).setNumberBombs(this.getPlayer(move.player()).getNumberBombs() + 1);
+            }else if (move.special() == 21) {
+                this.getPlayer(move.player()).setNumberOverwrites(this.getPlayer(move.player()).getNumberOverwrites() + 1);
             }
         }else{
-            this.getPlayer(move.getPlayer()).setNumberBombs(this.getPlayer(move.getPlayer()).getNumberBombs() - 1);
+            this.getPlayer(move.player()).setNumberBombs(this.getPlayer(move.player()).getNumberBombs() - 1);
         }
     }
 }
