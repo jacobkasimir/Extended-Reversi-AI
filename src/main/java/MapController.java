@@ -16,9 +16,9 @@ public class MapController{
     private final int width;
     private final int height;
 
-    public MapController(String[] mapString, String[] transitionsString, int width, int height, int bombRadius){
+    public MapController(String[] mapString, Transitions transitions, int width, int height, int bombRadius){
         this.map = new Map(width, height);
-        this.transitions = new Transitions(width, height);
+        this.transitions = transitions;
 
         ourTiles = new LinkedHashSet<>();
 
@@ -27,7 +27,6 @@ public class MapController{
         this.bombRadius = bombRadius;
 
         initMap(mapString);
-        initTransitions(transitionsString);
 
         initExpansionTiles();
 
@@ -84,23 +83,7 @@ public class MapController{
     }
 
     
-    /** 
-     * Initializes the transitions by translating the message sent by the server
-     * @param mapString The data sent by the server
-     */
-    private void initTransitions(String[] transitionsString){
-        String[][] newTransition = new String[transitionsString.length][7]; //array that holds all transitions as Strings
-        for (int i = 0; i < transitionsString.length; i++) {
-            newTransition[i] = transitionsString[i].split(" ");
-        }
-
-        for (String[] newTransition1 : newTransition) {
-            setTransition(Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), 
-                Integer.parseInt(newTransition1[2]), Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]));
-            setTransition(Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]), 
-                Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), Integer.parseInt(newTransition1[2]));
-        }
-    }
+    
 
     private void initExpansionTiles(){
         expansionTiles = new LinkedHashSet<>();

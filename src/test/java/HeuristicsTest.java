@@ -1,13 +1,13 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.ArrayList;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 public class HeuristicsTest {
 
     @Test
     public void amountOfOwnTilesOverallTest1(){
+        
         MapController map = new MapController(
             new String[]{
                 "1 1 1 1 1 1 1 1", 
@@ -19,7 +19,7 @@ public class HeuristicsTest {
                 "1 1 1 1 1 1 1 1", 
                 "2 2 2 2 2 2 2 2" 
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(2, 1, 1, 1, (byte) 1);
@@ -41,7 +41,7 @@ public class HeuristicsTest {
                 "7 7 7 7 7 7 7 7", 
                 "8 8 8 8 8 8 8 8" 
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(8, 1, 1, 1, (byte) 1);
@@ -63,7 +63,7 @@ public class HeuristicsTest {
                 "7 7 - 7 7 7 - -", 
                 "0 0 8 x 8 4 8 -" 
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(8, 1, 1, 1, (byte) 1);
@@ -85,7 +85,7 @@ public class HeuristicsTest {
                 "7 7 7 7 7 7 7 7", 
                 "8 8 8 8 8 8 8 8" 
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(8, 1, 1, 1, (byte) 1);
@@ -107,7 +107,7 @@ public class HeuristicsTest {
                 "1 1 1 1 1 1 1 1", 
                 "2 2 2 2 2 2 2 2" 
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(2, 1, 1, 1, (byte) 1);
@@ -129,7 +129,7 @@ public class HeuristicsTest {
                 "7 7 - 7 7 7 - -", 
                 "0 0 8 x 8 4 8 -" 
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(8, 1, 1, 1, (byte) 1);
@@ -151,7 +151,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         MapController mapOccupied = new MapController(
@@ -165,7 +165,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 1"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(4, 1, 1, 1, (byte) 1);
@@ -190,7 +190,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "1 0 0 0 0 0 0 1"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         MapController mapOccupied = new MapController(
@@ -204,7 +204,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "1 0 0 0 0 0 0 1"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(4, 1, 1, 1, (byte) 1);
@@ -229,7 +229,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 1"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         MapController mapOccupied = new MapController(
@@ -243,7 +243,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 1"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(4, 1, 1, 1, (byte) 1);
@@ -268,7 +268,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "3 0 0 0 0 0 0 1"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         MapController mapOccupied = new MapController(
@@ -282,7 +282,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "3 0 0 0 0 0 0 2"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         GameAttributes state = new GameAttributes(4, 1, 1, 1, (byte) 1);
@@ -314,7 +314,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
         Heuristics heuristics = new Heuristics(map);

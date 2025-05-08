@@ -8,6 +8,8 @@ public class GameClient {
     private MapController mapController;
     private GameAttributes gameAttributes;
 
+    private Transitions transitions;
+
     /**
      * @return The map controller object held by the game client.
      */
@@ -20,6 +22,13 @@ public class GameClient {
      */
     public GameAttributes getGameAttributes() {
         return gameAttributes;
+    }
+
+    /**
+     * @return The Transitions of the map.
+     */
+    public Transitions getTransitions(){
+        return transitions;
     }
 
     /**
@@ -43,10 +52,35 @@ public class GameClient {
 
         byte gamePhase = 1;
 
-        this.gameAttributes = new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
-        this.mapController = new MapController(map, transitions, width, height, bombRadius);
+        //initializes transitions
+        initTransitions(transitions, width, height);
+
+        this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
+        this.mapController = new MapController(map, this.transitions, width, height, bombRadius);
 
         System.out.println("Init abgeschlossen");
+    }
+
+    /** 
+     * Initializes the transitions by translating the message sent by the server
+     * @param transitionsString The data sent by the server
+     * @param width The width of the map
+     * @param height The height of the map
+     */
+    public void initTransitions(String[] transitionsString, int width, int height){
+        this.transitions = new Transitions(width, height);
+
+        String[][] newTransition = new String[transitionsString.length][7]; //array that holds all transitions as Strings
+        for (int i = 0; i < transitionsString.length; i++) {
+            newTransition[i] = transitionsString[i].split(" ");
+        }
+
+        for (String[] newTransition1 : newTransition) {
+            transitions.setTransition(Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), 
+                Integer.parseInt(newTransition1[2]), Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]));
+            transitions.setTransition(Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]), 
+                Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), Integer.parseInt(newTransition1[2]));
+        }
     }
 
     /**
@@ -136,4 +170,5 @@ public class GameClient {
     public void endGame() {
         // End game logic
     }
+
 }

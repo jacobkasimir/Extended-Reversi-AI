@@ -21,22 +21,6 @@ public class Transitions{
         this.height = height;
     }
 
-    // public static Transitions getInstance(){
-    //     if(instance == null){
-    //        // instance = new Transitions();
-    //     } 
-    //     return instance;
-    // }
-
-    // public void init(int width, int height){
-    //     //if(!isInitialized){
-    //         isInitialized = true;
-    //         this.transitionsArray = new Position[width*height*8];
-    //         this.width = width;
-    //         this.height = height;
-    //     //}
-    // }
-
     
     /** 
      * Returns the next tile with the corresponding direction
