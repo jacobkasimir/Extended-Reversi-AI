@@ -260,11 +260,14 @@ public class MapController{
 
     //handles bombing
     private void bombing(int x, int y, int radius){
+        
+        if(getTile(x, y) == '-') return; //added to fix bug (not allowed to pass holes)
+
         if(GameRules.insideMap(new Move(x, y, 0, 0), this)){
             setTile(x, y, '-');
         }
 
-        if(radius > 0 && getTile(x, y) != '-'){ //added to fix bug (not allowed to pass holes)
+        if(radius > 0){ 
             for (int i = 0; i < 8; i++) {
                 Position newPosition = getNextTile(new Position(x, y, i));
                 if(newPosition != null) bombing(newPosition.x(), newPosition.y(), radius-1);
