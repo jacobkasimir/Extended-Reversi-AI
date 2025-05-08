@@ -261,7 +261,7 @@ public class MapController{
     //handles bombing
     private void bombing(int x, int y, int radius){
         
-        if(getTile(x, y) == '-') return; //added to fix bug (not allowed to pass holes)
+        //if(getTile(x, y) == '-') return; //added to fix bug (not allowed to pass holes)
 
         if(GameRules.insideMap(new Move(x, y, 0, 0), this)){
             setTile(x, y, '-');
