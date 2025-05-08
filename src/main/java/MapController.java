@@ -263,7 +263,7 @@ public class MapController{
             setTile(x, y, '-');
         }
 
-        if(radius > 0){
+        if(radius > 0 && getTile(x, y) != '-'){ //added to fix bug (not allowed to pass holes)
             for (int i = 0; i < 8; i++) {
                 Position newPosition = getNextTile(new Position(x, y, i));
                 if(newPosition != null) bombing(newPosition.x(), newPosition.y(), radius-1);
