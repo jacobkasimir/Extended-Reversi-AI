@@ -33,8 +33,8 @@ public class SingleRulesTest {
             8, 
             0);
 
-        gameState1 = new GameState(2, 1, 1, 3, (byte) 1);
-        gameState2 = new GameState(2, 0, 0, 3, (byte) 1);
+        gameState1 = new GameAttributes(2, 1, 1, 3, (byte) 1);
+        gameState2 = new GameAttributes(2, 0, 0, 3, (byte) 1);
         gameState2.playerDisqualified((byte) 2);
     }
 

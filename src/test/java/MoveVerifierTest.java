@@ -39,10 +39,10 @@ public class MoveVerifierTest {
             8, 
             0);
 
-        gameState1 = new GameState(2, 1, 1, 3, (byte) 1);
-        gameState1NoOverwrites = new GameState(2, 0, 1, 3, (byte) 1);
-        gameState2 = new GameState(2, 1, 1, 3, (byte) 2);
-        gameState2NoBombs = new GameState(2, 0, 0, 3, (byte) 2);
+        gameState1 = new GameAttributes(2, 1, 1, 3, (byte) 1);
+        gameState1NoOverwrites = new GameAttributes(2, 0, 1, 3, (byte) 1);
+        gameState2 = new GameAttributes(2, 1, 1, 3, (byte) 2);
+        gameState2NoBombs = new GameAttributes(2, 0, 0, 3, (byte) 2);
     }
 
     @Test
@@ -204,7 +204,7 @@ public class MoveVerifierTest {
     @Test
     public void allMovesPhase1_easy(){
         ArrayList<Move> test = new ArrayList<>();
-        GameState gamestateTest = gameState1;
+        GameAttributes gamestateTest = gameState1;
         gamestateTest.setOurPlayerId((byte) 1);
         map.resetOurTiles(1);
         test.add(new Move(2, 4, 0, 1));
@@ -225,7 +225,7 @@ public class MoveVerifierTest {
     @Test
     public void allMovesPhase1_bonus(){
         ArrayList<Move> test = new ArrayList<>();
-        GameState gamestateTest = gameState1;
+        GameAttributes gamestateTest = gameState1;
         gamestateTest.setOurPlayerId((byte) 1);
 
         GameClient gc = new GameClient();
@@ -269,7 +269,7 @@ public class MoveVerifierTest {
     @Test
     public void allMovesPhase1_random(){
         ArrayList<Move> test = new ArrayList<>();
-        GameState gamestateTest = gameState1;
+        GameAttributes gamestateTest = gameState1;
         gamestateTest.setOurPlayerId((byte) 1);
 
         GameClient gc = new GameClient();
@@ -311,7 +311,7 @@ public class MoveVerifierTest {
     public void allMovesPhase1_ExpansionStones(){
         ArrayList<Move> test = new ArrayList<>();
         ArrayList<Move> tester = new ArrayList<>();
-        GameState gamestateTest =         gameState1 = new GameState(8, 0, 1, 3, (byte) 1);
+        GameAttributes gamestateTest =         gameState1 = new GameAttributes(8, 0, 1, 3, (byte) 1);
         gamestateTest.setOurPlayerId((byte) 5);
         MapController map3 = new MapController(
             new String[]{
@@ -417,7 +417,7 @@ public class MoveVerifierTest {
 
     }
 
-    private static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameState state) {
+    private static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameAttributes state) {
 
         Set<Move> moves = new LinkedHashSet<>();
         int width   = controller.getWidth();

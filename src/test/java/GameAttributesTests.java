@@ -3,7 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class GameStateTests {
+public class GameAttributesTests {
 
     private MapController map;
 
@@ -33,7 +33,7 @@ public class GameStateTests {
     @Test
     public void decrementOverwriteStones(){
 
-        GameState state = new GameState(2, 3, 1, 1, (byte) 1);
+        GameAttributes state = new GameAttributes(2, 3, 1, 1, (byte) 1);
         Move move = new Move(5, 6, 0, 1);
 
         state.updateState(move, map);
@@ -48,7 +48,7 @@ public class GameStateTests {
     @Test
     public void decrementBombs(){
 
-        GameState state = new GameState(2, 3, 1, 2, (byte) 2);
+        GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 2);
         Move move = new Move(4, 4, 0, 2);
 
         assertFalse(state.isPhase1());
@@ -65,7 +65,7 @@ public class GameStateTests {
     @Test
     public void bonusIncrementBombs(){
 
-        GameState state = new GameState(2, 3, 1, 2, (byte) 1);
+        GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 1);
         Move move = new Move(2, 5, 20, 1);
 
         if (!MoveVerifier.isValid(move, map, state)) {
@@ -80,7 +80,7 @@ public class GameStateTests {
     @Test
     public void bonusIncrementOverwrites(){
 
-        GameState state = new GameState(2, 3, 1, 2, (byte) 1);
+        GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 1);
         Move move = new Move(2, 5, 21, 1);
 
         if (!MoveVerifier.isValid(move, map, state)) {

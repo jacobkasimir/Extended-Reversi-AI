@@ -1,3 +1,4 @@
+import java.util.Set;
 /**
  * Represents a player in the game, tracking their available bombs,
  * overwrites, player number, and in-game status.
@@ -7,6 +8,7 @@ public class Player {
     private int numberOverwrites;
     private int playerNumber;
     private boolean inGame = true;
+    Set<Coordinate> tiles;
 
     /**
      * Constructs a Player with specified resources and status.
@@ -94,4 +96,33 @@ public class Player {
     public void setNumberBombs(int numberBombs) {
         this.numberBombs = numberBombs;
     }
+
+    /**
+     * Getter function for the set containing all tiles of one player.
+     * @return tiles of one player.
+     */
+    public Set<Coordinate> getTiles() {
+        return tiles;
+    }
+
+
+    /**
+     * Sets the Set of tiles, to the tiles given by the function.
+     * @param tiles
+     */
+    public void setTiles(Set<Coordinate> tiles) {
+        this.tiles = tiles;
+    }
+
+
+    /**
+     * Adds one tile to the set, if it isnt already added.
+     * @param c
+     * @return true, if the coordinate c could be added to the set.
+     */
+    public boolean addTile(Coordinate c){
+        return this.tiles.add(c);
+    }    
+
+
 }
