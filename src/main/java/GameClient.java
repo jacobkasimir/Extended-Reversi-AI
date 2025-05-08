@@ -53,7 +53,7 @@ public class GameClient {
         byte gamePhase = 1;
 
         //initializes transitions
-        initTransitions(transitions);
+        initTransitions(transitions, width, height);
 
         this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
         this.mapController = new MapController(map, this.transitions, width, height, bombRadius);
@@ -65,7 +65,9 @@ public class GameClient {
      * Initializes the transitions by translating the message sent by the server
      * @param mapString The data sent by the server
      */
-    public void initTransitions(String[] transitionsString){
+    public void initTransitions(String[] transitionsString, int width, int height){
+        this.transitions = new Transitions(width, height);
+
         String[][] newTransition = new String[transitionsString.length][7]; //array that holds all transitions as Strings
         for (int i = 0; i < transitionsString.length; i++) {
             newTransition[i] = transitionsString[i].split(" ");
