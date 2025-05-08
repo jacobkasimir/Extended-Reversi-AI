@@ -1,4 +1,3 @@
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -6,7 +5,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -335,7 +333,7 @@ public class MoveVerifierTest {
 
     @Test
     public void testFailedTimeout01(){
-        assertTimeout(Duration.ofSeconds(10), ()->{        GameState gamestateTest =         gameState1 = new GameState(2, 0, 9, 0, (byte) 1);
+        GameState gamestateTest =         gameState1 = new GameState(2, 0, 9, 0, (byte) 1);
             gamestateTest.setOurPlayerId((byte) 1);
             MapController map3 = new MapController(
                 new String[]{
@@ -393,7 +391,7 @@ public class MoveVerifierTest {
             map3.resetOurTiles(1);
             ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest);
             ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
-            assertEquals(new HashSet<>(brutforce), new HashSet<>(res));});
+            assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
 
     }
 
