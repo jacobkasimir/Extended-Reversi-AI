@@ -257,7 +257,7 @@ public class MapController{
     
     /** 
      * resets the ArrayList that holds alll the Positions of our occupied tiles
-     * @param ourPlayerId The Id we are given
+     * @param playerId The Id we are given
      * @param attributes The gameAttributes
      */
     //resets ourTiles
