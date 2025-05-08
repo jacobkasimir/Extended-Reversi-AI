@@ -115,7 +115,7 @@ public class GameRules {
                 if (currentPosition == null) break;
                 if(String.valueOf(move.getPlayer()).equals(String.valueOf(map.getTile(currentPosition.x(), currentPosition.y())))){
                     if(tilesPassed > 0) {
-                        if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()) return true;
+                        if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()) return true; //diese Abfrage muss eher und vor dem tile ckeck bzw. jetzt kann weg vllt
                         search = false;
                     }
                     else search = false;
@@ -125,6 +125,7 @@ public class GameRules {
                 else if (helpCompare('i', currentPosition, map)) search = false;
                 else if (helpCompare('b', currentPosition, map)) search = false;
                 else if (helpCompare('-', currentPosition, map)) search = false;
+                else if (currentPosition.x() == move.getX() || currentPosition.y() == move.getY()) search = false; //added to fix bug self capturing
                 else {
                     tilesPassed++;
                 }
