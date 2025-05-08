@@ -6,7 +6,9 @@ import java.util.Random;
 
 public class GameClient {
     private MapController mapController;
-    private GameState gameState;
+    private GameAttributes gameAttributes;
+
+    private Transitions transitions;
 
     /**
      * @return The map controller object held by the game client.
@@ -18,8 +20,15 @@ public class GameClient {
     /**
      * @return The game state object held by the game client.
      */
-    public GameState getGameState() {
-        return gameState;
+    public GameAttributes getGameAttributes() {
+        return gameAttributes;
+    }
+
+    /**
+     * @return The Transitions of the map.
+     */
+    public Transitions getTransitions(){
+        return transitions;
     }
 
     /**
@@ -43,10 +52,35 @@ public class GameClient {
 
         byte gamePhase = 1;
 
-        this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
-        this.mapController = new MapController(map, transitions, width, height, bombRadius);
+        //initializes transitions
+        initTransitions(transitions, width, height);
+
+        this.gameAttributes = new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
+        this.mapController = new MapController(map, this.transitions, width, height, bombRadius);
 
         System.out.println("Init abgeschlossen");
+    }
+
+    /** 
+     * Initializes the transitions by translating the message sent by the server
+     * @param transitionsString The data sent by the server
+     * @param width The width of the map
+     * @param height The height of the map
+     */
+    public void initTransitions(String[] transitionsString, int width, int height){
+        this.transitions = new Transitions(width, height);
+
+        String[][] newTransition = new String[transitionsString.length][7]; //array that holds all transitions as Strings
+        for (int i = 0; i < transitionsString.length; i++) {
+            newTransition[i] = transitionsString[i].split(" ");
+        }
+
+        for (String[] newTransition1 : newTransition) {
+            transitions.setTransition(Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), 
+                Integer.parseInt(newTransition1[2]), Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]));
+            transitions.setTransition(Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]), 
+                Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), Integer.parseInt(newTransition1[2]));
+        }
     }
 
     /**
@@ -54,8 +88,8 @@ public class GameClient {
      * @param move The move to apply.
      */
     public void updateGame(Move move) {
-        this.gameState.updateState(move, this.mapController);
-        this.mapController.updateMap(move, this.gameState);
+        this.gameAttributes.updateState(move, this.mapController);
+        this.mapController.updateMap(move, this.gameAttributes);
     }
 
     /**
@@ -63,7 +97,7 @@ public class GameClient {
      * @param id The player ID.
      */
     public void setOurPlayerId(byte id) {
-        this.gameState.setOurPlayerId(id);
+        this.gameAttributes.setOurPlayerId(id);
         this.mapController.resetOurTiles(id);
         
         System.out.println("Spieler-ID erhalten: " + id);
@@ -74,7 +108,7 @@ public class GameClient {
      * @param playerId ID of the disqualified player.
      */
     public void playerDisqualified(byte playerId) {
-        this.gameState.playerDisqualified(playerId);
+        this.gameAttributes.playerDisqualified(playerId);
     }
 
     /**
@@ -105,7 +139,7 @@ public class GameClient {
         Random rand = new Random();
         int x = rand.nextInt(0, mapController.getWidth());
         int y = rand.nextInt(0, mapController.getHeight());
-        return new Move(x, y, 0, gameState.getOurPlayerId());
+        return new Move(x, y, 0, gameAttributes.getOurPlayerId());
     }
 
     /**
@@ -127,7 +161,7 @@ public class GameClient {
      * Ends the current game phase by incrementing the phase.
      */
     public void endPhase() {
-        this.gameState.setGamePhase((byte) 2); 
+        this.gameAttributes.setGamePhase((byte) 2); 
     }
 
     /**
@@ -136,4 +170,5 @@ public class GameClient {
     public void endGame() {
         // End game logic
     }
+
 }

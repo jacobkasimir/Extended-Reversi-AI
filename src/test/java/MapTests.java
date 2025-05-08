@@ -3,17 +3,30 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class MapTests {
 
-    MapController mapController = new MapController(new String[]{"0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 1 2 0 0 0",
-        "0 0 0 2 1 0 0 0","0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 b", "0 0 0 0 0 0 0 0"}, 
-        new String[]{"7 7 2 <-> 0 0 6", "7 0 1 <-> 0 7 5"}, 8, 8, 0);
+
+public class MapTests {
+    MapController mapController;
+    MapController mapController2;
+    GameClient gameClient;
+
+    @BeforeEach
+    public void init(){
+        gameClient = new GameClient();
+        gameClient.initTransitions(new String[]{"7 7 2 <-> 0 0 6", "7 0 1 <-> 0 7 5"}, 8, 8);
+
+         mapController = new MapController(new String[]{"0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 1 2 0 0 0",
+            "0 0 0 2 1 0 0 0","0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 b", "0 0 0 0 0 0 0 0"}, 
+            gameClient.getTransitions(), 8, 8, 0);
+        
+        mapController2 = new MapController(new String[]{"0 0 b 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 1 2 0 0 0",
+            "0 0 0 2 1 0 0 0","0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0"}, 
+            new Transitions(8,8), 8, 7, 0);
+    }
     
-    MapController mapController2 = new MapController(new String[]{"0 0 b 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0", "0 0 0 1 2 0 0 0",
-        "0 0 0 2 1 0 0 0","0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0"}, 
-        new String[]{}, 8, 7, 0);
     
     @Test 
     public void mapInitTest(){
@@ -36,6 +49,7 @@ public class MapTests {
     @Test 
     public void basicCapturingTest(){
         //checks for basic capturing
+        
         MapController basicTestController = new MapController(
             new String[]{
                 "0 0 0 0 0 0 0 0", 
@@ -47,11 +61,11 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{}, 
+            new Transitions(8,8), 
             8, 8, 0);
 
         basicTestController.updateMap(new Move(2, 4, 0, 1), 
-        new GameState(2,0,0,0,(byte)1));
+        new GameAttributes(2,0,0,0,(byte)1));
 
         assertEquals(basicTestController, new MapController(
             new String[]{
@@ -64,13 +78,16 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{}, 
+            new Transitions(8,8), 
             8, 8, 0));
     }
 
     @Test 
     public void transitionCapturingTest(){
         //checks for basic capturing over a transition
+        GameClient client = new GameClient();
+        client.initTransitions(new String[]{"0 0 6 <-> 7 0 2"}, 8, 8);
+
         MapController transitionTestController = new MapController(
             new String[]{
                 "2 1 0 0 0 0 0 2", 
@@ -82,11 +99,11 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{"0 0 6 <-> 7 0 2"}, 
+            client.getTransitions(), 
             8, 8, 0);
 
             transitionTestController.updateMap(new Move(6, 0, 0, 1), 
-            new GameState(2,0,0,0,(byte)1));
+            new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(transitionTestController, new MapController(
                 new String[]{
@@ -99,7 +116,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                new String[]{"0 0 6 <-> 7 0 2"}, 
+                client.getTransitions(), 
                 8, 8, 0));
     } 
 
@@ -117,14 +134,14 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{}, 
+            new Transitions(8,8), 
             8, 8, 0);
 
             assertTrue(MoveVerifier.isValid(new Move(5, 3, 2, 1), choiceTestController, 
-            new GameState(2,2,0,0,(byte)1)));
+            new GameAttributes(2,2,0,0,(byte)1)));
 
             choiceTestController.updateMap(new Move(5, 3, 2, 1),
-            new GameState(2,0,0,0,(byte)1));
+            new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(choiceTestController, new MapController(
                 new String[]{
@@ -137,7 +154,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                new String[]{}, 
+                new Transitions(8,8), 
                 8, 8, 0));
     } 
 
@@ -155,7 +172,7 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{}, 
+            new Transitions(8,8), 
             8, 8, 0);
 
             
@@ -172,7 +189,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                new String[]{}, 
+                new Transitions(8,8), 
                 8, 8, 0));
     } 
     
@@ -190,11 +207,11 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{}, 
+            new Transitions(8,8), 
             8, 8, 0);
 
             inversionTestController.updateMap(new Move(5, 3, 0, 1), 
-            new GameState(3,0,0,0,(byte)1));
+            new GameAttributes(3,0,0,0,(byte)1));
 
             assertEquals(inversionTestController, new MapController(
                 new String[]{
@@ -207,7 +224,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                new String[]{}, 
+                new Transitions(8,8), 
                 8, 8, 0));
     }
  
@@ -226,11 +243,11 @@ public class MapTests {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 0);
 
             overrideTileController.updateMap(new Move(3, 3, 0, 2), 
-            new GameState(2,1,0,0,(byte)1));
+            new GameAttributes(2,1,0,0,(byte)1));
 
             assertEquals(overrideTileController, new MapController(
                 new String[]{
@@ -243,7 +260,7 @@ public class MapTests {
                     "0 0 0 0 0 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                new String[]{}, 
+                new Transitions(8,8), 
                 8, 8, 0));
     }
  
@@ -262,11 +279,11 @@ public class MapTests {
                 "0 0 0 0 0 0 1 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{}, 
+            new Transitions(8,8), 
             8, 8, 0);                                                                                                                                               
 
             expansionTileController.updateMap(new Move(6, 3, 0, 1), 
-            new GameState(2,0,0,0,(byte)1));
+            new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(expansionTileController, new MapController(
                 new String[]{
@@ -279,7 +296,7 @@ public class MapTests {
                     "0 0 0 0 0 0 1 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                new String[]{}, 
+                new Transitions(8,8), 
                 8, 8, 0));
     }
  
@@ -297,11 +314,11 @@ public class MapTests {
                 "0 0 2 2 1 2 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 1);
 
             bombController.updateMap(new Move(3, 4, 0, 1), 
-            new GameState(2,0,2,1,(byte)2));
+            new GameAttributes(2,0,2,1,(byte)2));
 
             assertEquals(bombController, new MapController(
                 new String[]{
@@ -314,7 +331,7 @@ public class MapTests {
                     "0 0 2 2 1 2 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                new String[]{}, 
+                new Transitions(8,8), 
                 8, 8, 1));
     }
 
@@ -332,11 +349,11 @@ public class MapTests {
                 "0 0 2 2 1 2 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{},
+            new Transitions(8,8),
             8, 8, 3);
 
             bombController.updateMap(new Move(2, 5, 0, 1), 
-            new GameState(2,0,2,3,(byte)2));
+            new GameAttributes(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
                 new String[]{
@@ -349,13 +366,17 @@ public class MapTests {
                     "- - - - - - 0 0", 
                     "- - - - - - 0 0"
                 }, 
-                new String[]{}, 
+                new Transitions(8,8), 
                 8, 8, 3));
     }
     
     @Test
     public void bombTestWithBorderAndTransition(){
         //checks for correct bomb handling
+
+        GameClient client = new GameClient();
+        client.initTransitions(new String[]{"0 7 5 <-> 7 0 1"}, 8, 8);
+
         MapController bombController = new MapController(
             new String[]{
                 "0 0 0 0 0 0 0 0", 
@@ -367,13 +388,11 @@ public class MapTests {
                 "0 0 2 2 1 2 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{
-                "0 7 5 <-> 7 0 1"
-            },
+            client.getTransitions(),
             8, 8, 3);
 
             bombController.updateMap(new Move(2, 5, 0, 1), 
-            new GameState(2,0,2,3,(byte)2));
+            new GameAttributes(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
                 new String[]{
@@ -386,15 +405,17 @@ public class MapTests {
                     "- - - - - - 0 0", 
                     "- - - - - - 0 0"
                 }, 
-                new String[]{
-                    "0 7 5 <-> 7 0 1"
-                }, 
+                client.getTransitions(), 
                 8, 8, 3));
     }
 
     @Test
     public void overlappingTest(){
         //checks for overlapping capturing
+
+        GameClient client = new GameClient();
+        client.initTransitions(new String[]{"6 0 0 <-> 7 4 2"}, 8, 8);
+
         MapController overlappingController = new MapController(
             new String[]{
                 "0 0 0 0 0 0 1 0", 
@@ -406,13 +427,11 @@ public class MapTests {
                 "0 0 0 0 0 1 1 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{
-                "6 0 0 <-> 7 4 2"
-            }, 
+            client.getTransitions(), 
             8, 8, 0);
 
             overlappingController.updateMap(new Move(6, 7, 0, 2), 
-            new GameState(2,0,0,0,(byte)1));
+            new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(overlappingController, new MapController(
                 new String[]{
@@ -425,9 +444,7 @@ public class MapTests {
                     "0 0 0 0 0 2 2 0", 
                     "0 0 0 0 0 0 2 0"
                 }, 
-                new String[]{
-                    "6 0 0 <-> 7 4 2"
-                },  
+                client.getTransitions(),  
                 8, 8, 0));
     }
  
@@ -435,6 +452,11 @@ public class MapTests {
     @Test
     public void allDirectionsCapturingOverlappingTest(){
         //checks for complex capturing in all directions with overlapping
+
+        GameClient client = new GameClient();
+        client.initTransitions(new String[]{"0 3 6 <-> 1 0 0", 
+                "6 0 0 <-> 7 3 2"}, 8, 8);
+
         MapController allDirectionsController = new MapController(
             new String[]{
                 "0 1 0 0 0 0 1 0", 
@@ -446,14 +468,11 @@ public class MapTests {
                 "0 0 0 0 2 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            new String[]{
-                "0 3 6 <-> 1 0 0", 
-                "6 0 0 <-> 7 3 2"
-            }, 
+            client.getTransitions(), 
             8, 8, 0);
 
             allDirectionsController.updateMap(new Move(4, 3, 0, 2), 
-            new GameState(2,0,0,0,(byte)1));
+            new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(allDirectionsController, new MapController(
                 new String[]{
@@ -466,10 +485,7 @@ public class MapTests {
                     "0 0 0 0 2 0 0 0", 
                     "0 0 0 0 0 0 0 0"
                 }, 
-                new String[]{
-                    "0 3 6 <-> 1 0 0", 
-                    "6 0 0 <-> 7 3 2"
-                }, 
+                client.getTransitions(), 
                 8, 8, 0));
     }
 

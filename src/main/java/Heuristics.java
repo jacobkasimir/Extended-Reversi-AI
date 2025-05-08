@@ -110,11 +110,11 @@ public class Heuristics {
         return !(c == '-' || c == '0' || c == 'x' || c == 'i' || c == 'b' || c == 'c');
     }
 
-    public static int numberOfOverrides(GameState state, byte playerId){
+    public static int numberOfOverrides(GameAttributes state, byte playerId){
         return state.getPlayer(playerId).getNumberOverwrites();
     }
 
-    public static int numberOfBombs(GameState state, byte playerId){
+    public static int numberOfBombs(GameAttributes state, byte playerId){
         return state.getPlayer(playerId).getNumberBombs();
     }
 }

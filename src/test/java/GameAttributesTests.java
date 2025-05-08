@@ -1,12 +1,19 @@
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class GameStateTests {
+public class GameAttributesTests {
 
     private MapController map;
 
     @BeforeEach
     public void setup(){
+        GameClient gc = new GameClient();
+        gc.initTransitions(new String[]{
+            "7 7 2 <-> 0 0 6", 
+            "7 0 1 <-> 0 7 5"}, 8, 8);
+
         map = new MapController(
             new String[]{
                 "- - - - - - - -", 
@@ -17,9 +24,7 @@ public class GameStateTests {
                 "0 0 b 0 0 0 0 0", 
                 "0 0 0 c 0 x 0 x", 
                 "0 0 0 b 0 0 0 0"}, 
-            new String[]{
-                "7 7 2 <-> 0 0 6", 
-                "7 0 1 <-> 0 7 5"}, 
+            gc.getTransitions(), 
             8, 
             8, 
             0);
@@ -28,7 +33,7 @@ public class GameStateTests {
     @Test
     public void decrementOverwriteStones(){
 
-        GameState state = new GameState(2, 3, 1, 1, (byte) 1);
+        GameAttributes state = new GameAttributes(2, 3, 1, 1, (byte) 1);
         Move move = new Move(5, 6, 0, 1);
 
         state.updateState(move, map);
@@ -43,7 +48,7 @@ public class GameStateTests {
     @Test
     public void decrementBombs(){
 
-        GameState state = new GameState(2, 3, 1, 2, (byte) 2);
+        GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 2);
         Move move = new Move(4, 4, 0, 2);
 
         assertFalse(state.isPhase1());
@@ -60,7 +65,7 @@ public class GameStateTests {
     @Test
     public void bonusIncrementBombs(){
 
-        GameState state = new GameState(2, 3, 1, 2, (byte) 1);
+        GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 1);
         Move move = new Move(2, 5, 20, 1);
 
         if (!MoveVerifier.isValid(move, map, state)) {
@@ -75,7 +80,7 @@ public class GameStateTests {
     @Test
     public void bonusIncrementOverwrites(){
 
-        GameState state = new GameState(2, 3, 1, 2, (byte) 1);
+        GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 1);
         Move move = new Move(2, 5, 21, 1);
 
         if (!MoveVerifier.isValid(move, map, state)) {

@@ -10,12 +10,12 @@ public class MoveVerifier {
     /**
      * Checks for each individual phase whether all rules regarding a single move are satisfied.
      *
-     * @param state GameState object capturing the current phase, number of players, and the player instances.
+     * @param state GameAttributes object capturing the current phase, number of players, and the player instances.
      * @param move  Represents a move made by a player on the board.
      * @param map   Instance of the Map Controller.
      * @return true if the move is valid.
      */
-    public static boolean isValid(Move move, MapController map, GameState state){
+    public static boolean isValid(Move move, MapController map, GameAttributes state){
 
         if(!(GameRules.insideMap(move, map) &&
         GameRules.validMove(move, state) &&
@@ -35,7 +35,7 @@ public class MoveVerifier {
     }
 
     
-    public static ArrayList<Move> allMovesPhase2(MapController controller, GameState state){
+    public static ArrayList<Move> allMovesPhase2(MapController controller, GameAttributes state){
         ArrayList<Move> res = new ArrayList<>();
         for (int i = 0; i < controller.getWidth(); i++) {
             for (int j = 0; j < controller.getHeight(); j++) {
@@ -93,7 +93,7 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
                         }
                     }
                     //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
-                    else if (tilesPassed > 0 && (c.x() != move.getX() || c.y() != move.getY())) {
+                    else if (tilesPassed > 0 && (c.x() != move.x() || c.y() != move.y())) {
                         res.add(move);
                     }
                     search = false;
@@ -112,7 +112,7 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
     return new ArrayList<Move>(res);
 }
 
-public static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameState state) {
+public static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameAttributes state) {
 
     Set<Move> moves = new LinkedHashSet<>();
     int width   = controller.getWidth();
