@@ -1,10 +1,13 @@
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MoveVerifierTest {
 
@@ -328,6 +331,69 @@ public class MoveVerifierTest {
         assertEquals(new HashSet<>(tester), new HashSet<>(res));
     }
 
+    @Test
+    public void testFailedTimeout01(){
+        GameState gamestateTest =         gameState1 = new GameState(2, 0, 9, 0, (byte) 1);
+            gamestateTest.setOurPlayerId((byte) 1);
+            MapController map3 = new MapController(
+                new String[]{
+                    "1 1 i i i i i i i i i i i i i",
+                    "1 1 c c c c c c c c c c c c i",
+                    "1 1 1 1 1 1 b x b b b b b c i",
+                    "1 1 1 1 1 b b x b b 1 1 1 c i",
+                    "1 1 1 1 2 b 1 x b b 2 1 1 c i",
+                    "1 1 2 2 b b b 1 b 2 b b 1 c i",
+                    "1 2 1 2 b b x x 2 b b b 1 c i",
+                    "2 2 2 2 2 1 1 2 2 2 2 2 2 2 2",
+                    "1 2 2 2 b 2 2 1 x b b b 1 c i",
+                    "1 1 2 b b 2 b 1 b b b 1 b c i",
+                    "1 1 2 2 2 b b 1 b b 2 1 b c i",
+                    "1 1 1 1 1 b b 1 b b 2 2 b c i",
+                    "1 1 1 b b b b 1 b b 2 b b c i",
+                    "1 1 2 c c c c 1 c c c c c c i",
+                    "1 1 2 i i i i i i i i i i i i"}, 
+                new String[]{
+                    "0 0 0 <-> 0 14 4",
+    "1 0 0 <-> 1 14 4",
+    "2 0 0 <-> 2 14 4",
+    "3 0 0 <-> 3 14 4",
+    "4 0 0 <-> 4 14 4",
+    "5 0 0 <-> 5 14 4",
+    "6 0 0 <-> 6 14 4",
+    "7 0 0 <-> 7 14 4",
+    "8 0 0 <-> 8 14 4",
+    "9 0 0 <-> 9 14 4",
+    "10 0 0 <-> 10 14 4",
+    "11 0 0 <-> 11 14 4",
+    "12 0 0 <-> 12 14 4",
+    "13 0 0 <-> 13 14 4",
+    "14 0 0 <-> 14 14 4",
+    "0 0 6 <-> 14 0 2",
+    "0 1 6 <-> 14 1 2",
+    "0 2 6 <-> 14 2 2",
+    "0 3 6 <-> 14 3 2",
+    "0 4 6 <-> 14 4 2",
+    "0 5 6 <-> 14 5 2",
+    "0 6 6 <-> 14 6 2",
+    "0 7 6 <-> 14 7 2",
+    "0 8 6 <-> 14 8 2",
+    "0 9 6 <-> 14 9 2",
+    "0 10 6 <-> 14 10 2",
+    "0 11 6 <-> 14 11 2",
+    "0 12 6 <-> 14 12 2",
+    "0 13 6 <-> 14 13 2",
+    "0 14 6 <-> 14 14 2"
+                },
+                15, 
+                15, 
+                0
+            );
+            map3.resetOurTiles(1);
+            ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest);
+            ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
+            assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
+
+    }
 
     private static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameState state) {
 
