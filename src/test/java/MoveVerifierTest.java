@@ -23,7 +23,7 @@ public class MoveVerifierTest {
         gameClient = new GameClient();
         gameClient.initTransitions(new String[]{
             "7 7 2 <-> 0 0 6", 
-            "7 0 1 <-> 0 7 5"});
+            "7 0 1 <-> 0 7 5"}, 8,8);
         map = new MapController(
             new String[]{
                 "- - - - - - - -", 
@@ -81,7 +81,7 @@ public class MoveVerifierTest {
         gc.initTransitions(new String[]{
             "0 3 6 <-> 5 0 7", 
             "4 7 4 <-> 7 2 3",
-        });
+        }, 8, 8);
         MapController map2 = new MapController(
             new String[]{
                 "0 0 0 0 0 2 0 0", 
@@ -112,7 +112,7 @@ public class MoveVerifierTest {
             "7 7 2 <-> 0 0 6", 
             "7 0 1 <-> 0 7 5",
             "0 0 6 <-> 7 0 2"
-        });
+        }, 8, 8);
 
         MapController map2 = new MapController(
             new String[]{
@@ -144,7 +144,7 @@ public class MoveVerifierTest {
             "7 7 2 <-> 0 0 6", 
             "7 0 1 <-> 0 7 5",
             "0 0 6 <-> 7 0 2"
-        });
+        }, 8, 8);
 
         MapController map2 = new MapController(
             new String[]{
@@ -231,7 +231,7 @@ public class MoveVerifierTest {
         GameClient gc = new GameClient();
         gc.initTransitions( new String[]{
             "7 7 2 <-> 0 0 6", 
-            "7 1 1 <-> 0 7 5"});
+            "7 1 1 <-> 0 7 5"}, 8, 8);
 
         MapController map2 = new MapController(
             new String[]{
@@ -284,7 +284,7 @@ public class MoveVerifierTest {
             "4 4 1 <-> 6 6 5",
             "2 7 3 <-> 2 4 7",
             "7 2 5 <-> 3 2 1"
-        });
+        }, 8, 8);
 
         MapController map3 = new MapController(
             new String[]{
@@ -334,7 +334,7 @@ public class MoveVerifierTest {
 "0 0 6 6 0 0 - - - - - - - - 0 8 8 7 0 0",
 "0 0 0 6 0 0 - - - - - - - - 0 8 0 0 0 0",
 "0 0 0 0 0 0 - - - - - - - - 0 0 0 0 0 0"}, 
-            null,
+            new Transitions(19,19),
             19, 
             19, 
             0
@@ -384,7 +384,7 @@ public class MoveVerifierTest {
 "0 12 6 <-> 14 12 2",
 "0 13 6 <-> 14 13 2",
 "0 14 6 <-> 14 14 2"
-        });
+        }, 15, 15);
         
         GameState gamestateTest = gameState1 = new GameState(2, 0, 9, 0, (byte) 1);
             gamestateTest.setOurPlayerId((byte) 1);

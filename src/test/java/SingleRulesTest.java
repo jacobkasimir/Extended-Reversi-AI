@@ -16,7 +16,7 @@ public class SingleRulesTest {
         gc = new GameClient();
         gc.initTransitions(new String[]{
             "7 7 2 <-> 0 0 6", 
-            "7 0 1 <-> 0 7 5"});
+            "7 0 1 <-> 0 7 5"}, 8, 8);
 
         map = new MapController(
             new String[]{

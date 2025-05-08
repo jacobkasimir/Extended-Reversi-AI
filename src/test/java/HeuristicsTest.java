@@ -19,7 +19,7 @@ public class HeuristicsTest {
                 "1 1 1 1 1 1 1 1", 
                 "2 2 2 2 2 2 2 2" 
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(2, 1, 1, 1, (byte) 1);
@@ -41,7 +41,7 @@ public class HeuristicsTest {
                 "7 7 7 7 7 7 7 7", 
                 "8 8 8 8 8 8 8 8" 
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(8, 1, 1, 1, (byte) 1);
@@ -63,7 +63,7 @@ public class HeuristicsTest {
                 "7 7 - 7 7 7 - -", 
                 "0 0 8 x 8 4 8 -" 
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(8, 1, 1, 1, (byte) 1);
@@ -85,7 +85,7 @@ public class HeuristicsTest {
                 "7 7 7 7 7 7 7 7", 
                 "8 8 8 8 8 8 8 8" 
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(8, 1, 1, 1, (byte) 1);
@@ -107,7 +107,7 @@ public class HeuristicsTest {
                 "1 1 1 1 1 1 1 1", 
                 "2 2 2 2 2 2 2 2" 
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(2, 1, 1, 1, (byte) 1);
@@ -129,7 +129,7 @@ public class HeuristicsTest {
                 "7 7 - 7 7 7 - -", 
                 "0 0 8 x 8 4 8 -" 
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(8, 1, 1, 1, (byte) 1);
@@ -151,7 +151,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         MapController mapOccupied = new MapController(
@@ -165,7 +165,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 1"
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(4, 1, 1, 1, (byte) 1);
@@ -190,7 +190,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "1 0 0 0 0 0 0 1"
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         MapController mapOccupied = new MapController(
@@ -204,7 +204,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "1 0 0 0 0 0 0 1"
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(4, 1, 1, 1, (byte) 1);
@@ -229,7 +229,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 1"
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         MapController mapOccupied = new MapController(
@@ -243,7 +243,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 1"
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(4, 1, 1, 1, (byte) 1);
@@ -268,7 +268,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "3 0 0 0 0 0 0 1"
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         MapController mapOccupied = new MapController(
@@ -282,7 +282,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "3 0 0 0 0 0 0 2"
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         GameState state = new GameState(4, 1, 1, 1, (byte) 1);
@@ -314,7 +314,7 @@ public class HeuristicsTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 0 0 0 0 0"
             }, 
-            null,
+            new Transitions(8,8),
             8, 8, 1);
 
         Heuristics heuristics = new Heuristics(map);
