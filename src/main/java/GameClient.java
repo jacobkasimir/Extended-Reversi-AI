@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GameClient {
     private MapController mapController;
-    private GameState gameState;
+    private GameAttributes gameAttributes;
 
     /**
      * @return The map controller object held by the game client.
@@ -18,8 +18,8 @@ public class GameClient {
     /**
      * @return The game state object held by the game client.
      */
-    public GameState getGameState() {
-        return gameState;
+    public GameAttributes getGameAttributes() {
+        return gameAttributes;
     }
 
     /**
@@ -43,7 +43,7 @@ public class GameClient {
 
         byte gamePhase = 1;
 
-        this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
+        this.gameAttributes = new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
         this.mapController = new MapController(map, transitions, width, height, bombRadius);
 
         System.out.println("Init abgeschlossen");
@@ -54,8 +54,8 @@ public class GameClient {
      * @param move The move to apply.
      */
     public void updateGame(Move move) {
-        this.gameState.updateState(move, this.mapController);
-        this.mapController.updateMap(move, this.gameState);
+        this.gameAttributes.updateState(move, this.mapController);
+        this.mapController.updateMap(move, this.gameAttributes);
     }
 
     /**
@@ -63,7 +63,7 @@ public class GameClient {
      * @param id The player ID.
      */
     public void setOurPlayerId(byte id) {
-        this.gameState.setOurPlayerId(id);
+        this.gameAttributes.setOurPlayerId(id);
         this.mapController.resetOurTiles(id);
         
         System.out.println("Spieler-ID erhalten: " + id);
@@ -74,7 +74,7 @@ public class GameClient {
      * @param playerId ID of the disqualified player.
      */
     public void playerDisqualified(byte playerId) {
-        this.gameState.playerDisqualified(playerId);
+        this.gameAttributes.playerDisqualified(playerId);
     }
 
     /**
@@ -93,8 +93,8 @@ public class GameClient {
      * @return A valid move or a dummy move if none found.
      */
     public Move calculateMove(int timeLimit, int maxDepth) {
-        if(gameState.isPhase1()) return MoveVerifier.allMovesPhase1(mapController, gameState).getFirst();
-        else return MoveVerifier.allMovesPhase2(mapController, gameState).getFirst();
+        if(gameAttributes.isPhase1()) return MoveVerifier.allMovesPhase1(mapController, gameAttributes).getFirst();
+        else return MoveVerifier.allMovesPhase2(mapController, gameAttributes).getFirst();
     }
 
     /**
@@ -105,7 +105,7 @@ public class GameClient {
         Random rand = new Random();
         int x = rand.nextInt(0, mapController.getWidth());
         int y = rand.nextInt(0, mapController.getHeight());
-        return new Move(x, y, 0, gameState.getOurPlayerId());
+        return new Move(x, y, 0, gameAttributes.getOurPlayerId());
     }
 
     /**
@@ -127,7 +127,7 @@ public class GameClient {
      * Ends the current game phase by incrementing the phase.
      */
     public void endPhase() {
-        this.gameState.setGamePhase((byte) 2); 
+        this.gameAttributes.setGamePhase((byte) 2); 
     }
 
     /**

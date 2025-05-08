@@ -1,27 +1,25 @@
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 /**
  * Captures the current state of the game, including information about the number of players,
  * their individual game status, the current game phase, and the ID of the player using the client.
  */
-public class GameState {
-    private final Dictionary<Integer, Player> players = new Hashtable<>();
+public class GameAttributes {
+    private Player[] players;
     private int numberPlayers;
     private boolean phase1;                 //Phase 1: true; Phase 2: false
     private byte ourPlayerId;
 
     /**
-     * Constructor of class GameState.
+     * Constructor of class GameAttributes.
      * @param numberPlayers number of players participating in the game.
      * @param overwrites number of overwrites, each player has initially.
      * @param bombs number of bombs, each player has initially.
      * @param bombRadius the radius of the bomb.
      * @param gamePhase Phase 1 or Phase 2
      */
-    public GameState(int numberPlayers, int overwrites, int bombs, int bombRadius, byte gamePhase){
+    public GameAttributes(int numberPlayers, int overwrites, int bombs, int bombRadius, byte gamePhase){
         this.numberPlayers = numberPlayers;
         this.setGamePhase(gamePhase);
+        this.players = new Player[numberPlayers];
         for (int i = 1; i <= numberPlayers; i++) {
             Player p = new Player(bombs, overwrites, i, true);
             this.setPlayer(p, i);
@@ -34,7 +32,7 @@ public class GameState {
      * @param number
      */
     private void setPlayer(Player p, int number){
-        players.put(number, p);
+        players[number -1] = p;
     }
 
     /**
@@ -75,7 +73,7 @@ public class GameState {
      * @return the Player instance for the specified player number.
      */
     public Player getPlayer(int number){
-        return players.get(number);
+        return players[number -1];
     }
 
     /**
