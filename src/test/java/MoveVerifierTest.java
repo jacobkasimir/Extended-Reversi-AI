@@ -13,10 +13,10 @@ public class MoveVerifierTest {
 
     private MapController map;
     private GameClient gameClient;
-    private GameState gameState1;
-    private GameState gameState1NoOverwrites;
-    private GameState gameState2;
-    private GameState gameState2NoBombs;
+    private GameAttributes gameState1;
+    private GameAttributes gameState1NoOverwrites;
+    private GameAttributes gameState2;
+    private GameAttributes gameState2NoBombs;
 
     @BeforeEach
     public void setUpGame(){
@@ -386,7 +386,7 @@ public class MoveVerifierTest {
 "0 14 6 <-> 14 14 2"
         }, 15, 15);
         
-        GameState gamestateTest = gameState1 = new GameState(2, 0, 9, 0, (byte) 1);
+        GameAttributes gamestateTest = gameState1 = new GameAttributes(2, 0, 9, 0, (byte) 1);
             gamestateTest.setOurPlayerId((byte) 1);
             MapController map3 = new MapController(
                 new String[]{

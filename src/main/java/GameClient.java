@@ -55,7 +55,7 @@ public class GameClient {
         //initializes transitions
         initTransitions(transitions, width, height);
 
-        this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
+        this.gameAttributes = new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
         this.mapController = new MapController(map, this.transitions, width, height, bombRadius);
 
         System.out.println("Init abgeschlossen");

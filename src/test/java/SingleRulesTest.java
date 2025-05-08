@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 public class SingleRulesTest {
     
     private MapController map;
-    private GameState gameState1;
-    private GameState gameState2;
+    private GameAttributes gameState1;
+    private GameAttributes gameState2;
     private GameClient gc;
 
 
