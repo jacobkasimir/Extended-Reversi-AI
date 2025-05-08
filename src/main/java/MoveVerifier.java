@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -53,12 +52,6 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
     Set<Coordinate> ourTiles = controller.getOurTiles();
     Set<Coordinate> expansions = controller.getExpansionTiles();
     int ourId = state.getOurPlayerId();
-    //Alle Expansion stones sind mögliche Züge
-    for(Coordinate e: expansions){
-        if(GameRules.hasOverwrite(state, new Move(e.x(),e.y(),0,ourId))){
-            res.add(new Move(e.x(), e.y(), 0, ourId));
-        }
-    }
 
     //Tiefensuche für jeden unserer Steine in alle Richtungen
     for (Coordinate c : ourTiles) {
@@ -109,6 +102,14 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
             }
         }
     }
+
+    //Alle Expansion stones sind mögliche Züge
+    for(Coordinate e: expansions){
+        if(GameRules.hasOverwrite(state, new Move(e.x(),e.y(),0,ourId))){
+            res.add(new Move(e.x(), e.y(), 0, ourId));
+        }
+    }
+
     return new ArrayList<Move>(res);
 }
 
