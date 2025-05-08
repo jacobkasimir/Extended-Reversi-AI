@@ -204,6 +204,7 @@ public class MapController{
                     else if (helpCompare('i', currentPosition)) search = false;
                     else if (helpCompare('b', currentPosition)) search = false;
                     else if (helpCompare('-', currentPosition)) search = false;
+                    else if (currentPosition.x() == move.getX() && currentPosition.y() == move.getY()) search = false;
                     else {
                         tilesPassed++;
                     }
