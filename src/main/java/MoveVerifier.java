@@ -94,7 +94,7 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameAttri
                         }
                     }
                     //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
-                    else if (tilesPassed > 0 && (c.x() != move.getX() || c.y() != move.getY())) {
+                    else if (tilesPassed > 0 && (c.x() != move.x() || c.y() != move.y())) {
                         res.add(move);
                     }
                     search = false;
