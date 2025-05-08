@@ -47,7 +47,7 @@ public class MoveVerifier {
         return res;
     }
 
-public static ArrayList<Move> allMovesPhase1(MapController controller, GameState state, Set<Coordinate> ourTiles) {
+public static ArrayList<Move> allMovesPhase1(MapController controller, GameAttributes state, Set<Coordinate> ourTiles) {
     Set<Move> res = new LinkedHashSet<>();          // Damit keine Duplikate eingefügt werden (siehe overwrite von equals in Move)
     Set<Coordinate> expansions = controller.getExpansionTiles();
     int ourId = state.getOurPlayerId();

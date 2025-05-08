@@ -13,10 +13,10 @@ public class MoveVerifierTest {
 
     private MapController map;
     private GameClient gameClient;
-    private GameAttributes gameState1;
-    private GameAttributes gameState1NoOverwrites;
-    private GameAttributes gameState2;
-    private GameAttributes gameState2NoBombs;
+    private GameAttributes gameAttributes1;
+    private GameAttributes gameAttributes1NoOverwrites;
+    private GameAttributes gameAttributes2;
+    private GameAttributes gameAttributes2NoBombs;
 
     @BeforeEach
     public void setUpGame(){
@@ -39,17 +39,17 @@ public class MoveVerifierTest {
             8, 
             0);
 
-        gameState1 = new GameAttributes(2, 1, 1, 3, (byte) 1);
-        gameState1NoOverwrites = new GameAttributes(2, 0, 1, 3, (byte) 1);
-        gameState2 = new GameAttributes(2, 1, 1, 3, (byte) 2);
-        gameState2NoBombs = new GameAttributes(2, 0, 0, 3, (byte) 2);
+        gameAttributes1 = new GameAttributes(2, 1, 1, 3, (byte) 1);
+        gameAttributes1NoOverwrites = new GameAttributes(2, 0, 1, 3, (byte) 1);
+        gameAttributes2 = new GameAttributes(2, 1, 1, 3, (byte) 2);
+        gameAttributes2NoBombs = new GameAttributes(2, 0, 0, 3, (byte) 2);
     }
 
     @Test
     public void stoneOnOccupiedField(){
         Move move = new Move(3, 3, 0, 1);
 
-        boolean result = MoveVerifier.isValid(move, map, gameState1);
+        boolean result = MoveVerifier.isValid(move, map, gameAttributes1);
 
         assertFalse(result);
     }
@@ -58,7 +58,7 @@ public class MoveVerifierTest {
     public void stoneHole(){
         Move move = new Move(3, 0, 0, 1);
 
-        boolean result = MoveVerifier.isValid(move, map, gameState1);
+        boolean result = MoveVerifier.isValid(move, map, gameAttributes1);
 
         assertFalse(result);
     }
@@ -68,8 +68,8 @@ public class MoveVerifierTest {
         Move moveTrue = new Move(2, 5, 0, 1);
         Move moveFalse = new Move(2, 2, 0, 1);
 
-        boolean resultTrue = MoveVerifier.isValid(moveTrue, map, gameState1);
-        boolean resultFalse = MoveVerifier.isValid(moveFalse, map, gameState1);
+        boolean resultTrue = MoveVerifier.isValid(moveTrue, map, gameAttributes1);
+        boolean resultFalse = MoveVerifier.isValid(moveFalse, map, gameAttributes1);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse);
@@ -100,7 +100,7 @@ public class MoveVerifierTest {
 
         Move move = new Move(1, 3, 0, 1);
 
-        boolean result = MoveVerifier.isValid(move, map2, gameState1);
+        boolean result = MoveVerifier.isValid(move, map2, gameAttributes1);
 
         assertTrue(result);
     }
@@ -132,7 +132,7 @@ public class MoveVerifierTest {
 
         Move move = new Move(4, 0, 0, 1);
 
-        boolean result = MoveVerifier.isValid(move, map2, gameState1);
+        boolean result = MoveVerifier.isValid(move, map2, gameAttributes1);
 
         assertFalse(result);
     }
@@ -166,9 +166,9 @@ public class MoveVerifierTest {
         Move moveTrue = new Move(6, 3, 0, 1);
         Move moveFalse = new Move(3, 4, 0, 1);
 
-        boolean resultTrue = MoveVerifier.isValid(moveTrue, map2, gameState1);
-        boolean resultFalse1 = MoveVerifier.isValid(moveFalse, map2, gameState1);
-        boolean resultFalse2 = MoveVerifier.isValid(moveTrue, map2, gameState1NoOverwrites);
+        boolean resultTrue = MoveVerifier.isValid(moveTrue, map2, gameAttributes1);
+        boolean resultFalse1 = MoveVerifier.isValid(moveFalse, map2, gameAttributes1);
+        boolean resultFalse2 = MoveVerifier.isValid(moveTrue, map2, gameAttributes1NoOverwrites);
         
         assertTrue(resultTrue);
         assertFalse(resultFalse1);
@@ -180,8 +180,8 @@ public class MoveVerifierTest {
         Move moveTrue = new Move(7, 6, 0, 1);
         Move moveFalse = new Move(7, 6, 0, 1);
 
-        boolean resultTrue = MoveVerifier.isValid(moveTrue, map, gameState1);
-        boolean resultFalse = MoveVerifier.isValid(moveFalse, map, gameState1NoOverwrites);
+        boolean resultTrue = MoveVerifier.isValid(moveTrue, map, gameAttributes1);
+        boolean resultFalse = MoveVerifier.isValid(moveFalse, map, gameAttributes1NoOverwrites);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse);
@@ -192,9 +192,9 @@ public class MoveVerifierTest {
         Move move = new Move(3, 6, 0, 1);
         Move moveFalse = new Move(0, 0, 0, 1);
 
-        boolean resultTrue = MoveVerifier.isValid(move, map, gameState2);
-        boolean resultFalse1 = MoveVerifier.isValid(move, map, gameState2NoBombs);
-        boolean resultFalse2 = MoveVerifier.isValid(moveFalse, map, gameState2);
+        boolean resultTrue = MoveVerifier.isValid(move, map, gameAttributes2);
+        boolean resultFalse1 = MoveVerifier.isValid(move, map, gameAttributes2NoBombs);
+        boolean resultFalse2 = MoveVerifier.isValid(moveFalse, map, gameAttributes2);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse1);
@@ -204,7 +204,7 @@ public class MoveVerifierTest {
     @Test
     public void allMovesPhase1_easy(){
         ArrayList<Move> test = new ArrayList<>();
-        GameAttributes gamestateTest = gameState1;
+        GameAttributes gamestateTest = gameAttributes1;
         gamestateTest.setOurPlayerId((byte) 1);
         map.resetOurTiles(1);
         test.add(new Move(2, 4, 0, 1));
@@ -225,7 +225,7 @@ public class MoveVerifierTest {
     @Test
     public void allMovesPhase1_bonus(){
         ArrayList<Move> test = new ArrayList<>();
-        GameAttributes gamestateTest = gameState1;
+        GameAttributes gamestateTest = gameAttributes1;
         gamestateTest.setOurPlayerId((byte) 1);
 
         GameClient gc = new GameClient();
@@ -269,7 +269,7 @@ public class MoveVerifierTest {
     @Test
     public void allMovesPhase1_random(){
         ArrayList<Move> test = new ArrayList<>();
-        GameAttributes gamestateTest = gameState1;
+        GameAttributes gamestateTest = gameAttributes1;
         gamestateTest.setOurPlayerId((byte) 1);
 
         GameClient gc = new GameClient();
@@ -311,7 +311,7 @@ public class MoveVerifierTest {
     public void allMovesPhase1_ExpansionStones(){
         ArrayList<Move> test = new ArrayList<>();
         ArrayList<Move> tester = new ArrayList<>();
-        GameAttributes gamestateTest =         gameState1 = new GameAttributes(8, 0, 1, 3, (byte) 1);
+        GameAttributes gamestateTest =         gameAttributes1 = new GameAttributes(8, 0, 1, 3, (byte) 1);
         gamestateTest.setOurPlayerId((byte) 5);
         MapController map3 = new MapController(
             new String[]{
@@ -386,7 +386,7 @@ public class MoveVerifierTest {
 "0 14 6 <-> 14 14 2"
         }, 15, 15);
         
-        GameAttributes gamestateTest = gameState1 = new GameAttributes(2, 0, 9, 0, (byte) 1);
+        GameAttributes gamestateTest = gameAttributes1 = new GameAttributes(2, 0, 9, 0, (byte) 1);
             gamestateTest.setOurPlayerId((byte) 1);
             MapController map3 = new MapController(
                 new String[]{

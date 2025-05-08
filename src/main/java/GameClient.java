@@ -127,8 +127,8 @@ public class GameClient {
      * @return A valid move or a dummy move if none found.
      */
     public Move calculateMove(int timeLimit, int maxDepth) {
-        if(gameState.isPhase1()) return MoveVerifier.allMovesPhase1(mapController, gameState,mapController.getOurTiles()).getFirst();
-        else return MoveVerifier.allMovesPhase2(mapController, gameState).getFirst();
+        if(gameAttributes.isPhase1()) return MoveVerifier.allMovesPhase1(mapController, gameAttributes,mapController.getOurTiles()).getFirst();
+        else return MoveVerifier.allMovesPhase2(mapController, gameAttributes).getFirst();
     }
 
     /**
