@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.pdfbox.pdmodel.graphics.state.PDTextState;
+
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
  */
@@ -47,13 +49,12 @@ public class MoveVerifier {
         return res;
     }
 
-public static ArrayList<Move> allMovesPhase1(MapController controller, GameAttributes state, Set<Coordinate> ourTiles) {
+public static ArrayList<Move> allMovesPhase1(MapController controller, GameAttributes state, int playerId) {
     Set<Move> res = new LinkedHashSet<>();          // Damit keine Duplikate eingefügt werden (siehe overwrite von equals in Move)
     Set<Coordinate> expansions = controller.getExpansionTiles();
-    int ourId = state.getOurPlayerId();
 
     //Tiefensuche für jeden unserer Steine in alle Richtungen
-    for (Coordinate c : ourTiles) {
+    for (Coordinate c : state.getPlayer(playerId).getTiles()) {
 
         for (int dir = 0; dir < 8; dir++) {
             Position pos = new Position(c.x(), c.y(), dir);
@@ -63,14 +64,14 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameAttri
                 pos = controller.getNextTile(pos);
                 if (pos == null) break;
 
-                Move move = new Move(pos.x(), pos.y(), 0, ourId);
+                Move move = new Move(pos.x(), pos.y(), 0, playerId);
                 if (!GameRules.isNotHole(move, controller) ||
                     !GameRules.insideMap(move, controller)) {
                     break;
                 }
 
                 char tile = (char)controller.getTile(pos.x(), pos.y());
-                boolean isOwn = tile == ('0' + ourId);
+                boolean isOwn = tile == ('0' + playerId);
 
                 if (GameRules.occupied(move, controller)) {
                     if (//GameRules.isExpansion(controller, move) ||
@@ -83,13 +84,13 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameAttri
                 } else {
                     // Bonusfelder beide Wahlen
                     if (tilesPassed > 0 && tile == 'b') {
-                        res.add(new Move(pos.x(), pos.y(), 20, ourId));
-                        res.add(new Move(pos.x(), pos.y(), 21, ourId));
+                        res.add(new Move(pos.x(), pos.y(), 20, playerId));
+                        res.add(new Move(pos.x(), pos.y(), 21, playerId));
                     }
                     // Choice-Felder alle Player-IDs
                     else if (tilesPassed > 0 && tile == 'c') {
                         for (int j = 1; j <= state.getNumberPlayers(); j++) {
-                            res.add(new Move(pos.x(), pos.y(), j, ourId));
+                            res.add(new Move(pos.x(), pos.y(), j, playerId));
                         }
                     }
                     //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
@@ -104,8 +105,8 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameAttri
 
     //Alle Expansion stones sind mögliche Züge
     for(Coordinate e: expansions){
-        if(GameRules.hasOverwrite(state, new Move(e.x(),e.y(),0,ourId))){
-            res.add(new Move(e.x(), e.y(), 0, ourId));
+        if(GameRules.hasOverwrite(state, new Move(e.x(),e.y(),0,playerId))){
+            res.add(new Move(e.x(), e.y(), 0, playerId));
         }
     }
 

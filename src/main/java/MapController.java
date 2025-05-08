@@ -1,7 +1,5 @@
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 /*
@@ -10,7 +8,6 @@ import java.util.Set;
 public class MapController{
     private final Map map;
     private final Transitions transitions;
-    private Set<Coordinate> ourTiles;
     private Set<Coordinate> expansionTiles;
     private final int bombRadius;
     private final int width;
@@ -20,8 +17,6 @@ public class MapController{
         this.map = new Map(width, height);
         this.transitions = transitions;
 
-        ourTiles = new LinkedHashSet<>();
-
         this.height = height;
         this.width = width;
         this.bombRadius = bombRadius;
@@ -29,7 +24,6 @@ public class MapController{
         initMap(mapString);
 
         initExpansionTiles();
-
     }
     
     
@@ -57,10 +51,6 @@ public class MapController{
     }
 
 
-    
-    public Set<Coordinate> getOurTiles() {
-        return ourTiles;
-    }
     
     /** 
      * Initializes the map by translating the message sent by the server
@@ -194,47 +184,37 @@ public class MapController{
                 }
             }
 
-            // if (getTile(move.getX(), move.getY()) == 'x') {
-            //     setTile(move.getX(), move.getY(), (char) ('0' + move.getPlayer()));
-            // }
-
             //updating captured tiles 
             for (int i = 0; i < 8; i++) {
                 currentPosition = new Position(move.x(), move.y(), i);
                 for (int j = 0; j < directionCounts[i]+1; j++) {
-                    //if(getTile(currentPosition.x(), currentPosition.y()) != 'x'){
-                        //updating ourTiles and expansionTiles
-                        if (getTile(currentPosition.x(), currentPosition.y()) == 'x') {
-                            expansionTiles.remove(new Coordinate(currentPosition.x(), currentPosition.y()));
-                        }
-                        if(move.player() == state.getOurPlayerId()){
-                            ourTiles.add(new Coordinate(currentPosition.x(), currentPosition.y()));
-                        }
-                        setTile(currentPosition.x(), currentPosition.y(), (char)(move.player() + '0'));
-                    //}
+                    if (getTile(currentPosition.x(), currentPosition.y()) == 'x') {
+                        expansionTiles.remove(new Coordinate(currentPosition.x(), currentPosition.y()));
+                    }
+                    //add tile to tiles of the player
+                    state.getPlayer(move.player()).getTiles().add(new Coordinate(currentPosition.x(), currentPosition.y()));
+                    //remove tile from the opponents tiles
+                    if(isPlayer(getTile(currentPosition.x(), currentPosition.y()))){
+                        state.getPlayer((int)(getTile(currentPosition.x(), currentPosition.y()) - '0')).getTiles().remove(new Coordinate(currentPosition.x(), currentPosition.y()));
+                    }
+                    //update the map
+                    setTile(currentPosition.x(), currentPosition.y(), (char)(move.player() + '0'));
                     currentPosition = getNextTile(currentPosition);
                 }
             }
-            if(move.player() == state.getOurPlayerId()){
-                ourTiles.add(new Coordinate(move.x(), move.y()));
-            }
+            state.getPlayer(move.player()).getTiles().add(new Coordinate(move.x(), move.y()));
             
 
             if(isChoice) {
                 choiceHandling(move);  //update if choice tile
-                resetOurTiles(state.getOurPlayerId());
+                resetTiles(move.player(), state);
+                resetTiles(move.special(), state);
             } else if(isInversion) {
                 inversionHandling(state);   //update if inversion tile
-                resetOurTiles(state.getOurPlayerId());
-            } else if(move.player() != state.getOurPlayerId()){
-                List<Coordinate> toRemove = new ArrayList<>();
-                for(Coordinate c : ourTiles){
-                    if(map.getTile(c.x(), c.y()) != state.getOurPlayerId() +'0'){
-                        toRemove.add(c);
-                    }
+                for (int player = 1; player < state.getNumberPlayers()+1; player++) {
+                    resetTiles(player, state);
                 }
-                ourTiles.removeAll(toRemove);
-            }
+            } 
         }
         else {
             bombing(move.x(), move.y(), bombRadius);  //handles bombing (phase 2)
@@ -280,12 +260,12 @@ public class MapController{
      * @param ourPlayerId The Id we are given
      */
     //resets ourTiles
-    public void resetOurTiles(int ourPlayerId){
-        ourTiles.clear();
+    public void resetTiles(int playerId, GameAttributes attributes){
+        attributes.getPlayer(playerId).getTiles().clear();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if(map.getTile(i, j) == ourPlayerId + '0'){
-                    ourTiles.add(new Coordinate(i, j));
+                if(map.getTile(i, j) == playerId + '0'){
+                    attributes.getPlayer(playerId).getTiles().add(new Coordinate(i, j));
                 }
             }
         }

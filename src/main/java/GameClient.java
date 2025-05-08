@@ -98,7 +98,7 @@ public class GameClient {
      */
     public void setOurPlayerId(byte id) {
         this.gameAttributes.setOurPlayerId(id);
-        this.mapController.resetOurTiles(id);
+        this.mapController.resetTiles(id, gameAttributes);
         
         System.out.println("Spieler-ID erhalten: " + id);
     }
@@ -127,7 +127,7 @@ public class GameClient {
      * @return A valid move or a dummy move if none found.
      */
     public Move calculateMove(int timeLimit, int maxDepth) {
-        if(gameAttributes.isPhase1()) return MoveVerifier.allMovesPhase1(mapController, gameAttributes,mapController.getOurTiles()).getFirst();
+        if(gameAttributes.isPhase1()) return MoveVerifier.allMovesPhase1(mapController, gameAttributes, gameAttributes.getOurPlayerId()).getFirst();
         else return MoveVerifier.allMovesPhase2(mapController, gameAttributes).getFirst();
     }
 

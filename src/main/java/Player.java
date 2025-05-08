@@ -1,3 +1,4 @@
+import java.util.LinkedHashSet;
 import java.util.Set;
 /**
  * Represents a player in the game, tracking their available bombs,
@@ -23,6 +24,7 @@ public class Player {
         this.numberOverwrites = overwrites;
         this.playerNumber = number;
         this.inGame = in;
+        this.tiles = new LinkedHashSet<>();
     }
 
     /**

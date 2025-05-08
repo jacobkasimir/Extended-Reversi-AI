@@ -206,7 +206,7 @@ public class MoveVerifierTest {
         ArrayList<Move> test = new ArrayList<>();
         GameAttributes gamestateTest = gameAttributes1;
         gamestateTest.setOurPlayerId((byte) 1);
-        map.resetOurTiles(1);
+        map.resetTiles(1, gamestateTest);
         test.add(new Move(2, 4, 0, 1));
         test.add(new Move(2, 5, 0, 1));
         test.add(new Move(3, 4, 0, 1));
@@ -216,7 +216,7 @@ public class MoveVerifierTest {
         test.add(new Move(4, 2, 0, 1));
         test.add(new Move(5,6,0,1));
         test.add(new Move(7,6,0,1));
-        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map, gamestateTest, map.getOurTiles());
+        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map, gamestateTest, gamestateTest.getOurPlayerId());
         ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map, gamestateTest);
         assertEquals(new HashSet<>(test), new HashSet<>(res));
         assertEquals(new HashSet<>(test), new HashSet<>(brutforce));
@@ -248,7 +248,7 @@ public class MoveVerifierTest {
             8, 
             0
         );
-        map2.resetOurTiles(1);
+        map2.resetTiles(gamestateTest.getOurPlayerId(), gamestateTest);
         test.add(new Move(2, 4, 0, 1));
         test.add(new Move(2, 5, 0, 1));
         test.add(new Move(3, 4, 0, 1));
@@ -260,7 +260,7 @@ public class MoveVerifierTest {
         test.add(new Move(5,6,0,1));
         test.add(new Move(7,6,0,1));
         test.add(new Move(0,7,0,1));
-        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map2, gamestateTest, map2.getOurTiles());
+        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map2, gamestateTest, gamestateTest.getOurPlayerId());
         ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map2, gamestateTest);
         assertEquals(new HashSet<>(test), new HashSet<>(res));
         assertEquals(new HashSet<>(test), new HashSet<>(brutforce));
@@ -301,8 +301,8 @@ public class MoveVerifierTest {
             8, 
             0
         );
-        map3.resetOurTiles(1);
-        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest, map3.getOurTiles());
+        map3.resetTiles(gamestateTest.getOurPlayerId(), gamestateTest);;
+        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest, gamestateTest.getOurPlayerId());
         ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
         assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
     }
@@ -339,12 +339,12 @@ public class MoveVerifierTest {
             19, 
             0
         );
-        map3.resetOurTiles(5);
+        map3.resetTiles(gamestateTest.getOurPlayerId(), gamestateTest);;
         tester.add(new Move(11, 7, 0, 5));
         tester.add(new Move(11, 8, 0, 5));
         tester.add(new Move(11, 9, 0, 5));
         tester.add(new Move(11, 10, 0, 5));
-        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest, map3.getOurTiles());
+        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest, gamestateTest.getOurPlayerId());
         ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
         assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
         assertEquals(new HashSet<>(tester), new HashSet<>(res));
@@ -410,8 +410,8 @@ public class MoveVerifierTest {
                 15, 
                 0
             );
-            map3.resetOurTiles(1);
-            ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest, map3.getOurTiles());
+            map3.resetTiles(gamestateTest.getOurPlayerId(), gamestateTest);
+            ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest, gamestateTest.getOurPlayerId());
             ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
             assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
 

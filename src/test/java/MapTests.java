@@ -503,19 +503,19 @@ public class MapTests {
         coordinates.add(new Coordinate(2, 1));
 
         
-        assertEquals(game.getMapController().getOurTiles(), coordinates);
+        assertEquals(game.getGameAttributes().getPlayer(game.getGameAttributes().getOurPlayerId()).getTiles(), coordinates);
 
         game.updateGame(new Move(0,2, 0, 1));
         coordinates.remove(new Coordinate(1, 2));
 
-        assertEquals(game.getMapController().getOurTiles(), coordinates);
+        assertEquals(game.getGameAttributes().getPlayer(game.getGameAttributes().getOurPlayerId()).getTiles(), coordinates);
 
 
         game.updateGame(new Move(0,3, 0, 2));
         coordinates.add(new Coordinate(1, 2));
         coordinates.add(new Coordinate(0, 3));
         
-        assertEquals(game.getMapController().getOurTiles(), coordinates);
+        assertEquals(game.getGameAttributes().getPlayer(game.getGameAttributes().getOurPlayerId()).getTiles(), coordinates);
     }
 
     @Test
@@ -534,7 +534,7 @@ public class MapTests {
         
 
         
-        assertEquals(game.getMapController().getOurTiles(), coordinates);
+        assertEquals(game.getGameAttributes().getPlayer(game.getGameAttributes().getOurPlayerId()).getTiles(), coordinates);
 
         game.updateGame(new Move(2,3, 0, 2));
         coordinates.add(new Coordinate(2, 2));
@@ -544,14 +544,14 @@ public class MapTests {
         coordinates.add(new Coordinate(1, 2));
 
         coordinates.add(new Coordinate(2, 3));
-        assertEquals(game.getMapController().getOurTiles(), coordinates);
+        assertEquals(game.getGameAttributes().getPlayer(game.getGameAttributes().getOurPlayerId()).getTiles(), coordinates);
 
 
         game.updateGame(new Move(3,2, 0, 1));
         coordinates.remove(new Coordinate(1, 2));
         coordinates.remove(new Coordinate(2, 2));
         
-        assertEquals(game.getMapController().getOurTiles(), coordinates);
+        assertEquals(game.getGameAttributes().getPlayer(game.getGameAttributes().getOurPlayerId()).getTiles(), coordinates);
     }
 }
 
