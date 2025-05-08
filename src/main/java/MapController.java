@@ -277,7 +277,7 @@ public class MapController{
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if(getTile(i, j) == ((char)(move.player() + '0'))) setTile(i, j, ((char)(move.special() + '0')));
-                else if(getTile(i, j) == ((char)(move.special() + '0'))) setTile(i, j, ((char)(move.special() + '0')));
+                else if(getTile(i, j) == ((char)(move.special() + '0'))) setTile(i, j, ((char)(move.player() + '0')));
             }
         }
     }
