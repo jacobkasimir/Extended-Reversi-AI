@@ -1,5 +1,7 @@
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GameStateTests {
 
@@ -7,6 +9,11 @@ public class GameStateTests {
 
     @BeforeEach
     public void setup(){
+        GameClient gc = new GameClient();
+        gc.initTransitions(new String[]{
+            "7 7 2 <-> 0 0 6", 
+            "7 0 1 <-> 0 7 5"});
+
         map = new MapController(
             new String[]{
                 "- - - - - - - -", 
@@ -17,9 +24,7 @@ public class GameStateTests {
                 "0 0 b 0 0 0 0 0", 
                 "0 0 0 c 0 x 0 x", 
                 "0 0 0 b 0 0 0 0"}, 
-            new String[]{
-                "7 7 2 <-> 0 0 6", 
-                "7 0 1 <-> 0 7 5"}, 
+            gc.getTransitions(), 
             8, 
             8, 
             0);
