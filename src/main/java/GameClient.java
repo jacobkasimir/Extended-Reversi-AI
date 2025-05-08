@@ -63,7 +63,7 @@ public class GameClient {
 
     /** 
      * Initializes the transitions by translating the message sent by the server
-     * @param mapString The data sent by the server
+     * @param transitionsString The data sent by the server
      * @param width The width of the map
      * @param height The height of the map
      */
