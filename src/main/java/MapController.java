@@ -204,6 +204,7 @@ public class MapController{
                     else if (helpCompare('i', currentPosition)) search = false;
                     else if (helpCompare('b', currentPosition)) search = false;
                     else if (helpCompare('-', currentPosition)) search = false;
+                    else if (currentPosition.x() == move.getX() && currentPosition.y() == move.getY()) search = false;
                     else {
                         tilesPassed++;
                     }
@@ -219,14 +220,14 @@ public class MapController{
                 currentPosition = new Position(move.getX(), move.getY(), i);
                 for (int j = 0; j < directionCounts[i]+1; j++) {
                     //if(getTile(currentPosition.x(), currentPosition.y()) != 'x'){
-                        setTile(currentPosition.x(), currentPosition.y(), (char)(move.getPlayer() + '0'));
                         //updating ourTiles and expansionTiles
-                        if (getTile(move.getX(), move.getY()) == 'x') {
+                        if (getTile(currentPosition.x(), currentPosition.y()) == 'x') {
                             expansionTiles.remove(new Coordinate(currentPosition.x(), currentPosition.y()));
                         }
                         if(move.getPlayer() == state.getOurPlayerId()){
                             ourTiles.add(new Coordinate(currentPosition.x(), currentPosition.y()));
                         }
+                        setTile(currentPosition.x(), currentPosition.y(), (char)(move.getPlayer() + '0'));
                     //}
                     currentPosition = getNextTile(currentPosition);
                 }

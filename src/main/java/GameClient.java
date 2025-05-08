@@ -93,7 +93,7 @@ public class GameClient {
      * @return A valid move or a dummy move if none found.
      */
     public Move calculateMove(int timeLimit, int maxDepth) {
-        if(gameState.isPhase1()) return MoveVerifier.calculateAllMoves_Bruteforce(mapController, gameState).getFirst();
+        if(gameState.isPhase1()) return MoveVerifier.allMovesPhase1(mapController, gameState).getFirst();
         else return MoveVerifier.allMovesPhase2(mapController, gameState).getFirst();
     }
 

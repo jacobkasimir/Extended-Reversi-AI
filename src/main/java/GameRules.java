@@ -125,7 +125,7 @@ public class GameRules {
                 else if (helpCompare('i', currentPosition, map)) search = false;
                 else if (helpCompare('b', currentPosition, map)) search = false;
                 else if (helpCompare('-', currentPosition, map)) search = false;
-                //else if (currentPosition.x() == move.getX() || currentPosition.y() == move.getY()) search = false; //added to fix bug self capturing
+                else if (currentPosition.x() == move.getX() && currentPosition.y() == move.getY()) search = false;
                 else {
                     tilesPassed++;
                 }
