@@ -115,7 +115,7 @@ public class GameRules {
                 if (currentPosition == null) break;
                 if(String.valueOf(move.getPlayer()).equals(String.valueOf(map.getTile(currentPosition.x(), currentPosition.y())))){
                     if(tilesPassed > 0) {
-                        if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()) return true;
+                        if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()) return true; //diese Abfrage muss eher und vor dem tile ckeck bzw. jetzt kann weg vllt
                         search = false;
                     }
                     else search = false;
