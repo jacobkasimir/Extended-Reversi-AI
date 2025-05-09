@@ -410,7 +410,7 @@ public class MapTests {
             },
             8, 8, 3);
 
-            bombController.updateMap(new Move(2, 5, 0, 1), 
+            bombController.updateMap(new Move(4, 4, 0, 1), 
             new GameState(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
