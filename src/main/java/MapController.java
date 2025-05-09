@@ -254,16 +254,32 @@ public class MapController{
             }
         }
         else {
-            bombing(move.getX(), move.getY(), bombRadius);  //handles bombing (phase 2)
+            //handles bombing (phase 2)
+            bombing(move.getX(), move.getY(), bombRadius);  
+            resolveBombing(move.getX(), move.getY(), bombRadius);
         }
     }
 
     //handles bombing
     private void bombing(int x, int y, int radius){
         
-        //if(getTile(x, y) == '-') return; //added to fix bug (not allowed to pass holes)
+        if(getTile(x, y) == '-') return; //added to fix bug (not allowed to pass holes)
 
         if(GameRules.insideMap(new Move(x, y, 0, 0), this)){
+            setTile(x, y, '#');
+        }
+
+        if(radius > 0){ 
+            for (int i = 0; i < 8; i++) {
+                Position newPosition = getNextTile(new Position(x, y, i));
+                if(newPosition != null) bombing(newPosition.x(), newPosition.y(), radius-1);
+            }
+        }
+    }
+
+    //resolves '#' to '-'
+    private void resolveBombing(int x, int y, int radius){
+        if(GameRules.insideMap(new Move(x, y, 0, 0), this) && getTile(x, y) == '#'){
             setTile(x, y, '-');
         }
 
