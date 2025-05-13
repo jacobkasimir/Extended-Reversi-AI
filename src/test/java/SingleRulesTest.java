@@ -1,15 +1,23 @@
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SingleRulesTest {
     
     private MapController map;
-    private GameState gameState1;
-    private GameState gameState2;
+    private GameAttributes gameAttributes1;
+    private GameAttributes gameAttributes2;
+    private GameClient gc;
 
 
     @BeforeEach
     public void setUpMap(){
+        gc = new GameClient();
+        gc.initTransitions(new String[]{
+            "7 7 2 <-> 0 0 6", 
+            "7 0 1 <-> 0 7 5"}, 8, 8);
+
         map = new MapController(
             new String[]{
                 "- - - - - - - -", 
@@ -20,16 +28,14 @@ public class SingleRulesTest {
                 "0 0 0 0 0 0 0 0", 
                 "0 0 0 c 0 x 0 x", 
                 "0 0 0 b 0 0 0 0"}, 
-            new String[]{
-                "7 7 2 <-> 0 0 6", 
-                "7 0 1 <-> 0 7 5"}, 
+            gc.getTransitions(), 
             8, 
             8, 
             0);
 
-        gameState1 = new GameState(2, 1, 1, 3, (byte) 1);
-        gameState2 = new GameState(2, 0, 0, 3, (byte) 1);
-        gameState2.playerDisqualified((byte) 2);
+        gameAttributes1 = new GameAttributes(2, 1, 1, 3, (byte) 1);
+        gameAttributes2 = new GameAttributes(2, 0, 0, 3, (byte) 1);
+        gameAttributes2.playerDisqualified((byte) 2);
     }
 
     @Test
@@ -84,8 +90,8 @@ public class SingleRulesTest {
     public void hasBombTest(){
         Move move = new Move(4, 4, 0, 1);
 
-        boolean resultTrue = GameRules.hasBomb(gameState1, move);
-        boolean resultFalse = GameRules.hasBomb(gameState2, move);
+        boolean resultTrue = GameRules.hasBomb(gameAttributes1, move);
+        boolean resultFalse = GameRules.hasBomb(gameAttributes2, move);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse);
@@ -95,8 +101,8 @@ public class SingleRulesTest {
     public void hasOverwriteTest(){
         Move move = new Move(4, 4, 0, 1);
 
-        boolean resultTrue = GameRules.hasOverwrite(gameState1, move);
-        boolean resultFalse = GameRules.hasOverwrite(gameState2, move);
+        boolean resultTrue = GameRules.hasOverwrite(gameAttributes1, move);
+        boolean resultFalse = GameRules.hasOverwrite(gameAttributes2, move);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse);
@@ -110,11 +116,11 @@ public class SingleRulesTest {
         Move moveFalse3 = new Move(1, 1, 0, 0);
         Move moveFalse4 = new Move(1, 1, 0, 10);
 
-        boolean resultTrue = GameRules.validMove(moveTrue, gameState2);
-        boolean resultFalse1 = GameRules.validMove(moveFalse1, gameState2);
-        boolean resultFalse2 = GameRules.validMove(moveFalse2, gameState2);
-        boolean resultFalse3 = GameRules.validMove(moveFalse3, gameState2);
-        boolean resultFalse4 = GameRules.validMove(moveFalse4, gameState2);
+        boolean resultTrue = GameRules.validMove(moveTrue, gameAttributes2);
+        boolean resultFalse1 = GameRules.validMove(moveFalse1, gameAttributes2);
+        boolean resultFalse2 = GameRules.validMove(moveFalse2, gameAttributes2);
+        boolean resultFalse3 = GameRules.validMove(moveFalse3, gameAttributes2);
+        boolean resultFalse4 = GameRules.validMove(moveFalse4, gameAttributes2);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse1);
@@ -148,10 +154,10 @@ public class SingleRulesTest {
         Move moveFalse1 = new Move(3, 7, 0, 1);
         Move moveFalse2 = new Move(4, 5, 20, 1);
 
-        boolean resultTrue1 = GameRules.checkSpecial(gameState1, moveTrue1, map);
-        boolean resultTrue2 = GameRules.checkSpecial(gameState1, moveTrue2, map);
-        boolean resultFalse1 = GameRules.checkSpecial(gameState1, moveFalse1, map);
-        boolean resultFalse2 = GameRules.checkSpecial(gameState1, moveFalse2, map);
+        boolean resultTrue1 = GameRules.checkSpecial(gameAttributes1, moveTrue1, map);
+        boolean resultTrue2 = GameRules.checkSpecial(gameAttributes1, moveTrue2, map);
+        boolean resultFalse1 = GameRules.checkSpecial(gameAttributes1, moveFalse1, map);
+        boolean resultFalse2 = GameRules.checkSpecial(gameAttributes1, moveFalse2, map);
 
         assertTrue(resultTrue1);
         assertTrue(resultTrue2);
@@ -166,10 +172,10 @@ public class SingleRulesTest {
         Move moveFalse1 = new Move(3, 6, 0, 1);
         Move moveFalse2 = new Move(2, 3, 1, 1);
 
-        boolean resultTrue1 = GameRules.checkSpecial(gameState1, moveTrue1, map);
-        boolean resultTrue2 = GameRules.checkSpecial(gameState1, moveTrue2, map);
-        boolean resultFalse1 = GameRules.checkSpecial(gameState1, moveFalse1, map);
-        boolean resultFalse2 = GameRules.checkSpecial(gameState1, moveFalse2, map);
+        boolean resultTrue1 = GameRules.checkSpecial(gameAttributes1, moveTrue1, map);
+        boolean resultTrue2 = GameRules.checkSpecial(gameAttributes1, moveTrue2, map);
+        boolean resultFalse1 = GameRules.checkSpecial(gameAttributes1, moveFalse1, map);
+        boolean resultFalse2 = GameRules.checkSpecial(gameAttributes1, moveFalse2, map);
 
         assertTrue(resultTrue1);
         assertTrue(resultTrue2);

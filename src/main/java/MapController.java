@@ -1,7 +1,5 @@
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 /*
@@ -10,27 +8,22 @@ import java.util.Set;
 public class MapController{
     private final Map map;
     private final Transitions transitions;
-    private Set<Coordinate> ourTiles;
     private Set<Coordinate> expansionTiles;
     private final int bombRadius;
     private final int width;
     private final int height;
 
-    public MapController(String[] mapString, String[] transitionsString, int width, int height, int bombRadius){
+    public MapController(String[] mapString, Transitions transitions, int width, int height, int bombRadius){
         this.map = new Map(width, height);
-        this.transitions = new Transitions(width, height);
-
-        ourTiles = new LinkedHashSet<>();
+        this.transitions = transitions;
 
         this.height = height;
         this.width = width;
         this.bombRadius = bombRadius;
 
         initMap(mapString);
-        initTransitions(transitionsString);
 
         initExpansionTiles();
-
     }
     
     
@@ -59,10 +52,6 @@ public class MapController{
 
 
     
-    public Set<Coordinate> getOurTiles() {
-        return ourTiles;
-    }
-    
     /** 
      * Initializes the map by translating the message sent by the server
      * @param mapString The data sent by the server
@@ -84,23 +73,7 @@ public class MapController{
     }
 
     
-    /** 
-     * Initializes the transitions by translating the message sent by the server
-     * @param mapString The data sent by the server
-     */
-    private void initTransitions(String[] transitionsString){
-        String[][] newTransition = new String[transitionsString.length][7]; //array that holds all transitions as Strings
-        for (int i = 0; i < transitionsString.length; i++) {
-            newTransition[i] = transitionsString[i].split(" ");
-        }
-
-        for (String[] newTransition1 : newTransition) {
-            setTransition(Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), 
-                Integer.parseInt(newTransition1[2]), Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]));
-            setTransition(Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]), 
-                Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), Integer.parseInt(newTransition1[2]));
-        }
-    }
+    
 
     private void initExpansionTiles(){
         expansionTiles = new LinkedHashSet<>();
@@ -165,33 +138,33 @@ public class MapController{
     /** 
      * Updates the map for the given move
      * @param move The played move
-     * @param state The associated GameState
+     * @param state The associated GameAttributes
      */
-    public void updateMap(Move move, GameState state){
+    public void updateMap(Move move, GameAttributes state){
         if(state.isPhase1()){
             // removing expansion Tiles out of expansionTiles
-            if (getTile(move.getX(), move.getY()) == 'x') {
-                expansionTiles.remove(new Coordinate(move.getX(), move.getY()));
+            if (getTile(move.x(), move.y()) == 'x') {
+                expansionTiles.remove(new Coordinate(move.x(), move.y()));
             }
 
             int[] directionCounts = new int[8]; //holds the number of tiles for every direction that are captured by the move
             boolean search;
-            boolean isChoice = getTile(move.getX(), move.getY()) == 'c';    //Is the move placed on a choice tile?
-            boolean isInversion = getTile(move.getX(), move.getY()) == 'i'; //Is the move placed on an inversion tile?
+            boolean isChoice = getTile(move.x(), move.y()) == 'c';    //Is the move placed on a choice tile?
+            boolean isInversion = getTile(move.x(), move.y()) == 'i'; //Is the move placed on an inversion tile?
             int tilesPassed;    //holds the number of captured tiles for a specific direction
             Position currentPosition; 
 
             for (int i = 0; i < 8; i++) { //search in every direction
-                currentPosition = new Position(move.getX(), move.getY(), i);
+                currentPosition = new Position(move.x(), move.y(), i);
                 search = true;
                 tilesPassed = 0;
                 while(search){  //counting the number of captured tiles in a specific direction (i)
                     currentPosition = getNextTile(currentPosition); //updates the currentPosition for direction i
                     if(currentPosition == null) break;  //checks if nextTile is out of map
-                    if(String.valueOf(move.getPlayer()).equals(String.valueOf(this.getTile(currentPosition.x(), currentPosition.y())))){
+                    if(String.valueOf(move.player()).equals(String.valueOf(this.getTile(currentPosition.x(), currentPosition.y())))){
                         //case that the currentPosition is occupied by a tile owned by the player
                         if(tilesPassed > 0) {
-                            if (currentPosition.x() != move.getX() || currentPosition.y() != move.getY()){ //check that found tile is not the starting tile
+                            if (currentPosition.x() != move.x() || currentPosition.y() != move.y()){ //check that found tile is not the starting tile
                                 directionCounts[i] = tilesPassed;
                             }
                             search = false;
@@ -204,54 +177,44 @@ public class MapController{
                     else if (helpCompare('i', currentPosition)) search = false;
                     else if (helpCompare('b', currentPosition)) search = false;
                     else if (helpCompare('-', currentPosition)) search = false;
-                    else if (currentPosition.x() == move.getX() && currentPosition.y() == move.getY()) search = false;
+                    else if (currentPosition.x() == move.x() && currentPosition.y() == move.y()) search = false;
                     else {
                         tilesPassed++;
                     }
                 }
             }
 
-            // if (getTile(move.getX(), move.getY()) == 'x') {
-            //     setTile(move.getX(), move.getY(), (char) ('0' + move.getPlayer()));
-            // }
-
             //updating captured tiles 
             for (int i = 0; i < 8; i++) {
-                currentPosition = new Position(move.getX(), move.getY(), i);
+                currentPosition = new Position(move.x(), move.y(), i);
                 for (int j = 0; j < directionCounts[i]+1; j++) {
-                    //if(getTile(currentPosition.x(), currentPosition.y()) != 'x'){
-                        //updating ourTiles and expansionTiles
-                        if (getTile(currentPosition.x(), currentPosition.y()) == 'x') {
-                            expansionTiles.remove(new Coordinate(currentPosition.x(), currentPosition.y()));
-                        }
-                        if(move.getPlayer() == state.getOurPlayerId()){
-                            ourTiles.add(new Coordinate(currentPosition.x(), currentPosition.y()));
-                        }
-                        setTile(currentPosition.x(), currentPosition.y(), (char)(move.getPlayer() + '0'));
-                    //}
+                    if (getTile(currentPosition.x(), currentPosition.y()) == 'x') {
+                        expansionTiles.remove(new Coordinate(currentPosition.x(), currentPosition.y()));
+                    }
+                    //add tile to tiles of the player
+                    state.getPlayer(move.player()).getTiles().add(new Coordinate(currentPosition.x(), currentPosition.y()));
+                    //remove tile from the opponents tiles
+                    if(isPlayer(getTile(currentPosition.x(), currentPosition.y()))){
+                        state.getPlayer((int)(getTile(currentPosition.x(), currentPosition.y()) - '0')).getTiles().remove(new Coordinate(currentPosition.x(), currentPosition.y()));
+                    }
+                    //update the map
+                    setTile(currentPosition.x(), currentPosition.y(), (char)(move.player() + '0'));
                     currentPosition = getNextTile(currentPosition);
                 }
             }
-            if(move.getPlayer() == state.getOurPlayerId()){
-                ourTiles.add(new Coordinate(move.getX(), move.getY()));
-            }
+            state.getPlayer(move.player()).getTiles().add(new Coordinate(move.x(), move.y()));
             
 
             if(isChoice) {
                 choiceHandling(move);  //update if choice tile
-                resetOurTiles(state.getOurPlayerId());
+                resetTiles(move.player(), state);
+                resetTiles(move.special(), state);
             } else if(isInversion) {
                 inversionHandling(state);   //update if inversion tile
-                resetOurTiles(state.getOurPlayerId());
-            } else if(move.getPlayer() != state.getOurPlayerId()){
-                List<Coordinate> toRemove = new ArrayList<>();
-                for(Coordinate c : ourTiles){
-                    if(map.getTile(c.x(), c.y()) != state.getOurPlayerId() +'0'){
-                        toRemove.add(c);
-                    }
+                for (int player = 1; player < state.getNumberPlayers()+1; player++) {
+                    resetTiles(player, state);
                 }
-                ourTiles.removeAll(toRemove);
-            }
+            } 
         }
         else {
             //handles bombing (phase 2)
@@ -292,14 +255,14 @@ public class MapController{
     public void choiceHandling(Move move){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if(getTile(i, j) == ((char)(move.getPlayer() + '0'))) setTile(i, j, ((char)(move.getSpecial() + '0')));
-                else if(getTile(i, j) == ((char)(move.getSpecial() + '0'))) setTile(i, j, ((char)(move.getPlayer() + '0')));
+                if(getTile(i, j) == ((char)(move.player() + '0'))) setTile(i, j, ((char)(move.special() + '0')));
+                else if(getTile(i, j) == ((char)(move.special() + '0'))) setTile(i, j, ((char)(move.player() + '0')));
             }
         }
     }
 
     //handles inversion tiles (switching the tiles)
-    private void inversionHandling(GameState state){
+    private void inversionHandling(GameAttributes state){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if(isPlayer(getTile(i, j))) setTile(i, j, (char)(((getTile(i, j)-'0') % state.getNumberPlayers()+1)+'0'));
@@ -310,15 +273,16 @@ public class MapController{
     
     /** 
      * resets the ArrayList that holds alll the Positions of our occupied tiles
-     * @param ourPlayerId The Id we are given
+     * @param playerId The Id we are given
+     * @param attributes The gameAttributes
      */
     //resets ourTiles
-    public void resetOurTiles(int ourPlayerId){
-        ourTiles.clear();
+    public void resetTiles(int playerId, GameAttributes attributes){
+        attributes.getPlayer(playerId).getTiles().clear();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if(map.getTile(i, j) == ourPlayerId + '0'){
-                    ourTiles.add(new Coordinate(i, j));
+                if(map.getTile(i, j) == playerId + '0'){
+                    attributes.getPlayer(playerId).getTiles().add(new Coordinate(i, j));
                 }
             }
         }

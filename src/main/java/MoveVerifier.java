@@ -10,12 +10,12 @@ public class MoveVerifier {
     /**
      * Checks for each individual phase whether all rules regarding a single move are satisfied.
      *
-     * @param state GameState object capturing the current phase, number of players, and the player instances.
+     * @param state GameAttributes object capturing the current phase, number of players, and the player instances.
      * @param move  Represents a move made by a player on the board.
      * @param map   Instance of the Map Controller.
      * @return true if the move is valid.
      */
-    public static boolean isValid(Move move, MapController map, GameState state){
+    public static boolean isValid(Move move, MapController map, GameAttributes state){
 
         if(!(GameRules.insideMap(move, map) &&
         GameRules.validMove(move, state) &&
@@ -35,7 +35,7 @@ public class MoveVerifier {
     }
 
     
-    public static ArrayList<Move> allMovesPhase2(MapController controller, GameState state){
+    public static ArrayList<Move> allMovesPhase2(MapController controller, GameAttributes state){
         ArrayList<Move> res = new ArrayList<>();
         for (int i = 0; i < controller.getWidth(); i++) {
             for (int j = 0; j < controller.getHeight(); j++) {
@@ -47,14 +47,12 @@ public class MoveVerifier {
         return res;
     }
 
-public static ArrayList<Move> allMovesPhase1(MapController controller, GameState state) {
+public static ArrayList<Move> allMovesPhase1(MapController controller, GameAttributes state, int playerId) {
     Set<Move> res = new LinkedHashSet<>();          // Damit keine Duplikate eingefügt werden (siehe overwrite von equals in Move)
-    Set<Coordinate> ourTiles = controller.getOurTiles();
     Set<Coordinate> expansions = controller.getExpansionTiles();
-    int ourId = state.getOurPlayerId();
 
     //Tiefensuche für jeden unserer Steine in alle Richtungen
-    for (Coordinate c : ourTiles) {
+    for (Coordinate c : state.getPlayer(playerId).getTiles()) {
 
         for (int dir = 0; dir < 8; dir++) {
             Position pos = new Position(c.x(), c.y(), dir);
@@ -64,14 +62,14 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
                 pos = controller.getNextTile(pos);
                 if (pos == null) break;
 
-                Move move = new Move(pos.x(), pos.y(), 0, ourId);
+                Move move = new Move(pos.x(), pos.y(), 0, playerId);
                 if (!GameRules.isNotHole(move, controller) ||
                     !GameRules.insideMap(move, controller)) {
                     break;
                 }
 
                 char tile = (char)controller.getTile(pos.x(), pos.y());
-                boolean isOwn = tile == ('0' + ourId);
+                boolean isOwn = tile == ('0' + playerId);
 
                 if (GameRules.occupied(move, controller)) {
                     if (//GameRules.isExpansion(controller, move) ||
@@ -84,17 +82,17 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
                 } else {
                     // Bonusfelder beide Wahlen
                     if (tilesPassed > 0 && tile == 'b') {
-                        res.add(new Move(pos.x(), pos.y(), 20, ourId));
-                        res.add(new Move(pos.x(), pos.y(), 21, ourId));
+                        res.add(new Move(pos.x(), pos.y(), 20, playerId));
+                        res.add(new Move(pos.x(), pos.y(), 21, playerId));
                     }
                     // Choice-Felder alle Player-IDs
                     else if (tilesPassed > 0 && tile == 'c') {
                         for (int j = 1; j <= state.getNumberPlayers(); j++) {
-                            res.add(new Move(pos.x(), pos.y(), j, ourId));
+                            res.add(new Move(pos.x(), pos.y(), j, playerId));
                         }
                     }
                     //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
-                    else if (tilesPassed > 0 && (c.x() != move.getX() || c.y() != move.getY())) {
+                    else if (tilesPassed > 0 && (c.x() != move.x() || c.y() != move.y())) {
                         res.add(move);
                     }
                     search = false;
@@ -105,15 +103,15 @@ public static ArrayList<Move> allMovesPhase1(MapController controller, GameState
 
     //Alle Expansion stones sind mögliche Züge
     for(Coordinate e: expansions){
-        if(GameRules.hasOverwrite(state, new Move(e.x(),e.y(),0,ourId))){
-            res.add(new Move(e.x(), e.y(), 0, ourId));
+        if(GameRules.hasOverwrite(state, new Move(e.x(),e.y(),0,playerId))){
+            res.add(new Move(e.x(), e.y(), 0, playerId));
         }
     }
 
     return new ArrayList<Move>(res);
 }
 
-public static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameState state) {
+public static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameAttributes state) {
 
     Set<Move> moves = new LinkedHashSet<>();
     int width   = controller.getWidth();

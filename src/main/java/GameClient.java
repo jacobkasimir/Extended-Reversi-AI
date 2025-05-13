@@ -5,22 +5,37 @@
 import java.util.Random;
 
 public class GameClient {
-    private MapController mapController;
-    private GameState gameState;
+    private GameState current_gameState;
+    private Transitions transitions;
 
     /**
      * @return The map controller object held by the game client.
      */
-    public MapController getMapController() {
-        return mapController;
+    public MapController getCurrentMapController() {
+        return current_gameState.mapController();
     }
 
     /**
      * @return The game state object held by the game client.
      */
-    public GameState getGameState() {
-        return gameState;
+    public GameAttributes getCurrentGameAttributes() {
+        return current_gameState.attributes();
     }
+
+    /**
+     * @return The Transitions of the map.
+     */
+    public Transitions getTransitions(){
+        return transitions;
+    }
+
+    /**
+     * @return The current gameState
+     */
+    public GameState getCurrentGameState() {
+        return current_gameState;
+    }
+
 
     /**
      * Initializes the game state and map controller with the map and player information from the input lines.
@@ -43,10 +58,36 @@ public class GameClient {
 
         byte gamePhase = 1;
 
-        this.gameState = new GameState(playerCount, overrideCount, bombCount, bombRadius, gamePhase);
-        this.mapController = new MapController(map, transitions, width, height, bombRadius);
+        //initializes transitions
+        initTransitions(transitions, width, height);
+
+        this.current_gameState = new GameState(new MapController(map, this.transitions, width, height, bombRadius), 
+                                    new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase));
+        
 
         System.out.println("Init abgeschlossen");
+    }
+
+    /** 
+     * Initializes the transitions by translating the message sent by the server
+     * @param transitionsString The data sent by the server
+     * @param width The width of the map
+     * @param height The height of the map
+     */
+    public void initTransitions(String[] transitionsString, int width, int height){
+        this.transitions = new Transitions(width, height);
+
+        String[][] newTransition = new String[transitionsString.length][7]; //array that holds all transitions as Strings
+        for (int i = 0; i < transitionsString.length; i++) {
+            newTransition[i] = transitionsString[i].split(" ");
+        }
+
+        for (String[] newTransition1 : newTransition) {
+            transitions.setTransition(Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), 
+                Integer.parseInt(newTransition1[2]), Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]));
+            transitions.setTransition(Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]), 
+                Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), Integer.parseInt(newTransition1[2]));
+        }
     }
 
     /**
@@ -54,8 +95,8 @@ public class GameClient {
      * @param move The move to apply.
      */
     public void updateGame(Move move) {
-        this.gameState.updateState(move, this.mapController);
-        this.mapController.updateMap(move, this.gameState);
+        this.current_gameState.attributes().updateState(move, this.current_gameState.mapController());
+        this.current_gameState.mapController().updateMap(move, this.current_gameState.attributes());
     }
 
     /**
@@ -63,8 +104,8 @@ public class GameClient {
      * @param id The player ID.
      */
     public void setOurPlayerId(byte id) {
-        this.gameState.setOurPlayerId(id);
-        this.mapController.resetOurTiles(id);
+        this.current_gameState.attributes().setOurPlayerId(id);
+        this.current_gameState.mapController().resetTiles(id, current_gameState.attributes());
         
         System.out.println("Spieler-ID erhalten: " + id);
     }
@@ -74,7 +115,7 @@ public class GameClient {
      * @param playerId ID of the disqualified player.
      */
     public void playerDisqualified(byte playerId) {
-        this.gameState.playerDisqualified(playerId);
+        this.current_gameState.attributes().playerDisqualified(playerId);
     }
 
     /**
@@ -93,8 +134,14 @@ public class GameClient {
      * @return A valid move or a dummy move if none found.
      */
     public Move calculateMove(int timeLimit, int maxDepth) {
-        if(gameState.isPhase1()) return MoveVerifier.allMovesPhase1(mapController, gameState).getFirst();
-        else return MoveVerifier.allMovesPhase2(mapController, gameState).getFirst();
+        // for(Coordinate c : this.gameAttributes.getPlayer(gameAttributes.getOurPlayerId()).tiles){
+        //     System.out.println(c);
+        // }
+
+        if(current_gameState.attributes().isPhase1()){
+            return MoveVerifier.allMovesPhase1(current_gameState.mapController(), current_gameState.attributes(), current_gameState.attributes().getOurPlayerId()).getFirst();
+        }
+        else return MoveVerifier.allMovesPhase2(current_gameState.mapController(), current_gameState.attributes()).getFirst();
     }
 
     /**
@@ -103,9 +150,9 @@ public class GameClient {
      */
     private Move generateRandomMove() {
         Random rand = new Random();
-        int x = rand.nextInt(0, mapController.getWidth());
-        int y = rand.nextInt(0, mapController.getHeight());
-        return new Move(x, y, 0, gameState.getOurPlayerId());
+        int x = rand.nextInt(0, current_gameState.mapController().getWidth());
+        int y = rand.nextInt(0, current_gameState.mapController().getHeight());
+        return new Move(x, y, 0, current_gameState.attributes().getOurPlayerId());
     }
 
     /**
@@ -127,7 +174,7 @@ public class GameClient {
      * Ends the current game phase by incrementing the phase.
      */
     public void endPhase() {
-        this.gameState.setGamePhase((byte) 2); 
+        this.current_gameState.attributes().setGamePhase((byte) 2); 
     }
 
     /**
@@ -136,4 +183,5 @@ public class GameClient {
     public void endGame() {
         // End game logic
     }
+
 }
