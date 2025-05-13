@@ -14,17 +14,17 @@ public class GameClientTest {
 
         game.init(lines);
 
-        assertEquals(game.getGameAttributes().getNumberPlayers(), 2);
-        assertEquals(game.getGameAttributes().getPlayer(1).getNumberOverwrites(), 0);
-        assertEquals(game.getGameAttributes().getPlayer(1).getNumberBombs(), 1);
-        assertEquals(game.getMapController().getBombRadius(), 1);
-        assertEquals(game.getMapController().getHeight(), 2);
-        assertEquals(game.getMapController().getWidth(), 6);
-        assertEquals(game.getMapController().getTile(0, 0) , '-');
-        assertEquals(game.getMapController().getTile(2, 0) , 'b');
-        assertEquals(game.getMapController().getTile(1, 1) , '0');
-        assertEquals(game.getMapController().getTile(3, 1) , '1');
-        assertEquals(game.getMapController().getNextTile(startPosition), endPosition);
+        assertEquals(game.getCurrentGameAttributes().getNumberPlayers(), 2);
+        assertEquals(game.getCurrentGameAttributes().getPlayer(1).getNumberOverwrites(), 0);
+        assertEquals(game.getCurrentGameAttributes().getPlayer(1).getNumberBombs(), 1);
+        assertEquals(game.getCurrentMapController().getBombRadius(), 1);
+        assertEquals(game.getCurrentMapController().getHeight(), 2);
+        assertEquals(game.getCurrentMapController().getWidth(), 6);
+        assertEquals(game.getCurrentMapController().getTile(0, 0) , '-');
+        assertEquals(game.getCurrentMapController().getTile(2, 0) , 'b');
+        assertEquals(game.getCurrentMapController().getTile(1, 1) , '0');
+        assertEquals(game.getCurrentMapController().getTile(3, 1) , '1');
+        assertEquals(game.getCurrentMapController().getNextTile(startPosition), endPosition);
     }
 
 

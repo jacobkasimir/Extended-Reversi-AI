@@ -2,8 +2,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.pdfbox.pdmodel.graphics.state.PDTextState;
-
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
  */
