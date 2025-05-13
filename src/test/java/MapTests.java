@@ -410,6 +410,44 @@ public class MapTests {
     }
 
     @Test
+    public void bombOnlyReachableTiles(){
+        MapController bombController = new MapController(
+            new String[]{
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0", 
+                "0 0 0 0 0 0 0 0",
+                "0 0 0 0 x 0 0 0",
+                "0 0 0 0 - - - -", 
+                "0 0 0 0 - 0 0 -", 
+                "0 0 0 0 - - - -"
+            }, 
+            new String[]{
+                "0 7 5 <-> 7 0 1"
+            },
+            8, 8, 3);
+
+            bombController.updateMap(new Move(4, 4, 0, 1), 
+            new GameState(2,0,2,3,(byte)2));
+
+            assertEquals(bombController, new MapController(
+                new String[]{
+                    "0 0 0 0 0 0 0 0", 
+                    "0 - - - - - - -", 
+                    "0 - - - - - - -", 
+                    "0 - - - - - - -",
+                    "0 - - - - - - -",
+                    "0 - - - - - - -", 
+                    "0 - - - - 0 0 -", 
+                    "0 - - - - - - -"
+                }, 
+                new String[]{
+                    "0 7 5 <-> 7 0 1"
+                }, 
+                8, 8, 3));
+    }
+
+    @Test
     public void overlappingTest(){
         //checks for overlapping capturing
 
