@@ -218,8 +218,8 @@ public class MapController{
         }
         else {
             //handles bombing (phase 2)
-            bombing(move.getX(), move.getY(), bombRadius);  
-            resolveBombing(move.getX(), move.getY(), bombRadius);
+            bombing(move.x(), move.y(), bombRadius);  
+            resolveBombing(move.x(), move.y(), bombRadius);
         }
     }
 
