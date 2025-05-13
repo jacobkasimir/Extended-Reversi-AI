@@ -117,4 +117,9 @@ public class Heuristics {
     public static int numberOfBombs(GameAttributes state, byte playerId){
         return state.getPlayer(playerId).getNumberBombs();
     }
+
+    public int evaluate(GameState gameState){
+        return (int)((amountOfOwnTilesOverall(gameState.mapController(), gameState.attributes().getOurPlayerId()) + 
+        amountOfOwnTilesToOthers(gameState.mapController(), gameState.attributes().getOurPlayerId())) * 100);
+    }
 }

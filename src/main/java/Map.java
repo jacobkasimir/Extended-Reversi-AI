@@ -13,6 +13,10 @@ public class Map {
         this.map = new char[width][height];
     }
     
+    public Map(Map obj){
+        this.map = obj.getMap().clone();
+    }
+    
     
     /** 
      * @param x The x-coordinate of the required tile
@@ -54,6 +58,10 @@ public class Map {
     @Override
     public int hashCode(){
         return Arrays.deepHashCode(map);
+    }
+
+    public char[][] getMap() {
+        return map;
     }
 
 }
