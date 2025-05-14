@@ -178,12 +178,12 @@ public class MoveVerifier {
 
     
     public static ArrayList<Move> calculateNextMoves(GameState gameState, int lastPlayerId){
-        lastPlayerId = (lastPlayerId +1) % gameState.attributes().getNumberPlayers();
+        lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers())+1;
         ArrayList<Move> res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
         int counter = 1;
 
         while(res.isEmpty() && counter < gameState.attributes().getNumberPlayers()+1){
-            lastPlayerId = (lastPlayerId +1) % gameState.attributes().getNumberPlayers();
+            lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers())+1;
             res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
             counter++;
         }

@@ -15,7 +15,7 @@ public class Node {
         this.parent = parent;
         this.gameState = gameState;
         this.heuristics = heuristics;
-        this.nextMoves = null;
+        this.nextMoves = new ArrayList<Node>();
     }
 
     public int getHeuristicValue() {

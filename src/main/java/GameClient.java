@@ -8,6 +8,8 @@ public class GameClient {
     private GameState current_gameState;
     private Transitions transitions;
     private Heuristics heuristics;
+    private int depthLimit;
+    private int timeLimit;
 
     /**
      * @return The map controller object held by the game client.
@@ -125,11 +127,12 @@ public class GameClient {
      * @param maxDepth The maximum search depth.
      */
     public void setCalculateParameters(int timeLimit, byte maxDepth) {
-        // Placeholder
+        this.depthLimit = maxDepth;
+        this.timeLimit = timeLimit;
     }
 
     public Move calculateMove(){
-        MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, 0, 2);
+        MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
         return miniMax.chooseMove();
     }
 

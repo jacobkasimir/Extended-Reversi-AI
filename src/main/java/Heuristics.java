@@ -120,6 +120,6 @@ public class Heuristics {
 
     public int evaluate(GameState gameState){
         return (int)((amountOfOwnTilesOverall(gameState.mapController(), gameState.attributes().getOurPlayerId()) + 
-        amountOfOwnTilesToOthers(gameState.mapController(), gameState.attributes().getOurPlayerId())) * 100);
+        amountOfOwnTilesToOthers(gameState.mapController(), gameState.attributes().getOurPlayerId()) + 2*amountOfCornersCaptured(gameState.mapController(), gameState.attributes().getOurPlayerId())) * 100);
     }
 }

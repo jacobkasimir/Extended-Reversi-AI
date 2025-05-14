@@ -14,7 +14,12 @@ public class Map {
     }
     
     public Map(Map obj){
-        this.map = obj.getMap().clone();
+        this.map = new char[obj.getWidth()][obj.getHeight()];
+        for(int i=0; i<obj.getWidth();i++){
+            for(int y=0;y<obj.getHeight();y++){
+                this.map[i][y] = obj.getTile(i, y);
+            }
+        }
     }
     
     
@@ -64,4 +69,11 @@ public class Map {
         return map;
     }
 
+    public int getHeight(){
+        return map.length;
+    }
+
+    public int getWidth(){
+        return map[0].length;
+    }
 }
