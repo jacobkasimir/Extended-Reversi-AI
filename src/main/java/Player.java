@@ -27,6 +27,15 @@ public class Player {
         this.tiles = new LinkedHashSet<>();
     }
 
+    public Player(Player player){
+        this.numberBombs = player.getNumberBombs();
+        this.numberOverwrites = player.getNumberOverwrites();
+        this.playerNumber = player.getPlayerNumber();
+        this.inGame = player.isInGame();
+        this.tiles = new LinkedHashSet<>();
+        this.tiles.addAll(player.getTiles());
+    }
+
     /**
      * Checks whether the player is still in the game.
      *

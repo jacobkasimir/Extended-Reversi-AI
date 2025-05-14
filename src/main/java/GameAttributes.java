@@ -26,6 +26,16 @@ public class GameAttributes {
         }
     }
 
+    public GameAttributes(GameAttributes obj){
+        this.numberPlayers = obj.getNumberPlayers();
+        this.phase1 = obj.isPhase1();
+        this.ourPlayerId = obj.getOurPlayerId();
+        this.players = new Player[obj.getNumberPlayers()];
+        for (int i = 0; i < numberPlayers; i++) {
+            players[i] = new Player(obj.getPlayer(i+1));
+        }
+    }
+
     /**
      * Adds a player to the dictionary at number.
      * @param p

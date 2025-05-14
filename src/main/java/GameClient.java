@@ -7,6 +7,9 @@ import java.util.Random;
 public class GameClient {
     private GameState current_gameState;
     private Transitions transitions;
+    private Heuristics heuristics;
+    private int depthLimit;
+    private int timeLimit;
 
     /**
      * @return The map controller object held by the game client.
@@ -64,6 +67,7 @@ public class GameClient {
         this.current_gameState = new GameState(new MapController(map, this.transitions, width, height, bombRadius), 
                                     new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase));
         
+        this.heuristics = new Heuristics(getCurrentMapController());
 
         System.out.println("Init abgeschlossen");
     }
@@ -95,8 +99,7 @@ public class GameClient {
      * @param move The move to apply.
      */
     public void updateGame(Move move) {
-        this.current_gameState.attributes().updateState(move, this.current_gameState.mapController());
-        this.current_gameState.mapController().updateMap(move, this.current_gameState.attributes());
+        this.current_gameState.updateGameState(move);
     }
 
     /**
@@ -124,25 +127,16 @@ public class GameClient {
      * @param maxDepth The maximum search depth.
      */
     public void setCalculateParameters(int timeLimit, byte maxDepth) {
-        // Placeholder
+        this.depthLimit = maxDepth;
+        this.timeLimit = timeLimit;
     }
 
-    /**
-     * Calculates a valid move using a simple brutforce deterministic strategy.
-     * @param timeLimit Time constraint.
-     * @param maxDepth Depth constraint.
-     * @return A valid move or a dummy move if none found.
-     */
-    public Move calculateMove(int timeLimit, int maxDepth) {
-        // for(Coordinate c : this.gameAttributes.getPlayer(gameAttributes.getOurPlayerId()).tiles){
-        //     System.out.println(c);
-        // }
-
-        if(current_gameState.attributes().isPhase1()){
-            return MoveVerifier.allMovesPhase1(current_gameState.mapController(), current_gameState.attributes(), current_gameState.attributes().getOurPlayerId()).getFirst();
-        }
-        else return MoveVerifier.allMovesPhase2(current_gameState.mapController(), current_gameState.attributes()).getFirst();
+    public Move calculateMove(){
+        MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
+        return miniMax.chooseMove();
     }
+
+    
 
     /**
      * Generates a random move within the bounds of the map.

@@ -60,7 +60,8 @@ public class TCPClient {
                     System.out.println("Move Request erhalten – Zeit: " + timeLimit + ", Tiefe: " + maxDepth);
 
                     game.setCalculateParameters(timeLimit, maxDepth);
-                    Move move = game.calculateMove(timeLimit, maxDepth);
+                    //Move move = MoveVerifier.calculateMoves(game.getCurrentGameState(), game.getCurrentGameAttributes().getOurPlayerId()).getFirst();
+                    Move move = game.calculateMove();
 
                     out.writeByte(5);
                     out.writeInt(5);

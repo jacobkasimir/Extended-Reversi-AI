@@ -13,6 +13,15 @@ public class Map {
         this.map = new char[width][height];
     }
     
+    public Map(Map obj){
+        this.map = new char[obj.getWidth()][obj.getHeight()];
+        for(int i=0; i<obj.getWidth();i++){
+            for(int y=0;y<obj.getHeight();y++){
+                this.map[i][y] = obj.getTile(i, y);
+            }
+        }
+    }
+    
     
     /** 
      * @param x The x-coordinate of the required tile
@@ -56,4 +65,15 @@ public class Map {
         return Arrays.deepHashCode(map);
     }
 
+    public char[][] getMap() {
+        return map;
+    }
+
+    public int getHeight(){
+        return map.length;
+    }
+
+    public int getWidth(){
+        return map[0].length;
+    }
 }

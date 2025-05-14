@@ -25,8 +25,27 @@ public class MapController{
 
         initExpansionTiles();
     }
+
+    public MapController(MapController obj){
+        this.map = new Map(obj.getMap());
+        this.transitions = obj.getTransitions();
+        this.expansionTiles = new LinkedHashSet<>();
+        this.expansionTiles.addAll(obj.getExpansionTiles());
+        this.bombRadius = obj.getBombRadius();
+        this.width = obj.getWidth();
+        this.height = obj.getHeight();
+    }
     
-    
+
+
+    public Map getMap() {
+        return map;
+    }
+
+    public Transitions getTransitions() {
+        return transitions;
+    }
+
     /** 
      * @return int The width (x-axis) of the map
      */
@@ -310,6 +329,8 @@ public class MapController{
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
             this.map.equals(other.map) && transitions.equals(transitions);
     }
+
+    
 
    
 }

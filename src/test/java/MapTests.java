@@ -413,6 +413,7 @@ public class MapTests {
     public void bombOnlyReachableTiles(){
         GameClient client = new GameClient();
         client.initTransitions(new String[]{"0 7 5 <-> 7 0 1"}, 8, 8);
+
         MapController bombController = new MapController(
             new String[]{
                 "0 0 0 0 0 0 0 0", 
@@ -439,7 +440,7 @@ public class MapTests {
                     "0 - - - - - - -", 
                     "0 - - - - 0 0 -", 
                     "0 - - - - - - -"
-                }, client.getTransitions(), 
+                },client.getTransitions(), 
                 8, 8, 3));
     }
 
