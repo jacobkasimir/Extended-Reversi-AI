@@ -159,8 +159,8 @@ public class MoveVerifier {
 
     /**
      * Calculates a valid move using a simple brutforce deterministic strategy.
-     * @param timeLimit Time constraint.
-     * @param maxDepth Depth constraint.
+     * @param gameState The current gameState.
+     * @param playerId The playerId to evaluate.
      * @return A valid move or a dummy move if none found.
      */
     public static ArrayList<Move> calculateMoves(GameState gameState, int playerId) {
