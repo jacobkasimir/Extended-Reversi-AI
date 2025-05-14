@@ -411,6 +411,9 @@ public class MapTests {
 
     @Test
     public void bombOnlyReachableTiles(){
+        GameClient client = new GameClient();
+        client.initTransitions(new String[]{"0 7 5 <-> 7 0 1"}, 8, 8);
+
         MapController bombController = new MapController(
             new String[]{
                 "0 0 0 0 0 0 0 0", 
@@ -421,14 +424,11 @@ public class MapTests {
                 "0 0 0 0 - - - -", 
                 "0 0 0 0 - 0 0 -", 
                 "0 0 0 0 - - - -"
-            }, 
-            new String[]{
-                "0 7 5 <-> 7 0 1"
-            },
+            }, client.getTransitions(),
             8, 8, 3);
 
             bombController.updateMap(new Move(4, 4, 0, 1), 
-            new GameState(2,0,2,3,(byte)2));
+            new GameAttributes(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
                 new String[]{
@@ -440,10 +440,7 @@ public class MapTests {
                     "0 - - - - - - -", 
                     "0 - - - - 0 0 -", 
                     "0 - - - - - - -"
-                }, 
-                new String[]{
-                    "0 7 5 <-> 7 0 1"
-                }, 
+                },client.getTransitions(), 
                 8, 8, 3));
     }
 
