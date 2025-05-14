@@ -22,7 +22,7 @@ public class MiniMax {
         ArrayList<Node> children = new ArrayList<>();
         for(Move m : moves){
             GameState newGameState = gameState.clone();
-            newGameState.updateGameState(m);
+            //newGameState.updateGameState(m);
             children.add(new Node(m, root, newGameState, heuristics));
         }
         root.setNextMoves(children);

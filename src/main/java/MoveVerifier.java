@@ -167,23 +167,41 @@ public class MoveVerifier {
         // for(Coordinate c : this.gameAttributes.getPlayer(gameAttributes.getOurPlayerId()).tiles){
         //     System.out.println(c);
         // }
-
+        if(!gameState.attributes().getPlayer(playerId).isInGame()){
+            return new ArrayList<>();
+        }
         if(gameState.attributes().isPhase1()){
             return MoveVerifier.allMovesPhase1(gameState.mapController(), gameState.attributes(), playerId);
         }
         else return MoveVerifier.allMovesPhase2(gameState.mapController(), gameState.attributes());
     }
 
+    
     public static ArrayList<Move> calculateNextMoves(GameState gameState, int lastPlayerId){
-        int playerId = (lastPlayerId +1) % gameState.attributes().getNumberPlayers();
+        lastPlayerId = (lastPlayerId +1) % gameState.attributes().getNumberPlayers();
         ArrayList<Move> res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
+        int counter = 1;
 
-        while(res.isEmpty() && playerId != lastPlayerId){
-            playerId = (lastPlayerId +1) % gameState.attributes().getNumberPlayers();
+        while(res.isEmpty() && counter < gameState.attributes().getNumberPlayers()+1){
+            lastPlayerId = (lastPlayerId +1) % gameState.attributes().getNumberPlayers();
             res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
+            counter++;
         }
-        if(playerId == lastPlayerId){
-            return null;
+        if(counter == gameState.attributes().getNumberPlayers()){
+            if(gameState.attributes().isPhase1()){
+                gameState.attributes().setGamePhase((byte)2);
+                int nextPlayerId = lastPlayerId;
+                if(nextPlayerId == 1){
+                    nextPlayerId = gameState.attributes().getNumberPlayers();
+                }
+                else{
+                    nextPlayerId--;
+                }
+                return calculateNextMoves(gameState, nextPlayerId);
+            }
+            else{
+                return null;
+            }
         } else{
             return res;
         }
