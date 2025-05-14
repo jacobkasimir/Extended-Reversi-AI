@@ -34,8 +34,10 @@ public class MiniMax {
         int maxValue = Integer.MIN_VALUE;
         Move result = null;
         for (Node child : root.getNextMoves()) {
-            if(maxValue < Math.max(maxValue, child.dfs(searchdepth-1, current_GameState.attributes().getOurPlayerId()))){
+            int childScore = child.dfs(searchdepth-1, current_GameState.attributes().getOurPlayerId());
+            if(maxValue < childScore){
                 result = child.getMove();
+                maxValue = childScore;
             }
         }
         return result;
