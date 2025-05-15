@@ -70,10 +70,10 @@ public class Map {
     }
 
     public int getHeight(){
-        return map.length;
+        return map[0].length;
     }
 
     public int getWidth(){
-        return map[0].length;
+        return map.length;
     }
 }
