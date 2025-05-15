@@ -73,7 +73,7 @@ public class MoveVerifier {
 
                     if (GameRules.occupied(move, controller)) {
                         if (//GameRules.isExpansion(controller, move) ||
-                            (tilesPassed > 0 && GameRules.hasOverwrite(state, move))) {
+                            (tilesPassed > 0 && GameRules.hasOverwrite(state, move) && c.x() != move.x() && c.y() != move.y())) {
                             res.add(move);
                         }
                         if (isOwn) search = false; //Damit bei eigenem Feld nicht hochgzählt wird
