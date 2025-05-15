@@ -55,7 +55,10 @@ public class Node {
         if(searchDepth > 0){
             gameState.updateGameState(this.move);
             ArrayList<Move> possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
-            if(possibleMoves == null) return heuristics.evaluate(gameState);
+            if(possibleMoves == null) {
+                return heuristics.evaluate(gameState);
+            }
+
             for (Move m : possibleMoves) {
                 this.nextMoves.add(new Node(m, this, gameState.clone(), this.heuristics));
             }
