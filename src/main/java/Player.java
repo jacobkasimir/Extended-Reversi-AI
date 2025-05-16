@@ -127,7 +127,6 @@ public class Player {
     /**
      * Adds one tile to the set, if it isnt already added.
      * @param c
-     * @return true, if the coordinate c could be added to the set.
      */
     public void addTile(int c){
         this.tiles.addIfNotContains(c);
