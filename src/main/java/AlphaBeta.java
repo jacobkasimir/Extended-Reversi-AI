@@ -30,11 +30,17 @@ public class AlphaBeta {
     public Move chooseMove(){
         int maxValue = Integer.MIN_VALUE;
         Move result = null;
+        int alpha = Integer.MIN_VALUE;
+        int beta = Integer.MAX_VALUE;
         for (Node child : root.getNextMoves()) {
-            int childScore = child.dfs(searchdepth-1, current_GameState.attributes().getOurPlayerId());
+            int childScore = child.pruning(searchdepth-1, current_GameState.attributes().getOurPlayerId(), alpha, beta);
             if(maxValue < childScore){
                 result = child.getMove();
                 maxValue = childScore;
+            }
+            alpha = Math.max(alpha, maxValue);
+            if(beta <= alpha){
+                break;
             }
         }
         return result;

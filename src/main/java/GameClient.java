@@ -134,6 +134,9 @@ public class GameClient {
     public Move calculateMove(){
         MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
         return miniMax.chooseMove();
+
+        //AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
+        //return alphaBeta.chooseMove();
     }
 
     

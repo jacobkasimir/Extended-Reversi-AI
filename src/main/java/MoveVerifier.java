@@ -74,7 +74,7 @@ public class MoveVerifier {
                     if (GameRules.occupied(move, controller)) {
                         if (//GameRules.isExpansion(controller, move) ||
                             (tilesPassed > 0 && GameRules.hasOverwrite(state, move) && c.x() != move.x() && c.y() != move.y())) {
-                            res.add(move);
+                            res.add(move); //auskommentiert für debugging //TODO
                         }
                         if (isOwn) search = false; //Damit bei eigenem Feld nicht hochgzählt wird
                         tilesPassed++;
@@ -111,9 +111,9 @@ public class MoveVerifier {
         return new ArrayList<Move>(res);
     }
 
-    public static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameAttributes state) {
+    public static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameAttributes state, int playerId) {
 
-        Set<Move> moves = new LinkedHashSet<>();
+        ArrayList<Move> moves = new ArrayList<>();
         int width   = controller.getWidth();
         int height  = controller.getHeight();
         int ownId   = state.getOurPlayerId();
@@ -125,11 +125,11 @@ public class MoveVerifier {
 
                 //Bonus zwei für Bombe und Override
                 if (tile == 'b') {
-                    Move mBomb = new Move(x, y, 20, ownId);
+                    Move mBomb = new Move(x, y, 20, playerId);
                     if (MoveVerifier.isValid(mBomb, controller, state)) {
                         moves.add(mBomb);
                     }
-                    Move mOverride = new Move(x, y, 21, ownId);
+                    Move mOverride = new Move(x, y, 21, playerId);
                     if (MoveVerifier.isValid(mOverride, controller, state)) {
                         moves.add(mOverride);
                     }
@@ -137,7 +137,7 @@ public class MoveVerifier {
                 //Choice für jede Player-ID einmal
                 else if (tile == 'c') {
                     for (int choice = 1; choice <= numPlayers; choice++) {
-                        Move m = new Move(x, y, choice, ownId);
+                        Move m = new Move(x, y, choice, playerId);
                         if (MoveVerifier.isValid(m, controller, state)) {
                             moves.add(m);
                         }
@@ -145,7 +145,7 @@ public class MoveVerifier {
                 }
                 // Normales Feld, Expansion, Override 
                 else {
-                    Move m = new Move(x, y, 0, ownId);
+                    Move m = new Move(x, y, 0, playerId);
                     if (MoveVerifier.isValid(m, controller, state)) {
                         moves.add(m);
                     }
@@ -153,7 +153,7 @@ public class MoveVerifier {
             }
         }
 
-        return new ArrayList<>(moves);
+        return moves;
     }
 
 
@@ -172,6 +172,7 @@ public class MoveVerifier {
         }
         if(gameState.attributes().isPhase1()){
             return MoveVerifier.allMovesPhase1(gameState.mapController(), gameState.attributes(), playerId);
+            //return MoveVerifier.calculateAllMoves_Bruteforce(gameState.mapController(), gameState.attributes(), playerId);
         }
         else return MoveVerifier.allMovesPhase2(gameState.mapController(), gameState.attributes());
     }
