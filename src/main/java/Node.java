@@ -63,6 +63,7 @@ public class Node {
 
             while (node != null) {
                 this.nextMoves.add(new Node(node.getValue(), this, gameState.clone(), this.heuristics));
+                node = node.getNext();
             }
             int result;
             if(MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()){
@@ -97,6 +98,7 @@ public class Node {
             ListNode m = possibleMoves.getHead();
             while (m != null){
                 this.nextMoves.add(new Node(m.getValue(), this, gameState.clone(), this.heuristics));
+                m = m.getNext();
             }
             int result;
             if(MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()){
