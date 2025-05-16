@@ -297,11 +297,11 @@ public class HeuristicsTest {
 
     @Test
     public void findCornersTest(){
-        ArrayList<Coordinate> result = new ArrayList<>();
-        result.add(new Coordinate(0, 0));
-        result.add(new Coordinate(0, 7));
-        result.add(new Coordinate(7, 0));
-        result.add(new Coordinate(7, 7));
+        IntLinkedList result = new IntLinkedList();
+        result.add(MoveVerifier.encodeCoordinate(0, 0));
+        result.add(MoveVerifier.encodeCoordinate(0, 7));
+        result.add(MoveVerifier.encodeCoordinate(7, 0));
+        result.add(MoveVerifier.encodeCoordinate(7, 7));
 
         MapController map = new MapController(
             new String[]{
