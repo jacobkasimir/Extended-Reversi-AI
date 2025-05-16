@@ -14,7 +14,7 @@ public class Transitions{
 
 
     public Transitions(int width, int height){
-        this.transitionsArray = new int[3*width*height*8];
+        this.transitionsArray = new int[width*height*8];
         this.width = width;
         this.height = height;
 
@@ -33,7 +33,7 @@ public class Transitions{
      */
     public int getNextTile(int x, int y, int direc) {
         if(direc < 9 && direc >= 0){
-            if(getTransition(x, y, direc) < 0){
+            if(getTransition(x, y, direc) == -1){
                 switch (direc) {
                     case 0 -> y--;
                     case 1 -> { 
@@ -88,7 +88,7 @@ public class Transitions{
     }
 
     private int getTransition(int x, int y, int direction){
-        return MoveVerifier.encodePosition(transitionsArray[(width*8*y)+(x*8)+direction], transitionsArray[(width*8*y)+(x*8)+direction+1], transitionsArray[(width*8*y)+(x*8)+direction+2]);
+        return transitionsArray[(width*8*y)+(x*8)+direction];
     }
 
     
