@@ -7,14 +7,6 @@ public class IntLinkedList {
     /**
      * Internal node class representing a single element in the list.
      */
-    private static class ListNode {
-        int value;
-        ListNode next;
-
-        ListNode(int value) {
-            this.value = value;
-        }
-    }
 
     private ListNode head;
     private int size;
@@ -26,7 +18,7 @@ public class IntLinkedList {
      */
     public void add(int value) {
         ListNode newNode = new ListNode(value);
-        newNode.next = head;
+        newNode.setNext(head);
         head = newNode;
         size++;
     }
@@ -43,8 +35,8 @@ public class IntLinkedList {
         }
         ListNode temp = list.head;
         while (temp != null) {
-            this.add(temp.value);
-            temp = temp.next;
+            this.add(temp.getValue());
+            temp = temp.getNext();
         }
     }
 
@@ -57,20 +49,20 @@ public class IntLinkedList {
     public boolean remove(int value) {
         if (head == null) return false;
 
-        if (head.value == value) {
-            head = head.next;
+        if (head.getValue() == value) {
+            head = head.getNext();
             size--;
             return true;
         }
 
         ListNode current = head;
-        while (current.next != null) {
-            if (current.next.value == value) {
-                current.next = current.next.next;
+        while (current.getNext() != null) {
+            if (current.getNext().getValue() == value) {
+                current.setNext(current.getNext().getNext());
                 size--;
                 return true;
             }
-            current = current.next;
+            current = current.getNext();
         }
         return false;
     }
@@ -84,8 +76,8 @@ public class IntLinkedList {
     public boolean contains(int value) {
         ListNode current = head;
         while (current != null) {
-            if (current.value == value) return true;
-            current = current.next;
+            if (current.getValue() == value) return true;
+            current = current.getNext();
         }
         return false;
     }
@@ -126,11 +118,17 @@ public class IntLinkedList {
         ListNode current = head;
         int i = 0;
         while (current != null) {
-            result[i++] = current.value;
-            current = current.next;
+            result[i++] = current.getValue();
+            current = current.getNext();
         }
         return result;
     }
+
+    public ListNode getHead() {
+        return head;
+    }
+
+
 
     @Override
     public boolean equals(Object obj){
@@ -141,8 +139,8 @@ public class IntLinkedList {
         ListNode temp = this.head;
 
         while(temp != null){
-            if(!list.contains(temp.value)) return false;
-            temp = temp.next;
+            if(!list.contains(temp.getValue())) return false;
+            temp = temp.getNext();
         }
         return true;
     }
