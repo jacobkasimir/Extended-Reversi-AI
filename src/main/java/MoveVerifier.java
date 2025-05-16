@@ -37,7 +37,7 @@ public class MoveVerifier {
         for (int i = 0; i < controller.getWidth(); i++) {
             for (int j = 0; j < controller.getHeight(); j++) {
                 if(controller.getTile(i, j) != '-' && state.getPlayer(state.getOurPlayerId()).getNumberBombs()>0){
-                    res.add(encodeMove(i, j, 0, state.getOurPlayerId()));
+                    res.addIfNotContains(encodeMove(i, j, 0, state.getOurPlayerId()));
                 }
             }
         }
@@ -75,7 +75,7 @@ public class MoveVerifier {
                     if (GameRules.occupied(move, controller)) {
                         if (//GameRules.isExpansion(controller, move) ||
                             (tilesPassed > 0 && GameRules.hasOverwrite(state, move) && x != decodeX(move) && y != decodeY(move))) {
-                            res.add(move); //auskommentiert für debugging //TODO
+                            res.addIfNotContains(move); //auskommentiert für debugging //TODO
                         }
                         if (isOwn) search = false; //Damit bei eigenem Feld nicht hochgzählt wird
                         tilesPassed++;
@@ -83,18 +83,18 @@ public class MoveVerifier {
                     } else {
                         // Bonusfelder beide Wahlen
                         if (tilesPassed > 0 && tile == 'b') {
-                            res.add(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 20, playerId));
-                            res.add(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 21, playerId));
+                            res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 20, playerId));
+                            res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 21, playerId));
                         }
                         // Choice-Felder alle Player-IDs
                         else if (tilesPassed > 0 && tile == 'c') {
                             for (int j = 1; j <= state.getNumberPlayers(); j++) {
-                                res.add(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), j, playerId));
+                                res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), j, playerId));
                             }
                         }
                         //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
                         else if (tilesPassed > 0 && (x != decodeX(move) || y != decodeY(move))) {
-                            res.add(move);
+                            res.addIfNotContains(move);
                         }
                         search = false;
                     }
@@ -107,7 +107,7 @@ public class MoveVerifier {
         node = expansions.getHead();
         while (node != null){
             if(GameRules.hasOverwrite(state,encodeMove(decodeXCoords(node.getValue()),decodeYCoords(node.getValue()),0,playerId))){
-                res.add(encodeMove(decodeXCoords(node.getValue()),decodeYCoords(node.getValue()), 0, playerId));
+                res.addIfNotContains(encodeMove(decodeXCoords(node.getValue()),decodeYCoords(node.getValue()), 0, playerId));
             }
             node = node.getNext();
         }
@@ -131,11 +131,11 @@ public class MoveVerifier {
                 if (tile == 'b') {
                     int mBomb = encodeMove(x, y, 20, playerId);
                     if (MoveVerifier.isValid(mBomb, controller, state)) {
-                        moves.add(mBomb);
+                        moves.addIfNotContains(mBomb);
                     }
                     int mOverride = encodeMove(x, y, 21, playerId);
                     if (MoveVerifier.isValid(mOverride, controller, state)) {
-                        moves.add(mOverride);
+                        moves.addIfNotContains(mOverride);
                     }
                 }
                 //Choice für jede Player-ID einmal
@@ -143,7 +143,7 @@ public class MoveVerifier {
                     for (int choice = 1; choice <= numPlayers; choice++) {
                         int m = encodeMove(x, y, choice, playerId);
                         if (MoveVerifier.isValid(m, controller, state)) {
-                            moves.add(m);
+                            moves.addIfNotContains(m);
                         }
                     }
                 }
@@ -151,7 +151,7 @@ public class MoveVerifier {
                 else {
                     int m = encodeMove(x, y, 0, playerId);
                     if (MoveVerifier.isValid(m, controller, state)) {
-                        moves.add(m);
+                        moves.addIfNotContains(m);
                     }
                 }
             }

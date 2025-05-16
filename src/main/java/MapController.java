@@ -208,7 +208,7 @@ public class MapController{
                         expansionTiles.remove(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
                     }
                     //add tile to tiles of the player
-                    state.getPlayer(MoveVerifier.decodePlayerId(move)).getTiles().add(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
+                    state.getPlayer(MoveVerifier.decodePlayerId(move)).getTiles().addIfNotContains(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
                     //remove tile from the opponents tiles
                     if(isPlayer(getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)))){
                         state.getPlayer((int)(getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) - '0')).getTiles().remove(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
@@ -218,7 +218,7 @@ public class MapController{
                     currentPosition = getNextTile(currentPosition);
                 }
             }
-            state.getPlayer(MoveVerifier.decodePlayerId(move)).getTiles().add(MoveVerifier.encodeCoordinate(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)));
+            state.getPlayer(MoveVerifier.decodePlayerId(move)).getTiles().addIfNotContains(MoveVerifier.encodeCoordinate(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)));
             
 
             if(isChoice) {

@@ -17,12 +17,19 @@ public class IntLinkedList {
      * @param value the int value to add
      */
     public void add(int value) {
-            if (!this.contains(value)){                                 //vielleicht korrigieren wegen Laufzeit
+        ListNode newNode = new ListNode(value);
+        newNode.setNext(head);
+        head = newNode;
+        size++;
+    }
+
+    public void addIfNotContains(int value) {
+        if (!this.contains(value)){                           
             ListNode newNode = new ListNode(value);
             newNode.setNext(head);
             head = newNode;
             size++;
-            }
+        }
     }
 
     /**
