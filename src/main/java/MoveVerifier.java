@@ -125,7 +125,7 @@ public class MoveVerifier {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                char tile = (char) controller.getTile(x, y);
+                char tile = controller.getTile(x, y);
 
                 //Bonus zwei für Bombe und Override
                 if (tile == 'b') {

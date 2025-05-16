@@ -36,7 +36,7 @@ public class GameRules {
 
     /**
      * Checks if the player, who is making a move, still has at least one bomb.
-     * @param state Gamestate: captures the phase, amount of players, and the player objects
+     * @param state Gamestate: captures the phase, number of players, and the player objects
      * @param move Represents a move made by a player on the board.
      * @return true if the player, who is making a move, has more than 0 bombs.
      */
@@ -46,7 +46,7 @@ public class GameRules {
 
     /**
      * Checks whether the moving player has still an overwrite.
-     * @param state Gamestate: captures the phase, amount of players, and the player objects
+     * @param state Gamestate: captures the phase, number of players, and the player objects
      * @param move Represents a move made by a player on the board.
      * @return true, if the moving player has still an override
      */
@@ -57,7 +57,7 @@ public class GameRules {
     /**
      * Checks if the player number of the player, who is taking a turn, is valid.
      * @param move Represents a move made by a player on the board.
-     * @param state Gamestate: captures the phase, amount of players, and the player objects
+     * @param state Gamestate: captures the phase, number of players, and the player objects
      * @return true, if the player number is valid, meaning the player is participating
      */
     public static boolean validMove(int move, GameAttributes state){
@@ -66,7 +66,7 @@ public class GameRules {
     }
 
     /**
-     * Checks whether the tile, the player wants to move to, is occupied by an expansion stone.
+     * Checks whether the tile, the player wants to move to is occupied by an expansion stone.
      * @param map Instance of a Map Controller.
      * @param move Represents a move made by a player on the board.
      * @return true, if the tile is occupied by an expansion stone.
@@ -77,27 +77,24 @@ public class GameRules {
 
     /**
      * If the tile is a special tile, the move object must be checked to ensure it contains a valid entry.
-     * @param state Gamestate: captures the phase, amount of players, and the player instances.
+     * @param state Gamestate: captures the phase, number of players, and the player instances.
      * @param move Represents a move made by a player on the board.
      * @param map Instance of a Map Controller.
      * @return true, if all entries in the "special"-field of the move object are valid.
      */
     public static boolean checkSpecial(GameAttributes state, int move, MapController map){
         if(!state.isPhase1()) return MoveVerifier.decodePlayerId(move) == 0;
-        switch(map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move))){
-            case 'b': {
-                return MoveVerifier.decodeSpecial(move) == 20 || MoveVerifier.decodeSpecial(move) == 21;
-            }
-            case 'c': {
-                return MoveVerifier.decodeSpecial(move) >= 1 && MoveVerifier.decodeSpecial(move) <= state.getNumberPlayers();
-            }
-            default: return MoveVerifier.decodeSpecial(move) == 0;
-        }
+        return switch (map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move))) {
+            case 'b' -> MoveVerifier.decodeSpecial(move) == 20 || MoveVerifier.decodeSpecial(move) == 21;
+            case 'c' ->
+                    MoveVerifier.decodeSpecial(move) >= 1 && MoveVerifier.decodeSpecial(move) <= state.getNumberPlayers();
+            default -> MoveVerifier.decodeSpecial(move) == 0;
+        };
     }
 
     /**
-     * A player can only occupy a tile, if he can enclose stones from other players (or expansion stones) with his new occupied tile and
-     * another tile that is occupied by this player. This method checks, if this capturing is valid.
+     * A player can only occupy a tile if he can enclose stones from other players (or expansion stones) with his new occupied tile and
+     * another tile that is occupied by this player. This method checks if this capturing is valid.
      * @param move Represents a move made by a player on the board.
      * @param map Instance of a Map Controller.
      * @return true if the player occupies a tile that results in capturing one or more other tiles (if he makes a valid move).
