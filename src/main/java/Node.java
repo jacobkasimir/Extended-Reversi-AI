@@ -54,7 +54,7 @@ public class Node {
     public int dfs(int searchDepth, int lastPlayerId){
         if(searchDepth > 0){
             gameState.updateGameState(this.move);
-            ArrayList<Move> possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
+            IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
             if(possibleMoves == null) {
                 return heuristics.evaluate(gameState);
             }
@@ -84,7 +84,7 @@ public class Node {
     public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta){
         if(searchDepth > 0){
             gameState.updateGameState(this.move);
-            ArrayList<Move> possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
+            IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
             if(possibleMoves == null) {
                 return heuristics.evaluate(gameState);
             }
