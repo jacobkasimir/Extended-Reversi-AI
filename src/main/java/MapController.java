@@ -166,7 +166,7 @@ public class MapController{
             int[] directionCounts = new int[8]; //holds the number of tiles for every direction that are captured by the move
             boolean search;
             boolean isChoice = getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'c';    //Is the move placed on a choice tile?
-            boolean isInversion = getTile(MoveVerifier.decodeX(move), MoveVerifier.decodePosY(move)) == 'i'; //Is the move placed on an inversion tile?
+            boolean isInversion = getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'i'; //Is the move placed on an inversion tile?
             int tilesPassed;    //holds the number of captured tiles for a specific direction
             int currentPosition; 
 

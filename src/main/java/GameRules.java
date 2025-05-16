@@ -83,7 +83,7 @@ public class GameRules {
      * @return true, if all entries in the "special"-field of the move object are valid.
      */
     public static boolean checkSpecial(GameAttributes state, int move, MapController map){
-        if(!state.isPhase1()) return MoveVerifier.decodePlayerId(move) == 0;
+        if(!state.isPhase1()) return MoveVerifier.decodeSpecial(move) == 0;
         switch(map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move))){
             case 'b': {
                 return MoveVerifier.decodeSpecial(move) == 20 || MoveVerifier.decodeSpecial(move) == 21;

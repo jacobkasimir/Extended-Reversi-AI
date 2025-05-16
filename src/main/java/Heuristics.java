@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 
 public class Heuristics {
 
@@ -34,8 +33,8 @@ public class Heuristics {
                         currentPosition2 = MoveVerifier.encodePosition(x, y, i+4);
                         nextTile2 = map.getNextTile(currentPosition2);
 
-                        if (nextTile1 != 0 && map.getTile(MoveVerifier.decodePosX(nextTile1), MoveVerifier.decodePosY(nextTile1)) != '-') {
-                            if (nextTile2 != 0 && map.getTile(MoveVerifier.decodePosX(nextTile2), MoveVerifier.decodePosY(nextTile2)) != '-') {
+                        if (nextTile1 != -1 && map.getTile(MoveVerifier.decodePosX(nextTile1), MoveVerifier.decodePosY(nextTile1)) != '-') {
+                            if (nextTile2 != -1 && map.getTile(MoveVerifier.decodePosX(nextTile2), MoveVerifier.decodePosY(nextTile2)) != '-') {
                                 currentIsCorner = false;
                                 break;
                             }
@@ -61,6 +60,7 @@ public class Heuristics {
             if (map.getTile(MoveVerifier.decodeXCoords(coordinate.getValue()), MoveVerifier.decodeYCoords(coordinate.getValue())) == (playerId + '0')) {
                 counter++;
             }
+            coordinate = coordinate.getNext();
         }
 
         if (corners.isEmpty()) {

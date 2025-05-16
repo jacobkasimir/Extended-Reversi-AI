@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
@@ -170,7 +168,7 @@ public class HeuristicsTest {
 
         GameAttributes state = new GameAttributes(4, 1, 1, 1, (byte) 1);
         state.setOurPlayerId((byte)1);
-        Heuristics heuristics = new Heuristics(map);
+        Heuristics heuristics = new Heuristics(mapOccupied);
 
         double result = heuristics.amountOfCornersCaptured(mapOccupied, (byte) 1);
 

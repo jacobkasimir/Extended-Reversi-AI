@@ -17,10 +17,12 @@ public class IntLinkedList {
      * @param value the int value to add
      */
     public void add(int value) {
-        ListNode newNode = new ListNode(value);
-        newNode.setNext(head);
-        head = newNode;
-        size++;
+            if (!this.contains(value)){                                 //vielleicht korrigieren wegen Laufzeit
+            ListNode newNode = new ListNode(value);
+            newNode.setNext(head);
+            head = newNode;
+            size++;
+            }
     }
 
     /**
@@ -132,7 +134,7 @@ public class IntLinkedList {
 
     @Override
     public boolean equals(Object obj){
-        if (obj == null) return false;
+        if (!(obj instanceof IntLinkedList)) return false;
         IntLinkedList list = (IntLinkedList) obj;
 
         if(list.size != this.size) return false;
