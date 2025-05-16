@@ -1,8 +1,3 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,7 +42,7 @@ public class MoveVerifierTest {
 
     @Test
     public void stoneOnOccupiedField(){
-        Move move = new Move(3, 3, 0, 1);
+        int move = MoveVerifier.encodeMove(3, 3, 0, 1);
 
         boolean result = MoveVerifier.isValid(move, map, gameAttributes1);
 
@@ -56,7 +51,7 @@ public class MoveVerifierTest {
 
     @Test
     public void stoneHole(){
-        Move move = new Move(3, 0, 0, 1);
+        int move = MoveVerifier.encodeMove(3, 0, 0, 1);
 
         boolean result = MoveVerifier.isValid(move, map, gameAttributes1);
 
@@ -65,8 +60,8 @@ public class MoveVerifierTest {
 
     @Test
     public void simpleCapturing(){
-        Move moveTrue = new Move(2, 5, 0, 1);
-        Move moveFalse = new Move(2, 2, 0, 1);
+        int moveTrue = MoveVerifier.encodeMove(2, 5, 0, 1);
+        int moveFalse = MoveVerifier.encodeMove(2, 2, 0, 1);
 
         boolean resultTrue = MoveVerifier.isValid(moveTrue, map, gameAttributes1);
         boolean resultFalse = MoveVerifier.isValid(moveFalse, map, gameAttributes1);
@@ -98,7 +93,7 @@ public class MoveVerifierTest {
             8, 
             0);
 
-        Move move = new Move(1, 3, 0, 1);
+        int move = MoveVerifier.encodeMove(1, 3, 0, 1);
 
         boolean result = MoveVerifier.isValid(move, map2, gameAttributes1);
 
@@ -130,7 +125,7 @@ public class MoveVerifierTest {
             8, 
             0);
 
-        Move move = new Move(4, 0, 0, 1);
+        int move = MoveVerifier.encodeMove(4, 0, 0, 1);
 
         boolean result = MoveVerifier.isValid(move, map2, gameAttributes1);
 
@@ -163,8 +158,8 @@ public class MoveVerifierTest {
             0
         );
 
-        Move moveTrue = new Move(6, 3, 0, 1);
-        Move moveFalse = new Move(3, 4, 0, 1);
+        int moveTrue = MoveVerifier.encodeMove(6, 3, 0, 1);
+        int moveFalse = MoveVerifier.encodeMove(3, 4, 0, 1);
 
         boolean resultTrue = MoveVerifier.isValid(moveTrue, map2, gameAttributes1);
         boolean resultFalse1 = MoveVerifier.isValid(moveFalse, map2, gameAttributes1);
@@ -177,8 +172,8 @@ public class MoveVerifierTest {
 
     @Test
     public void expansionRule(){
-        Move moveTrue = new Move(7, 6, 0, 1);
-        Move moveFalse = new Move(7, 6, 0, 1);
+        int moveTrue = MoveVerifier.encodeMove(7, 6, 0, 1);
+        int moveFalse = MoveVerifier.encodeMove(7, 6, 0, 1);
 
         boolean resultTrue = MoveVerifier.isValid(moveTrue, map, gameAttributes1);
         boolean resultFalse = MoveVerifier.isValid(moveFalse, map, gameAttributes1NoOverwrites);
@@ -189,8 +184,8 @@ public class MoveVerifierTest {
 
     @Test
     public void bombPhase(){
-        Move move = new Move(3, 6, 0, 1);
-        Move moveFalse = new Move(0, 0, 0, 1);
+        int move = MoveVerifier.encodeMove(3, 6, 0, 1);
+        int moveFalse = MoveVerifier.encodeMove(0, 0, 0, 1);
 
         boolean resultTrue = MoveVerifier.isValid(move, map, gameAttributes2);
         boolean resultFalse1 = MoveVerifier.isValid(move, map, gameAttributes2NoBombs);
@@ -203,28 +198,28 @@ public class MoveVerifierTest {
 
     @Test
     public void allMovesPhase1_easy(){
-        ArrayList<Move> test = new ArrayList<>();
+        IntLinkedList test = new IntLinkedList();
         GameAttributes gamestateTest = gameAttributes1;
         gamestateTest.setOurPlayerId((byte) 1);
         map.resetTiles(1, gamestateTest);
-        test.add(new Move(2, 4, 0, 1));
-        test.add(new Move(2, 5, 0, 1));
-        test.add(new Move(3, 4, 0, 1));
-        test.add(new Move(3, 5, 0, 1));
-        test.add(new Move(4, 3, 0, 1));
-        test.add(new Move(5, 3, 0, 1));
-        test.add(new Move(4, 2, 0, 1));
-        test.add(new Move(5,6,0,1));
-        test.add(new Move(7,6,0,1));
-        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map, gamestateTest, gamestateTest.getOurPlayerId());
-        ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map, gamestateTest);
-        assertEquals(new HashSet<>(test), new HashSet<>(res));
-        assertEquals(new HashSet<>(test), new HashSet<>(brutforce));
+        test.add(MoveVerifier.encodeMove(2, 4, 0, 1));
+        test.add(MoveVerifier.encodeMove(2, 5, 0, 1));
+        test.add(MoveVerifier.encodeMove(3, 4, 0, 1));
+        test.add(MoveVerifier.encodeMove(3, 5, 0, 1));
+        test.add(MoveVerifier.encodeMove(4, 3, 0, 1));
+        test.add(MoveVerifier.encodeMove(5, 3, 0, 1));
+        test.add(MoveVerifier.encodeMove(4, 2, 0, 1));
+        test.add(MoveVerifier.encodeMove(5,6,0,1));
+        test.add(MoveVerifier.encodeMove(7,6,0,1));
+        IntLinkedList res = MoveVerifier.allMovesPhase1(map, gamestateTest, gamestateTest.getOurPlayerId());
+        IntLinkedList brutforce = calculateAllMoves_Bruteforce(map, gamestateTest);
+        assertEquals(test, res);
+        assertEquals(test, brutforce);
     }
 
     @Test
     public void allMovesPhase1_bonus(){
-        ArrayList<Move> test = new ArrayList<>();
+        IntLinkedList test = new IntLinkedList();
         GameAttributes gamestateTest = gameAttributes1;
         gamestateTest.setOurPlayerId((byte) 1);
 
@@ -249,26 +244,26 @@ public class MoveVerifierTest {
             0
         );
         map2.resetTiles(gamestateTest.getOurPlayerId(), gamestateTest);
-        test.add(new Move(2, 4, 0, 1));
-        test.add(new Move(2, 5, 0, 1));
-        test.add(new Move(3, 4, 0, 1));
-        test.add(new Move(3, 5, 0, 1));
-        test.add(new Move(4, 3, 0, 1));
-        test.add(new Move(5, 3, 20, 1));
-        test.add(new Move(5, 3, 21, 1));
-        test.add(new Move(4, 2, 0, 1));
-        test.add(new Move(5,6,0,1));
-        test.add(new Move(7,6,0,1));
-        test.add(new Move(0,7,0,1));
-        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map2, gamestateTest, gamestateTest.getOurPlayerId());
-        ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map2, gamestateTest);
-        assertEquals(new HashSet<>(test), new HashSet<>(res));
-        assertEquals(new HashSet<>(test), new HashSet<>(brutforce));
+        test.add(MoveVerifier.encodeMove(2, 4, 0, 1));
+        test.add(MoveVerifier.encodeMove(2, 5, 0, 1));
+        test.add(MoveVerifier.encodeMove(3, 4, 0, 1));
+        test.add(MoveVerifier.encodeMove(3, 5, 0, 1));
+        test.add(MoveVerifier.encodeMove(4, 3, 0, 1));
+        test.add(MoveVerifier.encodeMove(5, 3, 20, 1));
+        test.add(MoveVerifier.encodeMove(5, 3, 21, 1));
+        test.add(MoveVerifier.encodeMove(4, 2, 0, 1));
+        test.add(MoveVerifier.encodeMove(5,6,0,1));
+        test.add(MoveVerifier.encodeMove(7,6,0,1));
+        test.add(MoveVerifier.encodeMove(0,7,0,1));
+        IntLinkedList res = MoveVerifier.allMovesPhase1(map2, gamestateTest, gamestateTest.getOurPlayerId());
+        IntLinkedList brutforce = calculateAllMoves_Bruteforce(map2, gamestateTest);
+        assertEquals(test, res);
+        assertEquals(test, brutforce);
     }
 
     @Test
     public void allMovesPhase1_random(){
-        ArrayList<Move> test = new ArrayList<>();
+        IntLinkedList test = new IntLinkedList();
         GameAttributes gamestateTest = gameAttributes1;
         gamestateTest.setOurPlayerId((byte) 1);
 
@@ -302,15 +297,15 @@ public class MoveVerifierTest {
             0
         );
         map3.resetTiles(gamestateTest.getOurPlayerId(), gamestateTest);;
-        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest, gamestateTest.getOurPlayerId());
-        ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
-        assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
+        IntLinkedList res = MoveVerifier.allMovesPhase1(map3, gamestateTest, gamestateTest.getOurPlayerId());
+        IntLinkedList brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
+        assertEquals(brutforce, res);
     }
 
     @Test
     public void allMovesPhase1_ExpansionStones(){
-        ArrayList<Move> test = new ArrayList<>();
-        ArrayList<Move> tester = new ArrayList<>();
+        IntLinkedList test = new IntLinkedList();
+        IntLinkedList tester = new IntLinkedList();
         GameAttributes gamestateTest =         gameAttributes1 = new GameAttributes(8, 0, 1, 3, (byte) 1);
         gamestateTest.setOurPlayerId((byte) 5);
         MapController map3 = new MapController(
@@ -340,14 +335,14 @@ public class MoveVerifierTest {
             0
         );
         map3.resetTiles(gamestateTest.getOurPlayerId(), gamestateTest);;
-        tester.add(new Move(11, 7, 0, 5));
-        tester.add(new Move(11, 8, 0, 5));
-        tester.add(new Move(11, 9, 0, 5));
-        tester.add(new Move(11, 10, 0, 5));
-        ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest, gamestateTest.getOurPlayerId());
-        ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
-        assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
-        assertEquals(new HashSet<>(tester), new HashSet<>(res));
+        tester.add(MoveVerifier.encodeMove(11, 7, 0, 5));
+        tester.add(MoveVerifier.encodeMove(11, 8, 0, 5));
+        tester.add(MoveVerifier.encodeMove(11, 9, 0, 5));
+        tester.add(MoveVerifier.encodeMove(11, 10, 0, 5));
+        IntLinkedList res = MoveVerifier.allMovesPhase1(map3, gamestateTest, gamestateTest.getOurPlayerId());
+        IntLinkedList brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
+        assertEquals(brutforce, res);
+        assertEquals(tester, res);
     }
 
     @Test
@@ -411,15 +406,15 @@ public class MoveVerifierTest {
                 0
             );
             map3.resetTiles(gamestateTest.getOurPlayerId(), gamestateTest);
-            ArrayList<Move> res = MoveVerifier.allMovesPhase1(map3, gamestateTest, gamestateTest.getOurPlayerId());
-            ArrayList<Move> brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
-            assertEquals(new HashSet<>(brutforce), new HashSet<>(res));
+            IntLinkedList res = MoveVerifier.allMovesPhase1(map3, gamestateTest, gamestateTest.getOurPlayerId());
+            IntLinkedList brutforce = calculateAllMoves_Bruteforce(map3, gamestateTest);
+            assertEquals(brutforce, res);
 
     }
 
-    private static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameAttributes state) {
+    private static IntLinkedList calculateAllMoves_Bruteforce(MapController controller, GameAttributes state) {
 
-        Set<Move> moves = new LinkedHashSet<>();
+        IntLinkedList moves = new IntLinkedList();
         int width   = controller.getWidth();
         int height  = controller.getHeight();
         int ownId   = state.getOurPlayerId();
@@ -431,11 +426,11 @@ public class MoveVerifierTest {
     
                 //Bonus zwei für Bombe und Override
                 if (tile == 'b') {
-                    Move mBomb = new Move(x, y, 20, ownId);
+                    int mBomb = MoveVerifier.encodeMove(x, y, 20, ownId);
                     if (MoveVerifier.isValid(mBomb, controller, state)) {
                         moves.add(mBomb);
                     }
-                    Move mOverride = new Move(x, y, 21, ownId);
+                    int mOverride = MoveVerifier.encodeMove(x, y, 21, ownId);
                     if (MoveVerifier.isValid(mOverride, controller, state)) {
                         moves.add(mOverride);
                     }
@@ -443,7 +438,7 @@ public class MoveVerifierTest {
                 //Choice für jede Player-ID einmal
                 else if (tile == 'c') {
                     for (int choice = 1; choice <= numPlayers; choice++) {
-                        Move m = new Move(x, y, choice, ownId);
+                        int m = MoveVerifier.encodeMove(x, y, choice, ownId);
                         if (MoveVerifier.isValid(m, controller, state)) {
                             moves.add(m);
                         }
@@ -451,7 +446,7 @@ public class MoveVerifierTest {
                 }
                 // Normales Feld, Expansion, Override 
                 else {
-                    Move m = new Move(x, y, 0, ownId);
+                    int m = MoveVerifier.encodeMove(x, y, 0, ownId);
                     if (MoveVerifier.isValid(m, controller, state)) {
                         moves.add(m);
                     }
@@ -459,6 +454,6 @@ public class MoveVerifierTest {
             }
         }
 
-        return new ArrayList<>(moves);
+        return moves;
     }
 }
