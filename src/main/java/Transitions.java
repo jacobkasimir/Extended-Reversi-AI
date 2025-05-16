@@ -33,7 +33,7 @@ public class Transitions{
      */
     public int getNextTile(int x, int y, int direc) {
         if(direc < 9 && direc >= 0){
-            if(getTransition(x, y, direc) == 0){
+            if(getTransition(x, y, direc) < 0){
                 switch (direc) {
                     case 0 -> y--;
                     case 1 -> { 
