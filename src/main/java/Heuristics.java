@@ -1,8 +1,7 @@
-import java.util.ArrayList;
 
 public class Heuristics {
 
-    private final ArrayList<Coordinate> corners;
+    private final IntLinkedList corners;
 
     public Heuristics(MapController map){
         corners = findCorners(map);
@@ -10,13 +9,13 @@ public class Heuristics {
 
     //can be private but public for using in unit tests
     //TODO set to private
-    public ArrayList<Coordinate> findCorners(MapController map){
+    public IntLinkedList findCorners(MapController map){
         
-        ArrayList<Coordinate> result = new ArrayList<>();
-        Position currentPosition1;
-        Position nextTile1;
-        Position currentPosition2;
-        Position nextTile2;
+        IntLinkedList result = new IntLinkedList();
+        int currentPosition1;
+        int nextTile1;
+        int currentPosition2;
+        int nextTile2;
         boolean currentIsCorner;
 
         for (int x = 0; x < map.getWidth(); x++) {
@@ -29,13 +28,13 @@ public class Heuristics {
 
                     for (int i = 0; i < 4; i++) {
                         
-                        currentPosition1 = new Position(x, y, i);
+                        currentPosition1 = MoveVerifier.encodePosition(x, y, i);
                         nextTile1 = map.getNextTile(currentPosition1);
-                        currentPosition2 = new Position(x, y, i+4);
+                        currentPosition2 = MoveVerifier.encodePosition(x, y, i+4);
                         nextTile2 = map.getNextTile(currentPosition2);
 
-                        if (nextTile1 != null && map.getTile(nextTile1.x(), nextTile1.y()) != '-') {
-                            if (nextTile2 != null && map.getTile(nextTile2.x(), nextTile2.y()) != '-') {
+                        if (nextTile1 != -1 && map.getTile(MoveVerifier.decodePosX(nextTile1), MoveVerifier.decodePosY(nextTile1)) != '-') {
+                            if (nextTile2 != -1 && map.getTile(MoveVerifier.decodePosX(nextTile2), MoveVerifier.decodePosY(nextTile2)) != '-') {
                                 currentIsCorner = false;
                                 break;
                             }
@@ -43,7 +42,7 @@ public class Heuristics {
                         
                     }
                     if (currentIsCorner) {
-                        result.add(new Coordinate(x, y));
+                        result.add(MoveVerifier.encodeCoordinate(x,y));
                     } 
                 }
             }
@@ -56,16 +55,18 @@ public class Heuristics {
         
         double counter = 0;
 
-        for (Coordinate coordinate : corners) {
-            if (map.getTile(coordinate.x(), coordinate.y()) == (playerId + '0')) {
+        ListNode coordinate = corners.getHead();
+        while (coordinate != null) {
+            if (map.getTile(MoveVerifier.decodeXCoords(coordinate.getValue()), MoveVerifier.decodeYCoords(coordinate.getValue())) == (playerId + '0')) {
                 counter++;
             }
+            coordinate = coordinate.getNext();
         }
 
         if (corners.isEmpty()) {
             return 0;
         }else{
-            return counter / corners.size();
+            return counter / corners.getSize();
         }
     }
 

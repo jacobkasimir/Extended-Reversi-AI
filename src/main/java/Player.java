@@ -1,5 +1,3 @@
-import java.util.LinkedHashSet;
-import java.util.Set;
 /**
  * Represents a player in the game, tracking their available bombs,
  * overwrites, player number, and in-game status.
@@ -9,7 +7,7 @@ public class Player {
     private int numberOverwrites;
     private int playerNumber;
     private boolean inGame = true;
-    Set<Coordinate> tiles;
+    IntLinkedList tiles;
 
     /**
      * Constructs a Player with specified resources and status.
@@ -24,7 +22,7 @@ public class Player {
         this.numberOverwrites = overwrites;
         this.playerNumber = number;
         this.inGame = in;
-        this.tiles = new LinkedHashSet<>();
+        this.tiles = new IntLinkedList();
     }
 
     public Player(Player player){
@@ -32,7 +30,7 @@ public class Player {
         this.numberOverwrites = player.getNumberOverwrites();
         this.playerNumber = player.getPlayerNumber();
         this.inGame = player.isInGame();
-        this.tiles = new LinkedHashSet<>();
+        this.tiles = new IntLinkedList();
         this.tiles.addAll(player.getTiles());
     }
 
@@ -112,7 +110,7 @@ public class Player {
      * Getter function for the set containing all tiles of one player.
      * @return tiles of one player.
      */
-    public Set<Coordinate> getTiles() {
+    public IntLinkedList getTiles() {
         return tiles;
     }
 
@@ -121,7 +119,7 @@ public class Player {
      * Sets the Set of tiles, to the tiles given by the function.
      * @param tiles
      */
-    public void setTiles(Set<Coordinate> tiles) {
+    public void setTiles(IntLinkedList tiles) {
         this.tiles = tiles;
     }
 
@@ -129,10 +127,9 @@ public class Player {
     /**
      * Adds one tile to the set, if it isnt already added.
      * @param c
-     * @return true, if the coordinate c could be added to the set.
      */
-    public boolean addTile(Coordinate c){
-        return this.tiles.add(c);
+    public void addTile(int c){
+        this.tiles.addIfNotContains(c);
     }    
 
 

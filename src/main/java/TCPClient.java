@@ -61,14 +61,14 @@ public class TCPClient {
 
                     game.setCalculateParameters(timeLimit, maxDepth);
                     //Move move = MoveVerifier.calculateMoves(game.getCurrentGameState(), game.getCurrentGameAttributes().getOurPlayerId()).getFirst();
-                    Move move = game.calculateMove();
+                    int move = game.calculateMove();
 
                     out.writeByte(5);
                     out.writeInt(5);
-                    out.writeShort(move.x());
-                    out.writeShort(move.y());
-                    out.writeByte(move.special());
-                    System.out.println("Zug gesendet: (" + move.x() + "," + move.y() + "), Spezial: " + move.special());
+                    out.writeShort(MoveVerifier.decodeX(move));
+                    out.writeShort(MoveVerifier.decodeY(move));
+                    out.writeByte(MoveVerifier.decodeSpecial(move));
+                    System.out.println("Zug gesendet: (" + MoveVerifier.decodeX(move) + "," + MoveVerifier.decodeY(move) + "), Spezial: " + MoveVerifier.decodeSpecial(move));
                     break;
 
                 case 6:
@@ -76,7 +76,7 @@ public class TCPClient {
                     short my = in.readShort();
                     byte mspecial = in.readByte();
                     byte mplayerId = in.readByte();
-                    Move MadeMove = new Move(mx, my, mspecial, mplayerId);
+                    int MadeMove = MoveVerifier.encodeMove(mx, my, mspecial, mplayerId);
                     game.updateGame(MadeMove);
                     System.out.println("Spieler " + mplayerId + " zog auf (" + mx + "," + my + ") mit Spezialwert " + mspecial);
                     break;

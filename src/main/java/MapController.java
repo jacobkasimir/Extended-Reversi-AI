@@ -1,6 +1,4 @@
 
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /*
  * The MapController is the interface for other classes to interact with the map and transitions
@@ -8,7 +6,7 @@ import java.util.Set;
 public class MapController{
     private final Map map;
     private final Transitions transitions;
-    private Set<Coordinate> expansionTiles;
+    private IntLinkedList expansionTiles;
     private final int bombRadius;
     private final int width;
     private final int height;
@@ -22,14 +20,13 @@ public class MapController{
         this.bombRadius = bombRadius;
 
         initMap(mapString);
-
         initExpansionTiles();
     }
 
     public MapController(MapController obj){
         this.map = new Map(obj.getMap());
         this.transitions = obj.getTransitions();
-        this.expansionTiles = new LinkedHashSet<>();
+        this.expansionTiles = new IntLinkedList();
         this.expansionTiles.addAll(obj.getExpansionTiles());
         this.bombRadius = obj.getBombRadius();
         this.width = obj.getWidth();
@@ -95,18 +92,18 @@ public class MapController{
     
 
     private void initExpansionTiles(){
-        expansionTiles = new LinkedHashSet<>();
+        expansionTiles = new IntLinkedList();
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if (getTile(i, j) == 'x') {
-                    expansionTiles.add(new Coordinate(i, j));
+                    expansionTiles.add(MoveVerifier.encodeCoordinate(i, j));
                 }
             }
         }
     }
 
-    public Set<Coordinate> getExpansionTiles() {
+    public IntLinkedList getExpansionTiles() {
         return expansionTiles;
     }
 
@@ -135,8 +132,8 @@ public class MapController{
      * @param p The Position-object of the current position
      * @return Position The next position after the transition
      */
-    public Position getNextTile(Position p) {
-        return transitions.getNextTile(p.x(), p.y(), p.direc());
+    public int getNextTile(int p) {
+        return transitions.getNextTile(MoveVerifier.decodePosX(p), MoveVerifier.decodePosY(p), MoveVerifier.decodePosDirec(p));
     }
 
     
@@ -159,31 +156,31 @@ public class MapController{
      * @param move The played move
      * @param state The associated GameAttributes
      */
-    public void updateMap(Move move, GameAttributes state){
+    public void updateMap(int move, GameAttributes state){
         if(state.isPhase1()){
             // removing expansion Tiles out of expansionTiles
-            if (getTile(move.x(), move.y()) == 'x') {
-                expansionTiles.remove(new Coordinate(move.x(), move.y()));
+            if (getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'x') {
+                expansionTiles.remove(MoveVerifier.encodeCoordinate(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)));
             }
 
             int[] directionCounts = new int[8]; //holds the number of tiles for every direction that are captured by the move
             boolean search;
-            boolean isChoice = getTile(move.x(), move.y()) == 'c';    //Is the move placed on a choice tile?
-            boolean isInversion = getTile(move.x(), move.y()) == 'i'; //Is the move placed on an inversion tile?
+            boolean isChoice = getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'c';    //Is the move placed on a choice tile?
+            boolean isInversion = getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'i'; //Is the move placed on an inversion tile?
             int tilesPassed;    //holds the number of captured tiles for a specific direction
-            Position currentPosition; 
+            int currentPosition; 
 
             for (int i = 0; i < 8; i++) { //search in every direction
-                currentPosition = new Position(move.x(), move.y(), i);
+                currentPosition = MoveVerifier.encodePosition(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), i);
                 search = true;
                 tilesPassed = 0;
                 while(search){  //counting the number of captured tiles in a specific direction (i)
                     currentPosition = getNextTile(currentPosition); //updates the currentPosition for direction i
-                    if(currentPosition == null) break;  //checks if nextTile is out of map
-                    if(String.valueOf(move.player()).equals(String.valueOf(this.getTile(currentPosition.x(), currentPosition.y())))){
+                    if(currentPosition < 0) break;  //checks if nextTile is out of map
+                    if(String.valueOf(MoveVerifier.decodePlayerId(move)).equals(String.valueOf(this.getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition))))){
                         //case that the currentPosition is occupied by a tile owned by the player
                         if(tilesPassed > 0) {
-                            if (currentPosition.x() != move.x() || currentPosition.y() != move.y()){ //check that found tile is not the starting tile
+                            if (MoveVerifier.decodePosX(currentPosition) != MoveVerifier.decodeX(move) || MoveVerifier.decodePosY(currentPosition) != MoveVerifier.decodeY(move)){ //check that found tile is not the starting tile
                                 directionCounts[i] = tilesPassed;
                             }
                             search = false;
@@ -196,7 +193,7 @@ public class MapController{
                     else if (helpCompare('i', currentPosition)) search = false;
                     else if (helpCompare('b', currentPosition)) search = false;
                     else if (helpCompare('-', currentPosition)) search = false;
-                    else if (currentPosition.x() == move.x() && currentPosition.y() == move.y()) search = false;
+                    else if (MoveVerifier.decodePosX(currentPosition) == MoveVerifier.decodeX(move) && MoveVerifier.decodePosY(currentPosition) == MoveVerifier.decodeY(move)) search = false;
                     else {
                         tilesPassed++;
                     }
@@ -205,29 +202,29 @@ public class MapController{
 
             //updating captured tiles 
             for (int i = 0; i < 8; i++) {
-                currentPosition = new Position(move.x(), move.y(), i);
+                currentPosition = MoveVerifier.encodePosition(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), i);
                 for (int j = 0; j < directionCounts[i]+1; j++) {
-                    if (getTile(currentPosition.x(), currentPosition.y()) == 'x') {
-                        expansionTiles.remove(new Coordinate(currentPosition.x(), currentPosition.y()));
+                    if (getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) == 'x') {
+                        expansionTiles.remove(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
                     }
                     //add tile to tiles of the player
-                    state.getPlayer(move.player()).getTiles().add(new Coordinate(currentPosition.x(), currentPosition.y()));
+                    state.getPlayer(MoveVerifier.decodePlayerId(move)).getTiles().addIfNotContains(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
                     //remove tile from the opponents tiles
-                    if(isPlayer(getTile(currentPosition.x(), currentPosition.y()))){
-                        state.getPlayer((int)(getTile(currentPosition.x(), currentPosition.y()) - '0')).getTiles().remove(new Coordinate(currentPosition.x(), currentPosition.y()));
+                    if(isPlayer(getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)))){
+                        state.getPlayer((int)(getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) - '0')).getTiles().remove(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
                     }
                     //update the map
-                    setTile(currentPosition.x(), currentPosition.y(), (char)(move.player() + '0'));
+                    setTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition), (char)(MoveVerifier.decodePlayerId(move) + '0'));
                     currentPosition = getNextTile(currentPosition);
                 }
             }
-            state.getPlayer(move.player()).getTiles().add(new Coordinate(move.x(), move.y()));
+            state.getPlayer(MoveVerifier.decodePlayerId(move)).getTiles().addIfNotContains(MoveVerifier.encodeCoordinate(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)));
             
 
             if(isChoice) {
                 choiceHandling(move);  //update if choice tile
-                resetTiles(move.player(), state);
-                resetTiles(move.special(), state);
+                resetTiles(MoveVerifier.decodePlayerId(move), state);
+                resetTiles(MoveVerifier.decodeSpecial(move), state);
             } else if(isInversion) {
                 inversionHandling(state);   //update if inversion tile
                 for (int player = 1; player < state.getNumberPlayers()+1; player++) {
@@ -237,20 +234,20 @@ public class MapController{
         }
         else {
             //handles bombing (phase 2)
-            bombing(move.x(), move.y(), bombRadius);  
-            resolveBombing(move.x(), move.y(), bombRadius);
+            bombing(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), bombRadius);  
+            resolveBombing(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), bombRadius);
         }
     }
 
     //handles bombing
     private void bombing(int x, int y, int radius){
-        if(GameRules.insideMap(new Move(x, y, 0, 0), this) && getTile(x, y) != '-'){
+        if(GameRules.insideMap(MoveVerifier.encodeMove(x, y, 0, 0), this) && getTile(x, y) != '-'){
             setTile(x, y, '#');
 
             if(radius > 0){ 
                 for (int i = 0; i < 8; i++) {
-                    Position newPosition = getNextTile(new Position(x, y, i));
-                    if(newPosition != null) bombing(newPosition.x(), newPosition.y(), radius-1);
+                    int newPosition = getNextTile(MoveVerifier.encodePosition(x, y, i));
+                    if(newPosition >= 0) bombing(MoveVerifier.decodePosX(newPosition), MoveVerifier.decodePosY(newPosition), radius-1);
                 }
             }
         }
@@ -258,24 +255,24 @@ public class MapController{
 
     //resolves '#' to '-'
     private void resolveBombing(int x, int y, int radius){
-        if(GameRules.insideMap(new Move(x, y, 0, 0), this)){
+        if(GameRules.insideMap(MoveVerifier.encodeMove(x, y, 0, 0), this)){
             if(getTile(x, y) == '#') setTile(x, y, '-');
 
             if(radius > 0){ 
                 for (int i = 0; i < 8; i++) {
-                    Position newPosition = getNextTile(new Position(x, y, i));
-                    if(newPosition != null) resolveBombing(newPosition.x(), newPosition.y(), radius-1);
+                    int newPosition = getNextTile(MoveVerifier.encodePosition(x, y, i));
+                    if(newPosition >= 0) resolveBombing(MoveVerifier.decodePosX(newPosition), MoveVerifier.decodePosY(newPosition), radius-1);
                 }
             }
         }
     }
 
     //handles choice tiles (switching the tiles)
-    public void choiceHandling(Move move){
+    public void choiceHandling(int move){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if(getTile(i, j) == ((char)(move.player() + '0'))) setTile(i, j, ((char)(move.special() + '0')));
-                else if(getTile(i, j) == ((char)(move.special() + '0'))) setTile(i, j, ((char)(move.player() + '0')));
+                if(getTile(i, j) == ((char)(MoveVerifier.decodePlayerId(move) + '0'))) setTile(i, j, ((char)(MoveVerifier.decodeSpecial(move) + '0')));
+                else if(getTile(i, j) == ((char)(MoveVerifier.decodeSpecial(move) + '0'))) setTile(i, j, ((char)(MoveVerifier.decodePlayerId(move) + '0')));
             }
         }
     }
@@ -301,7 +298,7 @@ public class MapController{
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if(map.getTile(i, j) == playerId + '0'){
-                    attributes.getPlayer(playerId).getTiles().add(new Coordinate(i, j));
+                    attributes.getPlayer(playerId).getTiles().add(MoveVerifier.encodeCoordinate(i, j));
                 }
             }
         }
@@ -314,8 +311,8 @@ public class MapController{
     }
 
     //compares the char values
-    private boolean helpCompare(char c, Position currentPosition){
-        return (getTile(currentPosition.x(), currentPosition.y()) == c);
+    private boolean helpCompare(char c, int currentPosition){
+        return (getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) == c);
     }
 
 

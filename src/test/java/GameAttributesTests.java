@@ -34,7 +34,7 @@ public class GameAttributesTests {
     public void decrementOverwriteStones(){
 
         GameAttributes state = new GameAttributes(2, 3, 1, 1, (byte) 1);
-        Move move = new Move(5, 6, 0, 1);
+        int move = MoveVerifier.encodeMove(5, 6, 0, 1);
 
         state.updateState(move, map);
 
@@ -49,7 +49,7 @@ public class GameAttributesTests {
     public void decrementBombs(){
 
         GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 2);
-        Move move = new Move(4, 4, 0, 2);
+        int move = MoveVerifier.encodeMove(4, 4, 0, 2);
 
         assertFalse(state.isPhase1());
 
@@ -66,7 +66,7 @@ public class GameAttributesTests {
     public void bonusIncrementBombs(){
 
         GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 1);
-        Move move = new Move(2, 5, 20, 1);
+        int move = MoveVerifier.encodeMove(2, 5, 20, 1);
 
         if (!MoveVerifier.isValid(move, map, state)) {
             throw new Error("Test not valid.");
@@ -81,7 +81,7 @@ public class GameAttributesTests {
     public void bonusIncrementOverwrites(){
 
         GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 1);
-        Move move = new Move(2, 5, 21, 1);
+        int move = MoveVerifier.encodeMove(2, 5, 21, 1);
 
         if (!MoveVerifier.isValid(move, map, state)) {
             throw new Error("Test not valid.");

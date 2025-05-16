@@ -1,6 +1,3 @@
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,9 +35,9 @@ public class MapTests {
 
     @Test 
     public void nextTileTest(){
-        assertEquals(mapController.getNextTile(new Position(7, 7, 2)), new Position(0, 0, 2));
-        assertEquals(mapController.getNextTile(new Position(0, 7, 5)), new Position(7, 0, 5));
-        assertEquals(mapController.getNextTile(new Position(0, 0, 3)), new Position(1, 1, 3));
+        assertEquals(mapController.getNextTile(MoveVerifier.encodePosition(7, 7, 2)), MoveVerifier.encodePosition(0, 0, 2));
+        assertEquals(mapController.getNextTile(MoveVerifier.encodePosition(0, 7, 5)), MoveVerifier.encodePosition(7, 0, 5));
+        assertEquals(mapController.getNextTile(MoveVerifier.encodePosition(0, 0, 3)), MoveVerifier.encodePosition(1, 1, 3));
     }
     
 
@@ -64,7 +61,7 @@ public class MapTests {
             new Transitions(8,8), 
             8, 8, 0);
 
-        basicTestController.updateMap(new Move(2, 4, 0, 1), 
+        basicTestController.updateMap(MoveVerifier.encodeMove(2, 4, 0, 1), 
         new GameAttributes(2,0,0,0,(byte)1));
 
         assertEquals(basicTestController, new MapController(
@@ -102,7 +99,7 @@ public class MapTests {
             client.getTransitions(), 
             8, 8, 0);
 
-            transitionTestController.updateMap(new Move(6, 0, 0, 1), 
+            transitionTestController.updateMap(MoveVerifier.encodeMove(6, 0, 0, 1), 
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(transitionTestController, new MapController(
@@ -137,10 +134,10 @@ public class MapTests {
             new Transitions(8,8), 
             8, 8, 0);
 
-            assertTrue(MoveVerifier.isValid(new Move(5, 3, 2, 1), choiceTestController, 
+            assertTrue(MoveVerifier.isValid(MoveVerifier.encodeMove(5, 3, 2, 1), choiceTestController, 
             new GameAttributes(2,2,0,0,(byte)1)));
 
-            choiceTestController.updateMap(new Move(5, 3, 2, 1),
+            choiceTestController.updateMap(MoveVerifier.encodeMove(5, 3, 2, 1),
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(choiceTestController, new MapController(
@@ -176,7 +173,7 @@ public class MapTests {
             8, 8, 0);
 
             
-            choiceTestController.choiceHandling(new Move(5, 3,2,1));
+            choiceTestController.choiceHandling(MoveVerifier.encodeMove(5, 3,2,1));
 
             assertEquals(choiceTestController, new MapController(
                 new String[]{
@@ -210,7 +207,7 @@ public class MapTests {
             new Transitions(8,8), 
             8, 8, 0);
 
-            inversionTestController.updateMap(new Move(5, 3, 0, 1), 
+            inversionTestController.updateMap(MoveVerifier.encodeMove(5, 3, 0, 1), 
             new GameAttributes(3,0,0,0,(byte)1));
 
             assertEquals(inversionTestController, new MapController(
@@ -246,7 +243,7 @@ public class MapTests {
             new Transitions(8,8),
             8, 8, 0);
 
-            overrideTileController.updateMap(new Move(3, 3, 0, 2), 
+            overrideTileController.updateMap(MoveVerifier.encodeMove(3, 3, 0, 2), 
             new GameAttributes(2,1,0,0,(byte)1));
 
             assertEquals(overrideTileController, new MapController(
@@ -282,7 +279,7 @@ public class MapTests {
             new Transitions(8,8), 
             8, 8, 0);                                                                                                                                               
 
-            expansionTileController.updateMap(new Move(6, 3, 0, 1), 
+            expansionTileController.updateMap(MoveVerifier.encodeMove(6, 3, 0, 1), 
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(expansionTileController, new MapController(
@@ -317,7 +314,7 @@ public class MapTests {
             new Transitions(8,8),
             8, 8, 1);
 
-            bombController.updateMap(new Move(3, 4, 0, 1), 
+            bombController.updateMap(MoveVerifier.encodeMove(3, 4, 0, 1), 
             new GameAttributes(2,0,2,1,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -352,7 +349,7 @@ public class MapTests {
             new Transitions(8,8),
             8, 8, 3);
 
-            bombController.updateMap(new Move(2, 5, 0, 1), 
+            bombController.updateMap(MoveVerifier.encodeMove(2, 5, 0, 1), 
             new GameAttributes(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -391,7 +388,7 @@ public class MapTests {
             client.getTransitions(),
             8, 8, 3);
 
-            bombController.updateMap(new Move(2, 5, 0, 1), 
+            bombController.updateMap(MoveVerifier.encodeMove(2, 5, 0, 1), 
             new GameAttributes(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -427,7 +424,7 @@ public class MapTests {
             }, client.getTransitions(),
             8, 8, 3);
 
-            bombController.updateMap(new Move(4, 4, 0, 1), 
+            bombController.updateMap(MoveVerifier.encodeMove(4, 4, 0, 1), 
             new GameAttributes(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -465,7 +462,7 @@ public class MapTests {
             client.getTransitions(), 
             8, 8, 0);
 
-            overlappingController.updateMap(new Move(6, 7, 0, 2), 
+            overlappingController.updateMap(MoveVerifier.encodeMove(6, 7, 0, 2), 
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(overlappingController, new MapController(
@@ -506,7 +503,7 @@ public class MapTests {
             client.getTransitions(), 
             8, 8, 0);
 
-            allDirectionsController.updateMap(new Move(4, 3, 0, 2), 
+            allDirectionsController.updateMap(MoveVerifier.encodeMove(4, 3, 0, 2), 
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(allDirectionsController, new MapController(
@@ -533,22 +530,22 @@ public class MapTests {
         game.init(lines);
         game.setOurPlayerId((byte)2);
 
-        Set<Coordinate> coordinates = new LinkedHashSet<>();
-        coordinates.add(new Coordinate(1, 2));
-        coordinates.add(new Coordinate(2, 1));
+        IntLinkedList coordinates = new IntLinkedList();
+        coordinates.add(MoveVerifier.encodeCoordinate(1, 2));
+        coordinates.add(MoveVerifier.encodeCoordinate(2, 1));
 
         
         assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
 
-        game.updateGame(new Move(0,2, 0, 1));
-        coordinates.remove(new Coordinate(1, 2));
+        game.updateGame(MoveVerifier.encodeMove(0,2, 0, 1));
+        coordinates.remove(MoveVerifier.encodeCoordinate(1, 2));
 
         assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
 
 
-        game.updateGame(new Move(0,3, 0, 2));
-        coordinates.add(new Coordinate(1, 2));
-        coordinates.add(new Coordinate(0, 3));
+        game.updateGame(MoveVerifier.encodeMove(0,3, 0, 2));
+        coordinates.add(MoveVerifier.encodeCoordinate(1, 2));
+        coordinates.add(MoveVerifier.encodeCoordinate(0, 3));
         
         assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
     }
@@ -562,29 +559,29 @@ public class MapTests {
         game.init(lines);
         game.setOurPlayerId((byte)2);
 
-        Set<Coordinate> coordinates = new LinkedHashSet<>();
-        coordinates.add(new Coordinate(0, 1));
-        coordinates.add(new Coordinate(0, 3));
-        coordinates.add(new Coordinate(2, 0));
+        IntLinkedList coordinates = new IntLinkedList();
+        coordinates.add(MoveVerifier.encodeCoordinate(0, 1));
+        coordinates.add(MoveVerifier.encodeCoordinate(0, 3));
+        coordinates.add(MoveVerifier.encodeCoordinate(2, 0));
         
 
         
         assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
 
-        game.updateGame(new Move(2,3, 0, 2));
-        coordinates.add(new Coordinate(2, 2));
-        coordinates.add(new Coordinate(2, 1));
-        coordinates.add(new Coordinate(3, 3));
-        coordinates.add(new Coordinate(1, 3));
-        coordinates.add(new Coordinate(1, 2));
+        game.updateGame(MoveVerifier.encodeMove(2,3, 0, 2));
+        coordinates.add(MoveVerifier.encodeCoordinate(2, 2));
+        coordinates.add(MoveVerifier.encodeCoordinate(2, 1));
+        coordinates.add(MoveVerifier.encodeCoordinate(3, 3));
+        coordinates.add(MoveVerifier.encodeCoordinate(1, 3));
+        coordinates.add(MoveVerifier.encodeCoordinate(1, 2));
 
-        coordinates.add(new Coordinate(2, 3));
+        coordinates.add(MoveVerifier.encodeCoordinate(2, 3));
         assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
 
 
-        game.updateGame(new Move(3,2, 0, 1));
-        coordinates.remove(new Coordinate(1, 2));
-        coordinates.remove(new Coordinate(2, 2));
+        game.updateGame(MoveVerifier.encodeMove(3,2, 0, 1));
+        coordinates.remove(MoveVerifier.encodeCoordinate(1, 2));
+        coordinates.remove(MoveVerifier.encodeCoordinate(2, 2));
         
         assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
     }

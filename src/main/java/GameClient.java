@@ -98,7 +98,7 @@ public class GameClient {
      * Applies a move to the game, updating both the map and game state.
      * @param move The move to apply.
      */
-    public void updateGame(Move move) {
+    public void updateGame(int move) {
         this.current_gameState.updateGameState(move);
     }
 
@@ -131,9 +131,12 @@ public class GameClient {
         this.timeLimit = timeLimit;
     }
 
-    public Move calculateMove(){
-        MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
-        return miniMax.chooseMove();
+    public int calculateMove(){
+        //MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
+        //return miniMax.chooseMove();
+
+        AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
+        return alphaBeta.chooseMove();
     }
 
     
@@ -142,11 +145,11 @@ public class GameClient {
      * Generates a random move within the bounds of the map.
      * @return A randomly generated move.
      */
-    private Move generateRandomMove() {
+    private int generateRandomMove() {
         Random rand = new Random();
         int x = rand.nextInt(0, current_gameState.mapController().getWidth());
         int y = rand.nextInt(0, current_gameState.mapController().getHeight());
-        return new Move(x, y, 0, current_gameState.attributes().getOurPlayerId());
+        return MoveVerifier.encodeMove(x, y, 0, current_gameState.attributes().getOurPlayerId());
     }
 
     /**
@@ -154,7 +157,7 @@ public class GameClient {
      * @param lines The full array.
      * @param min Start index (inclusive).
      * @param max End index (exclusive).
-     * @return Sub-array of strings.
+     * @return Subarray of strings.
      */
     private static String[] splitString(String[] lines, int min, int max) {
         String[] res = new String[max - min];

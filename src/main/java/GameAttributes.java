@@ -134,18 +134,18 @@ public class GameAttributes {
      * Refreshes the game state based on the provided move.
      * @param move the Move object representing the latest action to apply.
      */
-    public void updateState(Move move, MapController map){
+    public void updateState(int move, MapController map){
         
         if(isPhase1()){
             if(GameRules.occupied(move, map) || GameRules.isExpansion(map, move)){
-                this.getPlayer(move.player()).setNumberOverwrites(this.getPlayer(move.player()).getNumberOverwrites() - 1);
-            }else if (move.special() == 20) {
-                this.getPlayer(move.player()).setNumberBombs(this.getPlayer(move.player()).getNumberBombs() + 1);
-            }else if (move.special() == 21) {
-                this.getPlayer(move.player()).setNumberOverwrites(this.getPlayer(move.player()).getNumberOverwrites() + 1);
+                this.getPlayer(MoveVerifier.decodePlayerId(move)).setNumberOverwrites(this.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberOverwrites() - 1);
+            }else if (MoveVerifier.decodeSpecial(move) == 20) {
+                this.getPlayer(MoveVerifier.decodePlayerId(move)).setNumberBombs(this.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberBombs() + 1);
+            }else if (MoveVerifier.decodeSpecial(move) == 21) {
+                this.getPlayer(MoveVerifier.decodePlayerId(move)).setNumberOverwrites(this.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberOverwrites() + 1);
             }
         }else{
-            this.getPlayer(move.player()).setNumberBombs(this.getPlayer(move.player()).getNumberBombs() - 1);
+            this.getPlayer(MoveVerifier.decodePlayerId(move)).setNumberBombs(this.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberBombs() - 1);
         }
     }
 }

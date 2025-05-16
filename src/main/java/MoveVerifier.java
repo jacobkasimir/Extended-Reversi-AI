@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
@@ -15,7 +12,7 @@ public class MoveVerifier {
      * @param map   Instance of the Map Controller.
      * @return true if the move is valid.
      */
-    public static boolean isValid(Move move, MapController map, GameAttributes state){
+    public static boolean isValid(int move, MapController map, GameAttributes state){
 
         if(!(GameRules.insideMap(move, map) &&
         GameRules.validMove(move, state) &&
@@ -35,46 +32,50 @@ public class MoveVerifier {
     }
 
     
-    public static ArrayList<Move> allMovesPhase2(MapController controller, GameAttributes state){
-        ArrayList<Move> res = new ArrayList<>();
+    public static IntLinkedList allMovesPhase2(MapController controller, GameAttributes state){
+        IntLinkedList res = new IntLinkedList();
         for (int i = 0; i < controller.getWidth(); i++) {
             for (int j = 0; j < controller.getHeight(); j++) {
                 if(controller.getTile(i, j) != '-' && state.getPlayer(state.getOurPlayerId()).getNumberBombs()>0){
-                    res.add(new Move(i, j, 0, state.getOurPlayerId()));
+                    res.addIfNotContains(encodeMove(i, j, 0, state.getOurPlayerId()));
                 }
             }
         }
         return res;
     }
 
-    public static ArrayList<Move> allMovesPhase1(MapController controller, GameAttributes state, int playerId) {
-        Set<Move> res = new LinkedHashSet<>();          // Damit keine Duplikate eingefügt werden (siehe overwrite von equals in Move)
-        Set<Coordinate> expansions = controller.getExpansionTiles();
+    public static IntLinkedList allMovesPhase1(MapController controller, GameAttributes state, int playerId) {
+        IntLinkedList res = new IntLinkedList();          // Damit keine Duplikate eingefügt werden (siehe overwrite von equals in Move)
+        IntLinkedList expansions = controller.getExpansionTiles();
+        IntLinkedList temp =  state.getPlayer(playerId).getTiles();
+        ListNode node = temp.getHead();
 
         //Tiefensuche für jeden unserer Steine in alle Richtungen
-        for (Coordinate c : state.getPlayer(playerId).getTiles()) {
+        while(node != null ) {
+            int x = decodeXCoords(node.getValue());
+            int y = decodeYCoords(node.getValue());
 
             for (int dir = 0; dir < 8; dir++) {
-                Position pos = new Position(c.x(), c.y(), dir);
+                int pos = encodePosition(x, y, dir);
                 int tilesPassed = 0;
                 boolean search = true;
                 while (search) {
                     pos = controller.getNextTile(pos);
-                    if (pos == null) break;
+                    if (pos < 0) break;
 
-                    Move move = new Move(pos.x(), pos.y(), 0, playerId);
+                    int move =  MoveVerifier.encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 0, playerId);
                     if (!GameRules.isNotHole(move, controller) ||
                         !GameRules.insideMap(move, controller)) {
                         break;
                     }
 
-                    char tile = (char)controller.getTile(pos.x(), pos.y());
+                    char tile = (char)controller.getTile(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos));
                     boolean isOwn = tile == ('0' + playerId);
 
                     if (GameRules.occupied(move, controller)) {
                         if (//GameRules.isExpansion(controller, move) ||
-                            (tilesPassed > 0 && GameRules.hasOverwrite(state, move) && c.x() != move.x() && c.y() != move.y())) {
-                            res.add(move);
+                            (tilesPassed > 0 && GameRules.hasOverwrite(state, move) && x != decodeX(move) && y != decodeY(move))) {
+                            res.addIfNotContains(move); //auskommentiert für debugging //TODO
                         }
                         if (isOwn) search = false; //Damit bei eigenem Feld nicht hochgzählt wird
                         tilesPassed++;
@@ -82,38 +83,41 @@ public class MoveVerifier {
                     } else {
                         // Bonusfelder beide Wahlen
                         if (tilesPassed > 0 && tile == 'b') {
-                            res.add(new Move(pos.x(), pos.y(), 20, playerId));
-                            res.add(new Move(pos.x(), pos.y(), 21, playerId));
+                            res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 20, playerId));
+                            res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 21, playerId));
                         }
                         // Choice-Felder alle Player-IDs
                         else if (tilesPassed > 0 && tile == 'c') {
                             for (int j = 1; j <= state.getNumberPlayers(); j++) {
-                                res.add(new Move(pos.x(), pos.y(), j, playerId));
+                                res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), j, playerId));
                             }
                         }
                         //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
-                        else if (tilesPassed > 0 && (c.x() != move.x() || c.y() != move.y())) {
-                            res.add(move);
+                        else if (tilesPassed > 0 && (x != decodeX(move) || y != decodeY(move))) {
+                            res.addIfNotContains(move);
                         }
                         search = false;
                     }
                 }
             }
+            node = node.getNext();
         }
 
         //Alle Expansion stones sind mögliche Züge
-        for(Coordinate e: expansions){
-            if(GameRules.hasOverwrite(state, new Move(e.x(),e.y(),0,playerId))){
-                res.add(new Move(e.x(), e.y(), 0, playerId));
+        node = expansions.getHead();
+        while (node != null){
+            if(GameRules.hasOverwrite(state,encodeMove(decodeXCoords(node.getValue()),decodeYCoords(node.getValue()),0,playerId))){
+                res.addIfNotContains(encodeMove(decodeXCoords(node.getValue()),decodeYCoords(node.getValue()), 0, playerId));
             }
+            node = node.getNext();
         }
 
-        return new ArrayList<Move>(res);
+        return res;
     }
 
-    public static ArrayList<Move> calculateAllMoves_Bruteforce(MapController controller, GameAttributes state) {
+    public static IntLinkedList calculateAllMoves_Bruteforce(MapController controller, GameAttributes state, int playerId) {
 
-        Set<Move> moves = new LinkedHashSet<>();
+        IntLinkedList moves = new IntLinkedList();
         int width   = controller.getWidth();
         int height  = controller.getHeight();
         int ownId   = state.getOurPlayerId();
@@ -121,39 +125,39 @@ public class MoveVerifier {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                char tile = (char) controller.getTile(x, y);
+                char tile = controller.getTile(x, y);
 
                 //Bonus zwei für Bombe und Override
                 if (tile == 'b') {
-                    Move mBomb = new Move(x, y, 20, ownId);
+                    int mBomb = encodeMove(x, y, 20, playerId);
                     if (MoveVerifier.isValid(mBomb, controller, state)) {
-                        moves.add(mBomb);
+                        moves.addIfNotContains(mBomb);
                     }
-                    Move mOverride = new Move(x, y, 21, ownId);
+                    int mOverride = encodeMove(x, y, 21, playerId);
                     if (MoveVerifier.isValid(mOverride, controller, state)) {
-                        moves.add(mOverride);
+                        moves.addIfNotContains(mOverride);
                     }
                 }
                 //Choice für jede Player-ID einmal
                 else if (tile == 'c') {
                     for (int choice = 1; choice <= numPlayers; choice++) {
-                        Move m = new Move(x, y, choice, ownId);
+                        int m = encodeMove(x, y, choice, playerId);
                         if (MoveVerifier.isValid(m, controller, state)) {
-                            moves.add(m);
+                            moves.addIfNotContains(m);
                         }
                     }
                 }
                 // Normales Feld, Expansion, Override 
                 else {
-                    Move m = new Move(x, y, 0, ownId);
+                    int m = encodeMove(x, y, 0, playerId);
                     if (MoveVerifier.isValid(m, controller, state)) {
-                        moves.add(m);
+                        moves.addIfNotContains(m);
                     }
                 }
             }
         }
 
-        return new ArrayList<>(moves);
+        return moves;
     }
 
 
@@ -163,23 +167,24 @@ public class MoveVerifier {
      * @param playerId The playerId to evaluate.
      * @return A valid move or a dummy move if none found.
      */
-    public static ArrayList<Move> calculateMoves(GameState gameState, int playerId) {
+    public static IntLinkedList calculateMoves(GameState gameState, int playerId) {
         // for(Coordinate c : this.gameAttributes.getPlayer(gameAttributes.getOurPlayerId()).tiles){
         //     System.out.println(c);
         // }
         if(!gameState.attributes().getPlayer(playerId).isInGame()){
-            return new ArrayList<>();
+            return new IntLinkedList();
         }
         if(gameState.attributes().isPhase1()){
-            return MoveVerifier.allMovesPhase1(gameState.mapController(), gameState.attributes(), playerId);
+            return allMovesPhase1(gameState.mapController(), gameState.attributes(), playerId);
+            //return MoveVerifier.calculateAllMoves_Bruteforce(gameState.mapController(), gameState.attributes(), playerId);
         }
-        else return MoveVerifier.allMovesPhase2(gameState.mapController(), gameState.attributes());
+        else return allMovesPhase2(gameState.mapController(), gameState.attributes());
     }
 
     
-    public static ArrayList<Move> calculateNextMoves(GameState gameState, int lastPlayerId){
+    public static IntLinkedList calculateNextMoves(GameState gameState, int lastPlayerId){
         lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers())+1;
-        ArrayList<Move> res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
+        IntLinkedList res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
         int counter = 1;
 
         while(res.isEmpty() && counter < gameState.attributes().getNumberPlayers()+1){
@@ -206,4 +211,61 @@ public class MoveVerifier {
             return res;
         }
     }
+
+    public static int encodeCoordinate(int xCoord, int yCoord) {
+        return xCoord * 51 + yCoord; 
+    }
+
+    public static int encodeMove(int x, int y, int special, int playerId) {
+        return ((x * 51 + y) * 51 + special) * 51 + playerId;
+    }
+
+    public static int encodePosition(int x, int y, int direction) {
+        return (x * 51 + y) * 51 + direction;
+    }
+
+
+    public static int decodeXCoords(int value) {
+    return value / 51;
+    }
+
+    public static int decodeYCoords(int value) {
+        return value % 51;
+    }
+
+
+    public static int decodePlayerId(int value) {
+        return value % 51;
+    }
+
+    public static int decodeSpecial(int value) {
+        value /= 51;
+        return value % 51;
+    }
+
+    public static int decodeY(int value) {
+        value /= 51 * 51;
+        return value % 51;
+    }
+
+    public static int decodeX(int value) {
+        value /= 51 * 51 * 51;
+        return value;
+    }
+
+
+    public static int decodePosDirec(int value) {
+        return value % 51;
+    }
+
+    public static int decodePosY(int value) {
+        value /= 51;
+        return value % 51;
+    }
+
+    public static int decodePosX(int value) {
+        value /= 51 * 51;
+        return value % 51;
+    }
+
 }

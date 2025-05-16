@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
@@ -170,7 +168,7 @@ public class HeuristicsTest {
 
         GameAttributes state = new GameAttributes(4, 1, 1, 1, (byte) 1);
         state.setOurPlayerId((byte)1);
-        Heuristics heuristics = new Heuristics(map);
+        Heuristics heuristics = new Heuristics(mapOccupied);
 
         double result = heuristics.amountOfCornersCaptured(mapOccupied, (byte) 1);
 
@@ -297,11 +295,11 @@ public class HeuristicsTest {
 
     @Test
     public void findCornersTest(){
-        ArrayList<Coordinate> result = new ArrayList<>();
-        result.add(new Coordinate(0, 0));
-        result.add(new Coordinate(0, 7));
-        result.add(new Coordinate(7, 0));
-        result.add(new Coordinate(7, 7));
+        IntLinkedList result = new IntLinkedList();
+        result.add(MoveVerifier.encodeCoordinate(0, 0));
+        result.add(MoveVerifier.encodeCoordinate(0, 7));
+        result.add(MoveVerifier.encodeCoordinate(7, 0));
+        result.add(MoveVerifier.encodeCoordinate(7, 7));
 
         MapController map = new MapController(
             new String[]{
@@ -319,7 +317,7 @@ public class HeuristicsTest {
 
         Heuristics heuristics = new Heuristics(map);
 
-        assertEquals(4, heuristics.findCorners(map).size());
+        assertEquals(4, heuristics.findCorners(map).getSize());
         assertEquals(result, heuristics.findCorners(map));
     } 
 

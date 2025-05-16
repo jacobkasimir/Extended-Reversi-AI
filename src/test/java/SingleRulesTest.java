@@ -40,8 +40,8 @@ public class SingleRulesTest {
 
     @Test
     public void isNotHoleTest(){
-        Move moveFalse = new Move(0, 0, 0, 0);
-        Move moveTrue = new Move(1, 1, 0, 0);
+        int moveFalse = MoveVerifier.encodeMove(0, 0, 0, 0);
+        int moveTrue = MoveVerifier.encodeMove(1, 1, 0, 0);
 
         boolean resultFalse = GameRules.isNotHole(moveFalse, map);
         boolean resultTrue = GameRules.isNotHole(moveTrue, map);
@@ -52,11 +52,11 @@ public class SingleRulesTest {
 
     @Test
     public void insideMapTest(){
-        Move moveFalse1 = new Move(9, 0, 0, 0);
-        Move moveFalse2 = new Move(-1, 0, 0, 0);
-        Move moveFalse3 = new Move(0, 9, 0, 0);
-        Move moveFalse4 = new Move(0, -1, 0, 0);
-        Move moveTrue = new Move(1, 1, 0, 0);
+        int moveFalse1 = MoveVerifier.encodeMove(9, 0, 0, 0);
+        int moveFalse2 = MoveVerifier.encodeMove(-1, 0, 0, 0);
+        int moveFalse3 = MoveVerifier.encodeMove(0, 9, 0, 0);
+        int moveFalse4 = MoveVerifier.encodeMove(0, -1, 0, 0);
+        int moveTrue = MoveVerifier.encodeMove(1, 1, 0, 0);
 
         boolean resultFalse1 = GameRules.insideMap(moveFalse1, map);
         boolean resultFalse2 = GameRules.insideMap(moveFalse2, map);
@@ -73,9 +73,9 @@ public class SingleRulesTest {
 
     @Test
     public void occupiedTest(){
-        Move moveFalse1 = new Move(2, 3, 0, 0);
-        Move moveFalse2 = new Move(5, 3, 0, 0);
-        Move moveTrue = new Move(3, 3, 0, 0);
+        int moveFalse1 = MoveVerifier.encodeMove(2, 3, 0, 0);
+        int moveFalse2 = MoveVerifier.encodeMove(5, 3, 0, 0);
+        int moveTrue = MoveVerifier.encodeMove(3, 3, 0, 0);
 
         boolean resultFalse1 = GameRules.occupied(moveFalse1, map);
         boolean resultFalse2 = GameRules.occupied(moveFalse2, map);
@@ -88,7 +88,7 @@ public class SingleRulesTest {
 
     @Test
     public void hasBombTest(){
-        Move move = new Move(4, 4, 0, 1);
+        int move = MoveVerifier.encodeMove(4, 4, 0, 1);
 
         boolean resultTrue = GameRules.hasBomb(gameAttributes1, move);
         boolean resultFalse = GameRules.hasBomb(gameAttributes2, move);
@@ -99,7 +99,7 @@ public class SingleRulesTest {
 
     @Test
     public void hasOverwriteTest(){
-        Move move = new Move(4, 4, 0, 1);
+        int move = MoveVerifier.encodeMove(4, 4, 0, 1);
 
         boolean resultTrue = GameRules.hasOverwrite(gameAttributes1, move);
         boolean resultFalse = GameRules.hasOverwrite(gameAttributes2, move);
@@ -110,11 +110,11 @@ public class SingleRulesTest {
 
     @Test
     public void validMoveTest(){
-        Move moveTrue = new Move(1, 1, 0, 1);
-        Move moveFalse1 = new Move(1, 1, 0, 2);
-        Move moveFalse2 = new Move(1, 1, 0, 3);
-        Move moveFalse3 = new Move(1, 1, 0, 0);
-        Move moveFalse4 = new Move(1, 1, 0, 10);
+        int moveTrue = MoveVerifier.encodeMove(1, 1, 0, 1);
+        int moveFalse1 = MoveVerifier.encodeMove(1, 1, 0, 2);
+        int moveFalse2 = MoveVerifier.encodeMove(1, 1, 0, 3);
+        int moveFalse3 = MoveVerifier.encodeMove(1, 1, 0, 0);
+        int moveFalse4 = MoveVerifier.encodeMove(1, 1, 0, 10);
 
         boolean resultTrue = GameRules.validMove(moveTrue, gameAttributes2);
         boolean resultFalse1 = GameRules.validMove(moveFalse1, gameAttributes2);
@@ -131,10 +131,10 @@ public class SingleRulesTest {
 
     @Test
     public void isExpansionTest(){
-        Move moveTrue1 = new Move(5, 6, 0, 1);
-        Move moveTrue2 = new Move(7, 6, 0, 1);
-        Move moveFalse1 = new Move(6, 6, 0, 1);
-        Move moveFalse2 = new Move(7, 5, 0, 1);
+        int moveTrue1 = MoveVerifier.encodeMove(5, 6, 0, 1);
+        int moveTrue2 = MoveVerifier.encodeMove(7, 6, 0, 1);
+        int moveFalse1 = MoveVerifier.encodeMove(6, 6, 0, 1);
+        int moveFalse2 = MoveVerifier.encodeMove(7, 5, 0, 1);
 
         boolean resultTrue1 = GameRules.isExpansion(map, moveTrue1);
         boolean resultTrue2 = GameRules.isExpansion(map, moveTrue2);
@@ -149,10 +149,10 @@ public class SingleRulesTest {
 
     @Test
     public void checkSpecialTestBombs(){
-        Move moveTrue1 = new Move(3, 7, 20, 1);
-        Move moveTrue2 = new Move(3, 7, 21, 1);
-        Move moveFalse1 = new Move(3, 7, 0, 1);
-        Move moveFalse2 = new Move(4, 5, 20, 1);
+        int moveTrue1 = MoveVerifier.encodeMove(3, 7, 20, 1);
+        int moveTrue2 = MoveVerifier.encodeMove(3, 7, 21, 1);
+        int moveFalse1 = MoveVerifier.encodeMove(3, 7, 0, 1);
+        int moveFalse2 = MoveVerifier.encodeMove(4, 5, 20, 1);
 
         boolean resultTrue1 = GameRules.checkSpecial(gameAttributes1, moveTrue1, map);
         boolean resultTrue2 = GameRules.checkSpecial(gameAttributes1, moveTrue2, map);
@@ -167,10 +167,10 @@ public class SingleRulesTest {
 
     @Test
     public void checkSpecialTestChoose(){
-        Move moveTrue1 = new Move(3, 6, 2, 1);
-        Move moveTrue2 = new Move(3, 6, 1, 1);
-        Move moveFalse1 = new Move(3, 6, 0, 1);
-        Move moveFalse2 = new Move(2, 3, 1, 1);
+        int moveTrue1 = MoveVerifier.encodeMove(3, 6, 2, 1);
+        int moveTrue2 = MoveVerifier.encodeMove(3, 6, 1, 1);
+        int moveFalse1 = MoveVerifier.encodeMove(3, 6, 0, 1);
+        int moveFalse2 = MoveVerifier.encodeMove(2, 3, 1, 1);
 
         boolean resultTrue1 = GameRules.checkSpecial(gameAttributes1, moveTrue1, map);
         boolean resultTrue2 = GameRules.checkSpecial(gameAttributes1, moveTrue2, map);
@@ -185,10 +185,10 @@ public class SingleRulesTest {
 
     @Test
     public void capturingTest(){
-        Move moveTrue1 = new Move(2, 4, 0, 1);
-        Move moveTrue2 = new Move(2, 3, 0, 2);
-        Move moveFalse1 = new Move(1, 1, 0, 1);
-        Move moveFalse2 = new Move(4, 5, 1, 1);
+        int moveTrue1 = MoveVerifier.encodeMove(2, 4, 0, 1);
+        int moveTrue2 = MoveVerifier.encodeMove(2, 3, 0, 2);
+        int moveFalse1 = MoveVerifier.encodeMove(1, 1, 0, 1);
+        int moveFalse2 = MoveVerifier.encodeMove(4, 5, 1, 1);
 
         boolean resultTrue1 = GameRules.capturing(moveTrue1, map);
         boolean resultTrue2 = GameRules.capturing(moveTrue2, map);
