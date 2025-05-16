@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
@@ -59,20 +56,20 @@ public class MoveVerifier {
             int y = decodeYCoords(node.getValue());
 
             for (int dir = 0; dir < 8; dir++) {
-                Position pos = new Position(x, y, dir);
+                int pos = encodePosition(x, y, dir);
                 int tilesPassed = 0;
                 boolean search = true;
                 while (search) {
                     pos = controller.getNextTile(pos);
-                    if (pos == null) break;
+                    if (pos < 0) break;
 
-                    int move =  encodeMove(pos.x(), pos.y(), 0, playerId);
+                    int move =  MoveVerifier.encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 0, playerId);
                     if (!GameRules.isNotHole(move, controller) ||
                         !GameRules.insideMap(move, controller)) {
                         break;
                     }
 
-                    char tile = (char)controller.getTile(pos.x(), pos.y());
+                    char tile = (char)controller.getTile(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos));
                     boolean isOwn = tile == ('0' + playerId);
 
                     if (GameRules.occupied(move, controller)) {
@@ -86,13 +83,13 @@ public class MoveVerifier {
                     } else {
                         // Bonusfelder beide Wahlen
                         if (tilesPassed > 0 && tile == 'b') {
-                            res.add(encodeMove(pos.x(), pos.y(), 20, playerId));
-                            res.add(encodeMove(pos.x(), pos.y(), 21, playerId));
+                            res.add(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 20, playerId));
+                            res.add(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 21, playerId));
                         }
                         // Choice-Felder alle Player-IDs
                         else if (tilesPassed > 0 && tile == 'c') {
                             for (int j = 1; j <= state.getNumberPlayers(); j++) {
-                                res.add(encodeMove(pos.x(), pos.y(), j, playerId));
+                                res.add(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), j, playerId));
                             }
                         }
                         //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
@@ -223,6 +220,11 @@ public class MoveVerifier {
         return ((x * 51 + y) * 51 + special) * 51 + playerId;
     }
 
+    public static int encodePosition(int x, int y, int direction) {
+        return (x * 51 + y) * 51 + direction;
+    }
+
+
     public static int decodeXCoords(int value) {
     return value / 51;
     }
@@ -230,6 +232,7 @@ public class MoveVerifier {
     public static int decodeYCoords(int value) {
         return value % 51;
     }
+
 
     public static int decodePlayerId(int value) {
         return value % 51;
@@ -248,6 +251,21 @@ public class MoveVerifier {
     public static int decodeX(int value) {
         value /= 51 * 51 * 51;
         return value;
+    }
+
+
+    public static int decodePosDirec(int value) {
+        return value % 51;
+    }
+
+    public static int decodePosY(int value) {
+        value /= 51;
+        return value % 51;
+    }
+
+    public static int decodePosX(int value) {
+        value /= 51 * 51;
+        return value % 51;
     }
 
 }

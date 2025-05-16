@@ -3,22 +3,24 @@
  * It provides simple methods for using transitions.
  */
 
-import java.util.Arrays;
-
 public class Transitions{
     //private static Transitions instance;
     //private static boolean isInitialized = false;
 
-    private Position[] transitionsArray;
+    private int[] transitionsArray;
     private final int width;
     private final int height;
 
 
 
     public Transitions(int width, int height){
-        this.transitionsArray = new Position[width*height*8];
+        this.transitionsArray = new int[3*width*height*8];
         this.width = width;
         this.height = height;
+
+        for (int i = 0; i < transitionsArray.length; i++) {
+            transitionsArray[i] = -1;
+        }
     }
 
     
@@ -29,9 +31,9 @@ public class Transitions{
      * @param direc The direction from the current tile
      * @return Position The Position-object of the next tile 
      */
-    public Position getNextTile(int x, int y, int direc) {
+    public int getNextTile(int x, int y, int direc) {
         if(direc < 9 && direc >= 0){
-            if(getTransition(x, y, direc) == null){
+            if(getTransition(x, y, direc) == 0){
                 switch (direc) {
                     case 0 -> y--;
                     case 1 -> { 
@@ -54,18 +56,18 @@ public class Transitions{
                         y--;
                     }
                     default -> {
-                        return null;
+                        return -1;
                     }
                 }
-                if(x < 0 || x > width-1 || y < 0 || y > height-1) return null;
-                else return new Position(x, y, direc);
+                if(x < 0 || x > width-1 || y < 0 || y > height-1) return -1;
+                else return MoveVerifier.encodePosition(x, y, direc);
             }
             else {
-                Position res = getTransition(x, y, direc);   
-                return new Position(res.x(), res.y(), (res.direc()+4) % 8);
+                int res = getTransition(x, y, direc);   
+                return MoveVerifier.encodePosition(MoveVerifier.decodePosX(res), MoveVerifier.decodePosY(res), (MoveVerifier.decodePosDirec(res)+4) % 8);
             }
         }
-        return new Position(0,0,0); //Error!
+        return -1; //Error!
     }
 
     
@@ -80,13 +82,13 @@ public class Transitions{
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
         if(direcTile < 8 && direcTile >= 0 && direcNextTile < 8 && direcNextTile >= 0){ 
-            transitionsArray[(width*8*yTile)+(xTile*8)+direcTile] = new Position(xNextTile, yNextTile, direcNextTile);
-            transitionsArray[(width*8*yNextTile)+(xNextTile*8)+direcNextTile] = new Position(xTile, yTile, direcTile);
+            transitionsArray[(width*8*yTile)+(xTile*8)+direcTile] = MoveVerifier.encodePosition(xNextTile, yNextTile, direcNextTile);
+            transitionsArray[(width*8*yNextTile)+(xNextTile*8)+direcNextTile] = MoveVerifier.encodePosition(xTile, yTile, direcTile);
         }
     }
 
-    private Position getTransition(int x, int y, int direction){
-        return transitionsArray[(width*8*y)+(x*8)+direction];
+    private int getTransition(int x, int y, int direction){
+        return MoveVerifier.encodePosition(transitionsArray[(width*8*y)+(x*8)+direction], transitionsArray[(width*8*y)+(x*8)+direction+1], transitionsArray[(width*8*y)+(x*8)+direction+2]);
     }
 
     
@@ -101,11 +103,6 @@ public class Transitions{
     @Override
     public boolean equals(Object obj){
         return true;
-    }
-
-    @Override
-    public int hashCode(){
-        return Arrays.deepHashCode(transitionsArray);
     }
     
 }

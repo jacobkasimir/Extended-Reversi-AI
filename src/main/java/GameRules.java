@@ -105,17 +105,17 @@ public class GameRules {
     public static boolean capturing(int move, MapController map){
         int tilesPassed;
         boolean search;
-        Position currentPosition;
+        int currentPosition;
         for(int i = 0; i < 8; i++) {
-            currentPosition = new Position(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), i);
+            currentPosition = MoveVerifier.encodePosition(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), i);
             search = true;
             tilesPassed = 0;
             while(search){
                 currentPosition = map.getNextTile(currentPosition);
-                if (currentPosition == null) break;
-                if(String.valueOf(MoveVerifier.decodePlayerId(move)).equals(String.valueOf(map.getTile(currentPosition.x(), currentPosition.y())))){
+                if(currentPosition < 0) break;
+                if(String.valueOf(MoveVerifier.decodePlayerId(move)).equals(String.valueOf(map.getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition))))){
                     if(tilesPassed > 0) {
-                        if (currentPosition.x() != MoveVerifier.decodeX(move) || currentPosition.y() != MoveVerifier.decodeY(move)) return true; //diese Abfrage muss eher und vor dem tile ckeck bzw. jetzt kann weg vllt
+                        if (MoveVerifier.decodePosX(currentPosition) != MoveVerifier.decodeX(move) || MoveVerifier.decodePosY(currentPosition) != MoveVerifier.decodeY(move)) return true; //diese Abfrage muss eher und vor dem tile ckeck bzw. jetzt kann weg vllt
                         search = false;
                     }
                     else search = false;
@@ -125,7 +125,7 @@ public class GameRules {
                 else if (helpCompare('i', currentPosition, map)) search = false;
                 else if (helpCompare('b', currentPosition, map)) search = false;
                 else if (helpCompare('-', currentPosition, map)) search = false;
-                else if (currentPosition.x() == MoveVerifier.decodeX(move) && currentPosition.y() == MoveVerifier.decodeY(move)) search = false;
+                else if (MoveVerifier.decodePosX(currentPosition) == MoveVerifier.decodeX(move) && MoveVerifier.decodePosY(currentPosition) == MoveVerifier.decodeY(move)) search = false;
                 else {
                     tilesPassed++;
                 }
@@ -134,8 +134,8 @@ public class GameRules {
         return false;
     }
 
-    private static boolean helpCompare(char c, Position currentPosition, MapController map){
-        return (map.getTile(currentPosition.x(), currentPosition.y()) == c);
+    private static boolean helpCompare(char c, int currentPosition, MapController map){
+        return (map.getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) == c);
     }
 
 }
