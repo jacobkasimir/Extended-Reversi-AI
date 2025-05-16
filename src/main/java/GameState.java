@@ -1,7 +1,7 @@
 public record GameState(MapController mapController, GameAttributes attributes) {
     
 
-    public void updateGameState(Move move){
+    public void updateGameState(int move){
         this.attributes().updateState(move, this.mapController());
         this.mapController().updateMap(move, this.attributes());
     }
