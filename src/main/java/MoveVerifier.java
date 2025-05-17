@@ -205,7 +205,7 @@ public class MoveVerifier {
                 return calculateNextMoves(gameState, nextPlayerId);
             }
             else{
-                return null;
+                return new IntLinkedList();
             }
         } else{
             return res;

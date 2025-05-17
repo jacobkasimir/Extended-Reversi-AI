@@ -55,7 +55,7 @@ public class Node {
         if(searchDepth > 0){
             gameState.updateGameState(this.move);
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
-            if(possibleMoves == null) {
+            if(possibleMoves.isEmpty()) {
                 return heuristics.evaluate(gameState);
             }
 
@@ -91,7 +91,7 @@ public class Node {
         if(searchDepth > 0){
             gameState.updateGameState(this.move);
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
-            if(possibleMoves == null) {
+            if(possibleMoves.isEmpty()) {
                 return heuristics.evaluate(gameState);
             }
 
