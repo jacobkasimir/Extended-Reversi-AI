@@ -1,7 +1,6 @@
-
-
-/*
- * The MapController is the interface for other classes to interact with the map and transitions
+/**
+ * The MapController class manages the game map and its transitions.
+ * It serves as the central interface for map operations, tile management and game mechanics.
  */
 public class MapController{
     private final Map map;
@@ -11,6 +10,15 @@ public class MapController{
     private final int width;
     private final int height;
 
+    /**
+     * Creates a new MapController with the specified parameters.
+     *
+     * @param mapString The initial map data as string array
+     * @param transitions The transitions object for managing tile movements
+     * @param width The width of the map
+     * @param height The height of the map
+     * @param bombRadius The explosion radius for bombs
+     */
     public MapController(String[] mapString, Transitions transitions, int width, int height, int bombRadius){
         this.map = new Map(width, height);
         this.transitions = transitions;
@@ -23,6 +31,11 @@ public class MapController{
         initExpansionTiles();
     }
 
+    /**
+     * Creates a deep copy of an existing MapController.
+     *
+     * @param obj The MapController to copy
+     */
     public MapController(MapController obj){
         this.map = new Map(obj.getMap());
         this.transitions = obj.getTransitions();
@@ -35,42 +48,56 @@ public class MapController{
     
 
 
+    /**
+     * Returns the current game map.
+     *
+     * @return The Map object representing the current game state
+     */
     public Map getMap() {
         return map;
     }
 
+    /**
+     * Returns the transitions object used for movement calculations.
+     *
+     * @return The Transitions object
+     */
     public Transitions getTransitions() {
         return transitions;
     }
 
-    /** 
-     * @return int The width (x-axis) of the map
+    /**
+     * Returns the width of the map.
+     *
+     * @return The width (x-axis) of the map
      */
     public int getWidth() {
         return width;
     }
 
-    
-    /** 
-     * @return int The height (y-axis) of the map
+    /**
+     * Returns the height of the map.
+     *
+     * @return The height (y-axis) of the map
      */
     public int getHeight() {
         return height;
     }
 
-
-    /** 
-     * @return int The BombRadius of the map
+    /**
+     * Returns the bomb explosion radius.
+     *
+     * @return The radius of bomb explosions
      */
     public int getBombRadius() {
         return bombRadius;
     }
 
-
-    
-    /** 
-     * Initializes the map by translating the message sent by the server
-     * @param mapString The data sent by the server
+    /**
+     * Initializes the map using data received from the server.
+     * Converts the string representation into the internal map format.
+     *
+     * @param mapString Array of strings containing the map data
      */
     private void initMap(String[] mapString){
         String[][] newMap = new String[width][height]; //array that holds all map entries as Strings
@@ -91,6 +118,10 @@ public class MapController{
     
     
 
+    /**
+     * Initializes the list of expansion tiles.
+     * Identifies and stores all expansion tile positions on the map.
+     */
     private void initExpansionTiles(){
         expansionTiles = new IntLinkedList();
 
@@ -103,58 +134,67 @@ public class MapController{
         }
     }
 
+    /**
+     * Returns the current list of expansion tiles.
+     *
+     * @return IntLinkedList containing coordinates of expansion tiles
+     */
     public IntLinkedList getExpansionTiles() {
         return expansionTiles;
     }
 
-    
-    /** 
-     * @param x The x-coordinate of the required tile
-     * @param y The y-coordinate of the required tile
-     * @return char The value stored at the required tile
+    /**
+     * Returns the tile value at the specified coordinates.
+     *
+     * @param x The x-coordinate of the tile
+     * @param y The y-coordinate of the tile
+     * @return The character representing the tile type
      */
     public char getTile(int x, int y) {
        return this.map.getTile(x, y);
     }
 
-    
-    /** 
-     * @param x The x-coordinate of the required tile
-     * @param y The y-coordinate of the required tile
-     * @param c The value that is to be set
+    /**
+     * Sets the tile value at the specified coordinates.
+     *
+     * @param x The x-coordinate of the tile
+     * @param y The y-coordinate of the tile
+     * @param c The character value to set
      */
     public void setTile(int x, int y, char c) {
         this.map.setTile(x, y, c);
     }
 
-    
-    /** 
-     * @param p The Position-object of the current position
-     * @return Position The next position after the transition
+    /**
+     * Calculates the next tile position based on current position and transitions.
+     *
+     * @param p The encoded current position
+     * @return The encoded next position after transition
      */
     public int getNextTile(int p) {
         return transitions.getNextTile(MoveVerifier.decodePosX(p), MoveVerifier.decodePosY(p), MoveVerifier.decodePosDirec(p));
     }
 
-    
-    /** 
-     * @param xTile The x-coordinate of the first position
-     * @param yTile The y-coordinate of the first position
-     * @param direcTile The direction for the first position
-     * @param xNextTile The x-coordinate of the second position
-     * @param yNextTile The y-coordinate of the second position
-     * @param direcNextTile The direction for the second position
+    /**
+     * Sets up a transition between two tile positions.
+     *
+     * @param xTile The x-coordinate of the start position
+     * @param yTile The y-coordinate of the start position
+     * @param direcTile The direction from the start position
+     * @param xNextTile The x-coordinate of the destination
+     * @param yNextTile The y-coordinate of the destination
+     * @param direcNextTile The direction at the destination
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
         transitions.setTransition(xTile, yTile, direcTile, xNextTile, yNextTile, direcNextTile);
     }
 
-    
-
-    /** 
-     * Updates the map for the given move
-     * @param move The played move
-     * @param state The associated GameAttributes
+    /**
+     * Updates the map state based on a player's move.
+     * Handles both placement phase (Phase 1) and bombing phase (Phase 2).
+     *
+     * @param move The encoded move to process
+     * @param state The current game state
      */
     public void updateMap(int move, GameAttributes state){
         if(state.isPhase1()){
@@ -239,7 +279,14 @@ public class MapController{
         }
     }
 
-    //handles bombing
+    /**
+     * Processes bomb explosion at specified coordinates.
+     * Marks affected tiles with '#' within the bomb radius.
+     *
+     * @param x The x-coordinate of the bomb
+     * @param y The y-coordinate of the bomb
+     * @param radius The remaining explosion radius
+     */
     private void bombing(int x, int y, int radius){
         if(GameRules.insideMap(MoveVerifier.encodeMove(x, y, 0, 0), this) && getTile(x, y) != '-'){
             setTile(x, y, '#');
@@ -253,7 +300,13 @@ public class MapController{
         }
     }
 
-    //resolves '#' to '-'
+    /**
+     * Resolves bomb explosions by converting marked tiles to empty tiles.
+     *
+     * @param x The x-coordinate of the bomb
+     * @param y The y-coordinate of the bomb
+     * @param radius The remaining explosion radius
+     */
     private void resolveBombing(int x, int y, int radius){
         if(GameRules.insideMap(MoveVerifier.encodeMove(x, y, 0, 0), this)){
             if(getTile(x, y) == '#') setTile(x, y, '-');
@@ -267,7 +320,11 @@ public class MapController{
         }
     }
 
-    //handles choice tiles (switching the tiles)
+    /**
+     * Handles the choice tile mechanic by switching tiles between players.
+     *
+     * @param move The encoded move containing player information
+     */
     public void choiceHandling(int move){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -277,7 +334,11 @@ public class MapController{
         }
     }
 
-    //handles inversion tiles (switching the tiles)
+    /**
+     * Handles the inversion tile mechanic by rotating player ownership.
+     *
+     * @param state The current game state
+     */
     private void inversionHandling(GameAttributes state){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -286,13 +347,12 @@ public class MapController{
         }
     }
 
-    
-    /** 
-     * resets the ArrayList that holds alll the Positions of our occupied tiles
-     * @param playerId The Id we are given
-     * @param attributes The gameAttributes
+    /**
+     * Resets and updates the list of tiles owned by a player.
+     *
+     * @param playerId The ID of the player
+     * @param attributes The current game attributes
      */
-    //resets ourTiles
     public void resetTiles(int playerId, GameAttributes attributes){
         attributes.getPlayer(playerId).getTiles().clear();
         for (int i = 0; i < width; i++) {
@@ -304,20 +364,34 @@ public class MapController{
         }
     }
 
-    //checks if 'c' is a player
+    /**
+     * Checks if a character represents a player.
+     *
+     * @param c The character to check
+     * @return true if the character represents a player, false otherwise
+     */
     private boolean isPlayer(char c){
         if(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x') return false;
         else return true;
     }
 
-    //compares the char values
+    /**
+     * Helper method to compare a tile at a position with a specified character.
+     *
+     * @param c The character to compare with
+     * @param currentPosition The encoded position to check
+     * @return true if the tile matches the character, false otherwise
+     */
     private boolean helpCompare(char c, int currentPosition){
         return (getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) == c);
     }
 
-
-
-    //for Testing
+    /**
+     * Compares this MapController with another object for equality.
+     *
+     * @param obj The object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object obj){
         if(!(obj instanceof MapController)) return false;

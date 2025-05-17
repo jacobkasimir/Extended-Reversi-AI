@@ -1,15 +1,30 @@
-
 import java.util.ArrayList;
-
+/**
+ * Represents a node in a game tree for implementing game AI algorithms like minimax.
+ * Each node contains game state information and methods for tree traversal.
+ */
 public class Node {
+    /** The heuristic value of this node */
     private int heuristicValue;
+    /** The move associated with this node */
     private int move;
+    /** The current game state at this node */
     private GameState gameState;
+    /** The heuristics calculator */
     private Heuristics heuristics;
-
+    /** List of possible next moves from this position */
     private ArrayList<Node> nextMoves;
+    /** Reference to the parent node */
     private Node parent;
     
+    /**
+     * Creates a new Node with the specified parameters.
+     *
+     * @param move       The move value associated with this node
+     * @param parent     The parent node in the game tree
+     * @param gameState  The game state at this node
+     * @param heuristics The heuristics calculator to evaluate positions
+     */
     public Node(int move, Node parent, GameState gameState, Heuristics heuristics){
         this.move = move;
         this.parent = parent;
@@ -17,6 +32,8 @@ public class Node {
         this.heuristics = heuristics;
         this.nextMoves = new ArrayList<Node>();
     }
+
+    // Getter and setter methods ...
 
     public int getHeuristicValue() {
         return heuristicValue;
@@ -51,6 +68,13 @@ public class Node {
     }
 
     
+    /**
+     * Performs a depth-first search in the game tree implementing minimax algorithm.
+     *
+     * @param searchDepth   The maximum depth to search
+     * @param lastPlayerId  The ID of the player who made the last move
+     * @return             The heuristic value of the best move found
+     */
     public int dfs(int searchDepth, int lastPlayerId){
         if(searchDepth > 0){
             gameState.updateGameState(this.move);
@@ -87,6 +111,15 @@ public class Node {
         }
     }
 
+    /**
+     * Performs alpha-beta pruning search in the game tree, an optimized version of minimax algorithm.
+     *
+     * @param searchDepth   The maximum depth to search
+     * @param lastPlayerId  The ID of the player who made the last move
+     * @param alpha        The alpha value for pruning
+     * @param beta         The beta value for pruning
+     * @return             The heuristic value of the best move found
+     */
     public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta){
         if(searchDepth > 0){
             gameState.updateGameState(this.move);
