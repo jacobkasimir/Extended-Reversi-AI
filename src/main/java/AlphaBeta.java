@@ -1,14 +1,40 @@
 import java.util.ArrayList;
 
+/**
+ * Implementation of the Alpha-Beta pruning algorithm.
+ * This class performs minimax search with alpha-beta pruning to determine 
+ * the optimal move in a game state.
+ *
+ * <p>The algorithm evaluates possible moves up to a specified depth, using
+ * heuristic evaluation to estimate positions beyond the search depth.</p>
+ */
 public class AlphaBeta {
+    /** Root node of the game tree */
     private Node root;
+    
+    /** List of possible moves from the current position */
     private IntLinkedList moves;
+    
+    /** Current state of the game */
     private GameState current_GameState;
+    
+    /** Heuristic evaluator used to assess game positions */
     private Heuristics heuristics;
+    
+    /** Maximum depth of search in the game tree */
     private int searchdepth;
+    
+    /** Maximum time allowed for search in milliseconds */
     private int searchTime;
 
-
+    /**
+     * Constructs a new Alpha-Beta search instance.
+     *
+     * @param gameState The current state of the game
+     * @param heuristics The heuristic evaluation function to use
+     * @param searchTime Maximum time allowed for search in milliseconds
+     * @param searchdepth Maximum depth to search in the game tree
+     */
     public AlphaBeta(GameState gameState, Heuristics heuristics, int searchTime, int searchdepth){
         this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId());
         this.current_GameState = gameState;
@@ -30,6 +56,15 @@ public class AlphaBeta {
 
     
 
+    /**
+     * Performs the alpha-beta search and returns the best move found.
+     *
+     * <p>This method initiates the alpha-beta pruning algorithm from the root node,
+     * evaluating all possible moves to the specified depth. It uses the minimax
+     * principle with pruning to efficiently search the game tree.</p>
+     *
+     * @return The encoded move value representing the best move found
+     */
     public int chooseMove(){
         int maxValue = Integer.MIN_VALUE;
         int result = 0;

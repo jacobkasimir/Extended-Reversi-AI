@@ -66,7 +66,7 @@ public class Player {
      *
      * @param playerNumber new player number to set
      */
-    public void setPlayerNumber(int playerNumber) {
+    public void setPlayerNumber(byte playerNumber) {
         this.playerNumber = playerNumber;
     }
 
@@ -117,7 +117,6 @@ public class Player {
 
     /**
      * Sets the Set of tiles, to the tiles given by the function.
-     * @param tiles
      */
     public void setTiles(IntLinkedList tiles) {
         this.tiles = tiles;
@@ -125,8 +124,7 @@ public class Player {
 
 
     /**
-     * Adds one tile to the set, if it isnt already added.
-     * @param c
+     * Adds one tile to the set if it isn't already added.
      */
     public void addTile(int c){
         this.tiles.addIfNotContains(c);

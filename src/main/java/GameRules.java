@@ -1,143 +1,155 @@
 /**
- * In this class, there are all rules, that has to be checked in the first and second phase.
+ * Contains the validation rules for player moves during both phases of the game.
  */
 public class GameRules {
 
     /**
-     * Checks if the move ends up on a tile with a hole.
-     * @param move Represents a move made by a player on the board.
-     * @param map Instance of a Map Controller
-     * @return true if move is not a hole, false otherwise
+     * Checks if the tile at the given move is not a hole.
+     *
+     * @param move The move to validate.
+     * @param map  The map controller instance.
+     * @return true if the tile is not a hole, false otherwise.
      */
-    public static boolean isNotHole(int move, MapController map ){
-        return map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) != '-';
+    public static boolean isNotHole(int move, MapController map) {
+        return getTileAtMove(map, move) != '-';
     }
 
     /**
-     * Checks if the move is inside the map.
-     * @param move Represents a move made by a player on the board.
-     * @param map Instance of a Map Controller
-     * @return true if the x - and y - coordinate are inside the map.
+     * Checks if the move is within the map boundaries.
+     *
+     * @param move The move to validate.
+     * @param map  The map controller instance.
+     * @return true if the move is inside the map bounds, false otherwise.
      */
-    public static boolean insideMap(int move, MapController map){
-        return map.getWidth() > MoveVerifier.decodeX(move) && MoveVerifier.decodeX(move) >= 0 && map.getHeight() > MoveVerifier.decodeY(move) && MoveVerifier.decodeY(move) >= 0;
+    public static boolean insideMap(int move, MapController map) {
+        int x = MoveVerifier.decodeX(move);
+        int y = MoveVerifier.decodeY(move);
+        return x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight();
     }
 
     /**
-     * Checks whether the tile the player wants to move to on is already occupied.
-     * @param move Represents a move made by a player on the board.
-     * @param map Instance of a Map Controller
-     * @return true, if the tile is occupied by another player or an extension stone
+     * Checks whether the tile is occupied by a player or special item.
+     *
+     * @param move The move to validate.
+     * @param map  The map controller instance.
+     * @return true if the tile is already occupied, false otherwise.
      */
-    public static boolean occupied(int move, MapController map){
-        return !(map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == '0' || map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'b' || 
-        map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'i' || map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'c');
+    public static boolean occupied(int move, MapController map) {
+        char tile = getTileAtMove(map, move);
+        return !(tile == '0' || tile == 'b' || tile == 'i' || tile == 'c');
     }
 
     /**
-     * Checks if the player, who is making a move, still has at least one bomb.
-     * @param state Gamestate: captures the phase, number of players, and the player objects
-     * @param move Represents a move made by a player on the board.
-     * @return true if the player, who is making a move, has more than 0 bombs.
+     * Checks if the player has at least one bomb.
+     *
+     * @param state Game state including players.
+     * @param move  The move containing the player ID.
+     * @return true if the player has bombs, false otherwise.
      */
-    public static boolean hasBomb(GameAttributes state, int move){
+    public static boolean hasBomb(GameAttributes state, int move) {
         return state.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberBombs() > 0;
     }
 
     /**
-     * Checks whether the moving player has still an overwrite.
-     * @param state Gamestate: captures the phase, number of players, and the player objects
-     * @param move Represents a move made by a player on the board.
-     * @return true, if the moving player has still an override
+     * Checks if the player has any Overwrite moves left.
+     *
+     * @param state Game state including players.
+     * @param move  The move containing the player ID.
+     * @return true if the player has Overwrites remaining, false otherwise.
      */
-    public static boolean hasOverwrite(GameAttributes state, int move){
+    public static boolean hasOverwrite(GameAttributes state, int move) {
         return state.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberOverwrites() > 0;
     }
 
     /**
-     * Checks if the player number of the player, who is taking a turn, is valid.
-     * @param move Represents a move made by a player on the board.
-     * @param state Gamestate: captures the phase, number of players, and the player objects
-     * @return true, if the player number is valid, meaning the player is participating
+     * Validates whether the player making the move is valid and still in the game.
+     *
+     * @param move  The move to validate.
+     * @param state The game attributes.
+     * @return true if the player ID is valid and the player is in the game.
      */
-    public static boolean validMove(int move, GameAttributes state){
-        if(MoveVerifier.decodePlayerId(move) < 1 || MoveVerifier.decodePlayerId(move) > state.getNumberPlayers()) return false;
-        return state.getPlayer(MoveVerifier.decodePlayerId(move)).isInGame();
+    public static boolean validMove(int move, GameAttributes state) {
+        byte playerId = (byte) MoveVerifier.decodePlayerId(move);
+        return playerId >= 1 && playerId <= state.getNumberPlayers() && state.getPlayer(playerId).isInGame();
     }
 
     /**
-     * Checks whether the tile, the player wants to move to is occupied by an expansion stone.
-     * @param map Instance of a Map Controller.
-     * @param move Represents a move made by a player on the board.
-     * @return true, if the tile is occupied by an expansion stone.
+     * Checks whether the move targets an expansion tile.
+     *
+     * @param map  The map controller instance.
+     * @param move The move to validate.
+     * @return true if the target tile is an expansion tile, false otherwise.
      */
-    public static boolean isExpansion(MapController map, int move){
-        return map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'x';
+    public static boolean isExpansion(MapController map, int move) {
+        return getTileAtMove(map, move) == 'x';
     }
 
     /**
-     * If the tile is a special tile, the move object must be checked to ensure it contains a valid entry.
-     * @param state Gamestate: captures the phase, number of players, and the player instances.
-     * @param move Represents a move made by a player on the board.
-     * @param map Instance of a Map Controller.
-     * @return true, if all entries in the "special"-field of the move object are valid.
+     * Validates the special field of a move, depending on the game phase and tile type.
+     *
+     * @param state Game attributes containing phase and player info.
+     * @param move  The move to validate.
+     * @param map   The map controller instance.
+     * @return true if the special field is valid for the current tile and phase.
      */
-    public static boolean checkSpecial(GameAttributes state, int move, MapController map){
-        if(!state.isPhase1()) return MoveVerifier.decodeSpecial(move) == 0;
-        switch(map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move))){
-            case 'b': {
-                return MoveVerifier.decodeSpecial(move) == 20 || MoveVerifier.decodeSpecial(move) == 21;
-            }
-            case 'c': {
-                return MoveVerifier.decodeSpecial(move) >= 1 && MoveVerifier.decodeSpecial(move) <= state.getNumberPlayers();
-            }
-            default: return MoveVerifier.decodeSpecial(move) == 0;
-        }
+    public static boolean checkSpecial(GameAttributes state, int move, MapController map) {
+        int special = MoveVerifier.decodeSpecial(move);
+        if (!state.isPhase1()) return special == 0;
+
+        char tile = getTileAtMove(map, move);
+        return switch (tile) {
+            case 'b' -> special == 20 || special == 21;
+            case 'c' -> special >= 1 && special <= state.getNumberPlayers();
+            default -> special == 0;
+        };
     }
 
     /**
-     * A player can only occupy a tile if he can enclose stones from other players (or expansion stones) with his new occupied tile and
-     * another tile that is occupied by this player. This method checks if this capturing is valid.
-     * @param move Represents a move made by a player on the board.
-     * @param map Instance of a Map Controller.
-     * @return true if the player occupies a tile that results in capturing one or more other tiles (if he makes a valid move).
+     * Determines whether a move results in capturing other tiles (enclosure rule).
+     *
+     * @param move The move to validate.
+     * @param map  The map controller instance.
+     * @return true if the move captures other tiles, false otherwise.
      */
-    public static boolean capturing(int move, MapController map){
-        int tilesPassed;
-        boolean search;
-        int currentPosition;
-        for(int i = 0; i < 8; i++) {
-            currentPosition = MoveVerifier.encodePosition(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), i);
-            search = true;
-            tilesPassed = 0;
-            while(search){
-                currentPosition = map.getNextTile(currentPosition);
-                if(currentPosition < 0) break;
-                if(String.valueOf(MoveVerifier.decodePlayerId(move)).equals(String.valueOf(map.getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition))))){
-                    if(tilesPassed > 0) {
-                        if (MoveVerifier.decodePosX(currentPosition) != MoveVerifier.decodeX(move) || MoveVerifier.decodePosY(currentPosition) != MoveVerifier.decodeY(move)) return true; //diese Abfrage muss eher und vor dem tile ckeck bzw. jetzt kann weg vllt
-                        search = false;
-                    }
-                    else search = false;
-                } 
-                else if (helpCompare('0', currentPosition, map)) search = false;
-                else if (helpCompare('c', currentPosition, map)) search = false;
-                else if (helpCompare('i', currentPosition, map)) search = false;
-                else if (helpCompare('b', currentPosition, map)) search = false;
-                else if (helpCompare('-', currentPosition, map)) search = false;
-                else if (MoveVerifier.decodePosX(currentPosition) == MoveVerifier.decodeX(move) && MoveVerifier.decodePosY(currentPosition) == MoveVerifier.decodeY(move)) search = false;
-                else {
-                    tilesPassed++;
+    public static boolean capturing(int move, MapController map) {
+        byte playerId = (byte) MoveVerifier.decodePlayerId(move);
+        int startX = MoveVerifier.decodeX(move);
+        int startY = MoveVerifier.decodeY(move);
+
+        for (int dir = 0; dir < 8; dir++) {
+            int current = MoveVerifier.encodePosition(startX, startY, dir);
+            int steps = 0;
+
+            while (true) {
+                current = map.getNextTile(current);
+                if (current < 0) break;
+
+                int cx = MoveVerifier.decodePosX(current);
+                int cy = MoveVerifier.decodePosY(current);
+                char tile = map.getTile(cx, cy);
+
+                if (tile == (char) ('0' + playerId)) {
+                    if (steps > 0 && (cx != startX || cy != startY)) return true;
+                    break;
                 }
+
+                if (tile == '-' || tile == '0' || tile == 'i' || tile == 'c' || tile == 'b') break;
+                if (cx == startX && cy == startY) break;
+
+                steps++;
             }
         }
         return false;
     }
 
-    private static boolean helpCompare(char c, int currentPosition, MapController map){
-        return (map.getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) == c);
+    /**
+     * Returns the character at the tile targeted by the move.
+     *
+     * @param map  The map controller instance.
+     * @param move The move to evaluate.
+     * @return The tile character.
+     */
+    private static char getTileAtMove(MapController map, int move) {
+        return map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move));
     }
-
 }
-
-

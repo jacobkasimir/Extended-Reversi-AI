@@ -1,9 +1,9 @@
-/**
- * GameClient manages the state of the game, including the map and player data.
- * It is responsible for initializing the game, updating state after moves, and computing valid moves.
- */
 import java.util.Random;
 
+/**
+ * GameClient manages the overall game logic on the client side, including the game state,
+ * player attributes, map controller, transitions, and move calculations.
+ */
 public class GameClient {
     private GameState current_gameState;
     private Transitions transitions;
@@ -12,173 +12,190 @@ public class GameClient {
     private int timeLimit;
 
     /**
-     * @return The map controller object held by the game client.
+     * Returns the map controller for the current game.
+     *
+     * @return the MapController instance
      */
     public MapController getCurrentMapController() {
         return current_gameState.mapController();
     }
 
     /**
-     * @return The game state object held by the game client.
+     * Returns the game attributes of the current game state.
+     *
+     * @return the GameAttributes instance
      */
     public GameAttributes getCurrentGameAttributes() {
         return current_gameState.attributes();
     }
 
     /**
-     * @return The Transitions of the map.
+     * Returns the transition data used for the map.
+     *
+     * @return the Transitions instance
      */
-    public Transitions getTransitions(){
+    public Transitions getTransitions() {
         return transitions;
     }
 
     /**
-     * @return The current gameState
+     * Returns the current game state.
+     *
+     * @return the GameState instance
      */
     public GameState getCurrentGameState() {
         return current_gameState;
     }
 
-
     /**
-     * Initializes the game state and map controller with the map and player information from the input lines.
-     * @param lines The map file content split by lines.
+     * Initializes the game state based on the given map input lines.
+     * Extracts player, bomb, map, and transition information.
+     *
+     * @param lines the input map file content as an array of lines
      */
     public void init(String[] lines) {
-        int playerCount = Integer.valueOf(lines[0]);
-        int overrideCount = Integer.valueOf(lines[1]);
+        int playerCount = Integer.parseInt(lines[0]);
+        int overrideCount = Integer.parseInt(lines[1]);
 
         String[] bombInfo = lines[2].split(" ");
-        int bombCount = Integer.valueOf(bombInfo[0]);
-        int bombRadius = Integer.valueOf(bombInfo[1]);
+        int bombCount = Integer.parseInt(bombInfo[0]);
+        int bombRadius = Integer.parseInt(bombInfo[1]);
 
         String[] mapInfo = lines[3].split(" ");
-        int height = Integer.valueOf(mapInfo[0]);
-        int width = Integer.valueOf(mapInfo[1]);
+        int height = Integer.parseInt(mapInfo[0]);
+        int width = Integer.parseInt(mapInfo[1]);
 
-        String[] map = splitString(lines, 4, (4 + height));
-        String[] transitions = splitString(lines, (4 + height), lines.length);
+        String[] mapLines = extractLines(lines, 4, 4 + height);
+        String[] transitionLines = extractLines(lines, 4 + height, lines.length);
 
         byte gamePhase = 1;
 
-        //initializes transitions
-        initTransitions(transitions, width, height);
+        initTransitions(transitionLines, width, height);
 
-        this.current_gameState = new GameState(new MapController(map, this.transitions, width, height, bombRadius), 
-                                    new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase));
-        
+        this.current_gameState = new GameState(
+                new MapController(mapLines, transitions, width, height, bombRadius),
+                new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase)
+        );
+
         this.heuristics = new Heuristics(getCurrentMapController());
 
-        System.out.println("Init abgeschlossen");
+        System.out.println("Initialization completed.");
     }
 
-    /** 
-     * Initializes the transitions by translating the message sent by the server
-     * @param transitionsString The data sent by the server
-     * @param width The width of the map
-     * @param height The height of the map
+    /**
+     * Initializes the transition relationships between map tiles.
+     * Each line contains symmetric transitions that must be applied in both directions.
+     *
+     * @param transitionLines the array of transition string lines
+     * @param width map width
+     * @param height map height
      */
-    public void initTransitions(String[] transitionsString, int width, int height){
+    public void initTransitions(String[] transitionLines, int width, int height) {
         this.transitions = new Transitions(width, height);
 
-        String[][] newTransition = new String[transitionsString.length][7]; //array that holds all transitions as Strings
-        for (int i = 0; i < transitionsString.length; i++) {
-            newTransition[i] = transitionsString[i].split(" ");
-        }
+        for (String line : transitionLines) {
+            String[] parts = line.split(" ");
+            int fromX = Integer.parseInt(parts[0]);
+            int fromY = Integer.parseInt(parts[1]);
+            int fromZ = Integer.parseInt(parts[2]);
+            int toX = Integer.parseInt(parts[4]);
+            int toY = Integer.parseInt(parts[5]);
+            int toZ = Integer.parseInt(parts[6]);
 
-        for (String[] newTransition1 : newTransition) {
-            transitions.setTransition(Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), 
-                Integer.parseInt(newTransition1[2]), Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]));
-            transitions.setTransition(Integer.parseInt(newTransition1[4]), Integer.parseInt(newTransition1[5]), Integer.parseInt(newTransition1[6]), 
-                Integer.parseInt(newTransition1[0]), Integer.parseInt(newTransition1[1]), Integer.parseInt(newTransition1[2]));
+            transitions.setTransition(fromX, fromY, fromZ, toX, toY, toZ);
+            transitions.setTransition(toX, toY, toZ, fromX, fromY, fromZ); // Bidirectional
         }
     }
 
     /**
-     * Applies a move to the game, updating both the map and game state.
-     * @param move The move to apply.
+     * Applies a move to the current game state.
+     *
+     * @param move the encoded move to be applied
      */
     public void updateGame(int move) {
-        this.current_gameState.updateGameState(move);
+        current_gameState.updateGameState(move);
     }
 
     /**
-     * Sets the ID for the current player.
-     * @param id The player ID.
+     * Sets the ID of the current player and resets the map tiles accordingly.
+     *
+     * @param id the player's ID
      */
-    public void setOurPlayerId(byte id) {
-        this.current_gameState.attributes().setOurPlayerId(id);
-        this.current_gameState.mapController().resetTiles(id, current_gameState.attributes());
-        
-        System.out.println("Spieler-ID erhalten: " + id);
+    public void setOurPlayerId(int id) {
+        current_gameState.attributes().setOurPlayerId(id);
+        current_gameState.mapController().resetTiles(id, current_gameState.attributes());
+
+        System.out.println("Player ID received: " + id);
     }
 
     /**
-     * Handles disqualification of a player.
-     * @param playerId ID of the disqualified player.
+     * Marks a player as disqualified in the game state.
+     *
+     * @param playerId the ID of the disqualified player
      */
     public void playerDisqualified(byte playerId) {
-        this.current_gameState.attributes().playerDisqualified(playerId);
+        current_gameState.attributes().playerDisqualified(playerId);
     }
 
     /**
-     * Stores time and depth limits for move calculations.
-     * @param timeLimit The time limit for move calculation.
-     * @param maxDepth The maximum search depth.
+     * Configures the time and depth limits for move calculations (used in AI search).
+     *
+     * @param timeLimit the time limit in milliseconds
+     * @param maxDepth the maximum depth of search
      */
     public void setCalculateParameters(int timeLimit, byte maxDepth) {
-        this.depthLimit = maxDepth;
         this.timeLimit = timeLimit;
+        this.depthLimit = maxDepth;
     }
 
-    public int calculateMove(){
-        //MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
-        //return miniMax.chooseMove();
-
-        AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
+    /**
+     * Computes and returns the best move using the Alpha-Beta pruning algorithm.
+     *
+     * @return the encoded move
+     */
+    public int calculateMove() {
+        AlphaBeta alphaBeta = new AlphaBeta(current_gameState, heuristics, timeLimit, depthLimit);
         return alphaBeta.chooseMove();
     }
 
-    
-
     /**
-     * Generates a random move within the bounds of the map.
-     * @return A randomly generated move.
+     * Generates a completely random move (mainly for testing or fallback use).
+     *
+     * @return a random valid move
      */
     private int generateRandomMove() {
         Random rand = new Random();
-        int x = rand.nextInt(0, current_gameState.mapController().getWidth());
-        int y = rand.nextInt(0, current_gameState.mapController().getHeight());
+        int x = rand.nextInt(current_gameState.mapController().getWidth());
+        int y = rand.nextInt(current_gameState.mapController().getHeight());
         return MoveVerifier.encodeMove(x, y, 0, current_gameState.attributes().getOurPlayerId());
     }
 
     /**
-     * Extracts a portion of the lines array into a new sub-array.
-     * @param lines The full array.
-     * @param min Start index (inclusive).
-     * @param max End index (exclusive).
-     * @return Subarray of strings.
+     * Extracts a subarray of lines between the given start (inclusive) and end (exclusive).
+     * Useful for splitting map vs. transition sections.
+     *
+     * @param lines full array
+     * @param start inclusive start index
+     * @param end exclusive end index
+     * @return subarray of lines
      */
-    private static String[] splitString(String[] lines, int min, int max) {
-        String[] res = new String[max - min];
-        for (int i = min; i < max; i++) {
-            res[i - min] = lines[i];
-        }
-        return res;
+    private static String[] extractLines(String[] lines, int start, int end) {
+        String[] result = new String[end - start];
+        System.arraycopy(lines, start, result, 0, result.length);
+        return result;
     }
 
     /**
-     * Ends the current game phase by incrementing the phase.
+     * Switches the game to phase 2 (typically after setup or turn 1).
      */
     public void endPhase() {
-        this.current_gameState.attributes().setGamePhase((byte) 2); 
+        current_gameState.attributes().setGamePhase((byte) 2);
     }
 
     /**
-     * Ends the game (implementation pending).
+     * Ends the game (future implementation).
      */
     public void endGame() {
-        // End game logic
+        // TODO: Implement end-game logic
     }
-
 }
