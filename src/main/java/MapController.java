@@ -40,7 +40,7 @@ public class MapController{
         this.map = new Map(obj.getMap());
         this.transitions = obj.getTransitions();
         this.expansionTiles = new IntLinkedList();
-        this.expansionTiles.addAll(obj.getExpansionTiles());
+        this.expansionTiles = obj.getExpansionTiles();
         this.bombRadius = obj.getBombRadius();
         this.width = obj.getWidth();
         this.height = obj.getHeight();

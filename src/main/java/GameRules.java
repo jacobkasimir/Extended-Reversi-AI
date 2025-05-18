@@ -1,25 +1,22 @@
-/**
- * Contains the validation rules for player moves during both phases of the game.
- */
 public class GameRules {
 
     /**
-     * Checks if the tile at the given move is not a hole.
+     * Checks if the tile at the given move is not a hole ('-').
      *
      * @param move The move to validate.
      * @param map  The map controller instance.
-     * @return true if the tile is not a hole, false otherwise.
+     * @return true if the tile is not a hole; false otherwise.
      */
     public static boolean isNotHole(int move, MapController map) {
         return getTileAtMove(map, move) != '-';
     }
 
     /**
-     * Checks if the move is within the map boundaries.
+     * Checks if the move coordinates are within the map boundaries.
      *
      * @param move The move to validate.
      * @param map  The map controller instance.
-     * @return true if the move is inside the map bounds, false otherwise.
+     * @return true if within bounds; false otherwise.
      */
     public static boolean insideMap(int move, MapController map) {
         int x = MoveVerifier.decodeX(move);
@@ -28,69 +25,73 @@ public class GameRules {
     }
 
     /**
-     * Checks whether the tile is occupied by a player or special item.
+     * Determines if the targeted tile is occupied by a player or item.
      *
-     * @param move The move to validate.
-     * @param map  The map controller instance.
-     * @return true if the tile is already occupied, false otherwise.
+     * @param move The move to check.
+     * @param map  The map controller.
+     * @return true if the tile is occupied; false if free.
      */
     public static boolean occupied(int move, MapController map) {
         char tile = getTileAtMove(map, move);
-        return !(tile == '0' || tile == 'b' || tile == 'i' || tile == 'c');
+        return switch (tile) {
+            case '0', 'b', 'i', 'c' -> false;
+            default -> true;
+        };
     }
 
     /**
-     * Checks if the player has at least one bomb.
+     * Checks if a player has any bombs remaining.
      *
-     * @param state Game state including players.
-     * @param move  The move containing the player ID.
-     * @return true if the player has bombs, false otherwise.
+     * @param state Game state.
+     * @param move  Encoded move containing player ID.
+     * @return true if player has bombs.
      */
     public static boolean hasBomb(GameAttributes state, int move) {
         return state.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberBombs() > 0;
     }
 
     /**
-     * Checks if the player has any Overwrite moves left.
+     * Checks if a player has overwrite actions remaining.
      *
-     * @param state Game state including players.
-     * @param move  The move containing the player ID.
-     * @return true if the player has Overwrites remaining, false otherwise.
+     * @param state Game state.
+     * @param move  Encoded move with player ID.
+     * @return true if overwrites are available.
      */
     public static boolean hasOverwrite(GameAttributes state, int move) {
         return state.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberOverwrites() > 0;
     }
 
     /**
-     * Validates whether the player making the move is valid and still in the game.
+     * Validates if a player is in-game and the ID is in bounds.
      *
-     * @param move  The move to validate.
-     * @param state The game attributes.
-     * @return true if the player ID is valid and the player is in the game.
+     * @param move  Encoded move.
+     * @param state Game state.
+     * @return true if move is from a valid player in-game.
      */
     public static boolean validMove(int move, GameAttributes state) {
         byte playerId = (byte) MoveVerifier.decodePlayerId(move);
-        return playerId >= 1 && playerId <= state.getNumberPlayers() && state.getPlayer(playerId).isInGame();
+        return playerId >= 1 && playerId <= state.getNumberPlayers()
+                && state.getPlayer(playerId).isInGame();
     }
 
     /**
-     * Checks whether the move targets an expansion tile.
+     * Checks if a move targets an expansion tile ('x').
      *
-     * @param map  The map controller instance.
-     * @param move The move to validate.
-     * @return true if the target tile is an expansion tile, false otherwise.
+     * @param map  Map controller.
+     * @param move The move.
+     * @return true if tile is an expansion tile.
      */
     public static boolean isExpansion(MapController map, int move) {
         return getTileAtMove(map, move) == 'x';
     }
 
     /**
-     * Validates the special field of a move, depending on the game phase and tile type.
+     * Validates the special field of a move for legality in the current game phase.
      *
-     * @param state Game attributes containing phase and player info.
-     * @param move  The move to validate.
-     * @param map   The map controller instance.
-     * @return true if the special field is valid for the current tile and phase.
+     * @param state Game attributes.
+     * @param move  The move.
+     * @param map   Map controller.
+     * @return true if the special field is valid.
      */
     public static boolean checkSpecial(GameAttributes state, int move, MapController map) {
         int special = MoveVerifier.decodeSpecial(move);
@@ -105,11 +106,11 @@ public class GameRules {
     }
 
     /**
-     * Determines whether a move results in capturing other tiles (enclosure rule).
+     * Determines if the move captures enemy tiles by enclosing them.
      *
-     * @param move The move to validate.
-     * @param map  The map controller instance.
-     * @return true if the move captures other tiles, false otherwise.
+     * @param move The move.
+     * @param map  The map.
+     * @return true if a capture occurs.
      */
     public static boolean capturing(int move, MapController map) {
         byte playerId = (byte) MoveVerifier.decodePlayerId(move);
@@ -143,11 +144,11 @@ public class GameRules {
     }
 
     /**
-     * Returns the character at the tile targeted by the move.
+     * Helper method to get tile character at the target position of a move.
      *
-     * @param map  The map controller instance.
-     * @param move The move to evaluate.
-     * @return The tile character.
+     * @param map  Map controller.
+     * @param move The move.
+     * @return Character of the tile.
      */
     private static char getTileAtMove(MapController map, int move) {
         return map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move));

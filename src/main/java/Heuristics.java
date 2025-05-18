@@ -113,6 +113,8 @@ public class Heuristics {
         return other == 0 ? 1 : own / other;
     }
 
+
+
     /**
      * Calculates a normalized mobility value for the player.
      * @param map The map state.
@@ -152,25 +154,104 @@ public class Heuristics {
             int x = MoveVerifier.decodeXCoords(node.getValue());
             int y = MoveVerifier.decodeYCoords(node.getValue());
 
-            if (corners.contains(MoveVerifier.encodeCoordinate(x, y))) score += 1;
-            else if (cantBeCapturedMove(map, x, y, att)) score += 1;
-            else if (cantBeCapturedMoveAtAll(map, x, y, att)) score += 2;
+            if (corners.contains(MoveVerifier.encodeCoordinate(x, y))) score += att.getNumberPlayers();
+            if(bigCorner(map, att, x, y)) score += att.getNumberPlayers();
+            for(int i = 0; i < att.getNumberPlayers(); i++) {
+                if(att.getPlayer(i).getNumberOverwrites() == 0) score++;
+            }
 
             node = node.getNext();
         }
 
-        return score / ownTiles.getSize();
+        return score / ownTiles.getSize() * att.getNumberPlayers();
     }
 
-    private static boolean cantBeCapturedMove(MapController map, int x, int y, GameAttributes att) {
-        for (byte i = 0; i < att.getNumberPlayers(); i++) {
-            int move = MoveVerifier.encodeMove(x, y, 0, i);
-            if (MoveVerifier.isValid(move, map, att)) return false;
+    private static boolean bigCorner(MapController map, GameAttributes a, int x, int y) {
+        int next;
+        int counter = 3;
+        for (int i = 0; i < 8; i++) {
+            if (counter == 0) return true;
+
+            next = map.getNextTile(MoveVerifier.encodePosition(x, y, i));
+            if (next == -1) {
+                counter--;
+                continue;
+            }
+
+            int nextx = MoveVerifier.decodePosX(next);
+            int nexty = MoveVerifier.decodePosY(next);
+            if (map.getTile(nextx, nexty) != '0' + a.getOurPlayerId()) {
+                while (true) {
+                    next = map.getNextTile(MoveVerifier.encodePosition(nextx, nexty, i));
+                    if (next == -1) {
+                        counter--;
+                        break;
+                    }
+                    nextx = MoveVerifier.decodePosX(next);
+                    nexty = MoveVerifier.decodePosY(next);
+                    if (map.getTile(nextx, nexty) != '0' + a.getOurPlayerId()) break;
+                }
+            }
         }
-        return true;
+        return counter == 0;
     }
 
-    private static boolean cantBeCapturedMoveAtAll(MapController map, int x, int y, GameAttributes att) {
+
+    /**
+     * Calculates a heuristic score representing how many of a player's tiles are surrounded
+     * by their own tiles in adjacent cardinal directions (up, down, left, right).
+     * <p>
+     * This metric can be used to evaluate how compact or "walled-in" a player's territory is.
+     * Walls tend to decrease the mobility of a player, that's why it is desirable to have a spread position.
+     *
+     * @param map The game map controller.
+     * @param att The current game attributes, including player tile ownership.
+     * @param playerId The ID of the player being evaluated.
+     * @return A normalized score (negative or close to zero is better), indicating tile connectivity.
+     */
+    public static double walls(MapController map, GameAttributes att, int playerId) {
+        IntLinkedList ownTiles = att.getPlayer(playerId).getTiles();
+        int size = ownTiles.getSize();
+        if (size == 0) return 0;
+
+        double adjacentCount = 0;
+        ListNode node = ownTiles.getHead();
+
+        // Iterate over each tile
+        while (node != null) {
+            int value = node.getValue();
+
+            // Check the 4 cardinal directions around each tile
+            int[] directions = {
+                    value - 51, // up
+                    value + 51, // down
+                    value - 1,  // left
+                    value + 1   // right
+            };
+
+            for (int neighbor : directions) {
+                if (neighbor >= 0) {
+                    int nx = MoveVerifier.decodePosX(neighbor);
+                    int ny = MoveVerifier.decodePosY(neighbor);
+
+                    // Increase count if neighbor tile is ours
+                    if (map.getTile(nx, ny) == (char) ('0' + playerId)) {
+                        adjacentCount++;
+                    }
+                }
+            }
+            node = node.getNext();
+        }
+
+        // Ratio of total tiles to number of own neighbors
+        double ratio = size / adjacentCount;
+
+        // Normalize the score to be negative if ratio > 1 (less compact), positive otherwise
+        return (ratio > 1) ? -ratio + 1 : ratio - 1;
+    }
+
+
+    /*private static boolean cantBeCapturedMoveAtAll(MapController map, int x, int y, GameAttributes att) {
         for (byte i = 0; i < att.getNumberPlayers(); i++) {
             for (int special : new int[]{0, att.getOurPlayerId(), 20, 21}) {
                 int move = MoveVerifier.encodeMove(x, y, special, i);
@@ -178,7 +259,7 @@ public class Heuristics {
             }
         }
         return true;
-    }
+    }*/
 
     private static boolean isPlayer(char c) {
         return !(c == '-' || c == '0' || c == 'x' || c == 'i' || c == 'b' || c == 'c');
@@ -213,19 +294,22 @@ public class Heuristics {
      * @return A combined heuristic score.
      */
     public int evaluate(MapController map, GameAttributes att, int playerId) {
-        double wCorners = 0.3;
+        double wCorners = 0.4;
         double wMobility = 0.2;
-        double wSafeStones = 0.2;
+        double wSafeStones = 0.6;
         double wTileRatio = 0.2;
-        double wSpecials = 0.1;
+        double wWalls = 0.2;
+        double wSpecials = 0.2;
 
         double score = 0;
         score += wCorners * amountOfCornersCaptured(map, playerId);
         score += wMobility * mobility(map, att, playerId);
         score += wSafeStones * amountSaveStones(map, att, playerId);
         score += wTileRatio * amountOfOwnTilesToOthers(map, playerId);
+        score += wWalls * walls(map, att, playerId);
         score += wSpecials * (numberOfBombs(att, playerId) + numberOfOverrides(att, playerId)) / 10.0;
 
         return (int) Math.round(score * 1000); // 0-1000 points
     }
+
 }
