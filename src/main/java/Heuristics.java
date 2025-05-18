@@ -180,7 +180,7 @@ public class Heuristics {
 
             int nextx = MoveVerifier.decodePosX(next);
             int nexty = MoveVerifier.decodePosY(next);
-            if (map.getTile(nextx, nexty) != '0' + a.getOurPlayerId()) {
+            if (map.getTile(nextx, nexty) == '0' + a.getOurPlayerId()) {
                 while (true) {
                     next = map.getNextTile(MoveVerifier.encodePosition(nextx, nexty, i));
                     if (next == -1) {
@@ -189,7 +189,10 @@ public class Heuristics {
                     }
                     nextx = MoveVerifier.decodePosX(next);
                     nexty = MoveVerifier.decodePosY(next);
-                    if (map.getTile(nextx, nexty) != '0' + a.getOurPlayerId()) break;
+                    if (map.getTile(nextx, nexty) != '0' + a.getOurPlayerId()) {
+                        if (i % 2 == 1) counter = 3;
+                        break;
+                    }
                 }
             }
         }
