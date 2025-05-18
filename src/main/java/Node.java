@@ -156,7 +156,7 @@ public class Node {
             this.nextMoves = null;
             return result;      
         }else{
-            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerIds);
+            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
         }
     }
 }
