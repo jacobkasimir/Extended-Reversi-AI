@@ -80,7 +80,7 @@ public class Node {
             gameState.updateGameState(this.move);
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
             if(possibleMoves == null) {
-                return heuristics.evaluate(gameState.mapController(), gameState.attributes(), gameState.attributes().getOurPlayerId());
+                return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
             }
 
             ListNode node = possibleMoves.getHead();
@@ -107,7 +107,7 @@ public class Node {
             this.nextMoves = null;
             return result;      
         }else{
-            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), gameState.attributes().getOurPlayerId());
+            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
         }
     }
 
@@ -125,7 +125,7 @@ public class Node {
             gameState.updateGameState(this.move);
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
             if(possibleMoves == null) {
-                return heuristics.evaluate(gameState.mapController(), gameState.attributes(), gameState.attributes().getOurPlayerId());
+                return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
             }
 
             ListNode m = possibleMoves.getHead();
@@ -156,7 +156,7 @@ public class Node {
             this.nextMoves = null;
             return result;      
         }else{
-            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), gameState.attributes().getOurPlayerId());
+            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerIds);
         }
     }
 }
