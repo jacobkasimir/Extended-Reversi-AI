@@ -20,8 +20,8 @@ public class HeuristicsTest {
             new Transitions(8,8),
             8, 8, 1);
 
-        GameAttributes state = new GameAttributes(2, 1, 1, 1, (byte) 1);
-        state.setOurPlayerId((byte) 1);
+        GameAttributes state = new GameAttributes( 2, 1, 1, 1, (byte) 1);
+        state.setOurPlayerId((1));
 
         assertEquals(0.5, Heuristics.amountOfOwnTilesOverall(map, (byte) 1));
     }
@@ -42,7 +42,7 @@ public class HeuristicsTest {
             new Transitions(8,8),
             8, 8, 1);
 
-        GameAttributes state = new GameAttributes(8, 1, 1, 1, (byte) 1);
+        GameAttributes state = new GameAttributes((byte)8, 1, 1, 1, (byte) 1);
         state.setOurPlayerId((byte) 6);
 
         assertEquals(1.0/8, Heuristics.amountOfOwnTilesOverall(map, (byte) 6));
@@ -67,7 +67,7 @@ public class HeuristicsTest {
         GameAttributes state = new GameAttributes(8, 1, 1, 1, (byte) 1);
         state.setOurPlayerId((byte) 4);
 
-        assertEquals(6.0/64, Heuristics.amountOfOwnTilesOverall(map, (byte) 4));
+        assertEquals(6.0/56.0, Heuristics.amountOfOwnTilesOverall(map, 4));
     }
 
     @Test

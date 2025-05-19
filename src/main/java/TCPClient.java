@@ -1,12 +1,14 @@
-/**
- * TCPClient establishes a TCP connection to the game server and handles the network protocol.
- * It interprets incoming messages and delegates game logic to GameClient.
- */
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+
+/**
+ * TCPClient establishes a TCP connection to the game server and handles the network protocol.
+ * It interprets incoming messages and delegates game logic to GameClient.
+ */
+
 
 public class TCPClient {
 

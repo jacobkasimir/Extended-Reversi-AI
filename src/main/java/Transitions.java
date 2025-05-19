@@ -1,35 +1,38 @@
-/*
- * The Transitions class stores all the data for the transitions.
- * It provides simple methods for using transitions.
+import java.util.Arrays;
+
+/**
+ * Manages transitions between tiles in a grid-based system.
+ * Each tile can have transitions in 8 different directions.
+ * The transitions are stored in a linear array representing x, y, and direction coordinates.
  */
-
-public class Transitions{
-    //private static Transitions instance;
-    //private static boolean isInitialized = false;
-
-    private int[] transitionsArray;
+public class Transitions {
+    private final int[] transitionsArray;
     private final int width;
     private final int height;
 
-
-
-    public Transitions(int width, int height){
+    /**
+     * Creates a new transition grid with specified dimensions.
+     *
+     * @param width Width of the transition grid
+     * @param height Height of the transition grid
+     */
+    public Transitions(int width, int height) {
         this.transitionsArray = new int[width*height*8];
         this.width = width;
         this.height = height;
 
-        for (int i = 0; i < transitionsArray.length; i++) {
-            transitionsArray[i] = -1;
-        }
+        Arrays.fill(transitionsArray, -1);
     }
 
-    
-    /** 
-     * Returns the next tile with the corresponding direction
-     * @param x The x-coordinate of the current tile
-     * @param y The y-coordinate of the current tile
-     * @param direc The direction from the current tile
-     * @return Position The Position-object of the next tile 
+    /**
+     * Calculates the next tile position based on the current position and direction.
+     * Uses predefined transitions if available, otherwise computes adjacent position.
+     * Directions: 0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW
+     *
+     * @param x X-coordinate of the current tile
+     * @param y Y-coordinate of current tile
+     * @param direc Direction from the current tile (0-7)
+     * @return Encoded position containing next coordinates and direction, -1 if invalid
      */
     public int getNextTile(int x, int y, int direc) {
         if(direc < 9 && direc >= 0){
@@ -70,39 +73,59 @@ public class Transitions{
         return -1; //Error!
     }
 
-    
-    /** 
-     * Sets a new transition in the transitionsArray-matrix
-     * @param xTile The x-coordinate of the first position
-     * @param yTile The y-coordinate of the first position
-     * @param direcTile The direction for the first position
-     * @param xNextTile The x-coordinate of the second position
-     * @param yNextTile The y-coordinate of the second position
-     * @param direcNextTile The direction for the second position
+    /**
+     * Creates a two-way transition between two tile positions.
+     *
+     * @param xTile First tile X-coordinate
+     * @param yTile First tile Y-coordinate
+     * @param direcTile Direction from first tile (0-7)
+     * @param xNextTile Second tile X-coordinate
+     * @param yNextTile Second tile Y-coordinate
+     * @param direcNextTile Direction from second tile (0-7)
      */
-    public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
+    public void setTransition(int xTile, int yTile, int direcTile, 
+                            int xNextTile, int yNextTile, int direcNextTile) {
         if(direcTile < 8 && direcTile >= 0 && direcNextTile < 8 && direcNextTile >= 0){ 
             transitionsArray[(width*8*yTile)+(xTile*8)+direcTile] = MoveVerifier.encodePosition(xNextTile, yNextTile, direcNextTile);
             transitionsArray[(width*8*yNextTile)+(xNextTile*8)+direcNextTile] = MoveVerifier.encodePosition(xTile, yTile, direcTile);
         }
     }
 
+    /**
+     * Retrieves transition value for given position and direction.
+     *
+     * @param x X-coordinate
+     * @param y Y-coordinate
+     * @param direction Direction to check (0-7)
+     * @return Encoded transition value or -1 if none exists
+     */
     private int getTransition(int x, int y, int direction){
         return transitionsArray[(width*8*y)+(x*8)+direction];
     }
 
-    
+    /**
+     * @return Width of the transition grid
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * @return Height of the transition grid
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Checks equality with another object.
+     * Note: Current implementation always returns true.
+     *
+     * @param obj Object to compare with
+     * @return true if equal, false otherwise
+     */
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(Object obj) {
         return true;
     }
-    
 }

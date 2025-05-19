@@ -1,49 +1,48 @@
-
+/**
+ * Provides heuristic evaluation methods to assess board positions
+ * in a generalized multi-player Reversi-like game with a dynamic map.
+ */
 public class Heuristics {
 
     private final IntLinkedList corners;
 
-    public Heuristics(MapController map){
-        corners = findCorners(map);
+    /**
+     * Constructs a new Heuristics object and detects the corner positions on the map.
+     * @param map The map on which to identify corner tiles.
+     */
+    public Heuristics(MapController map) {
+        this.corners = findCorners(map);
     }
 
-    //can be private but public for using in unit tests
-    //TODO set to private
-    public IntLinkedList findCorners(MapController map){
-        
+    /**
+     * Finds corner tiles on the map. A tile is considered a "corner" if only one side is reachable,
+     * and all orthogonal directions beyond that side are blocked or lead to a hole.
+     * @param map The game map.
+     * @return A list of encoded corner coordinates.
+     */
+    public IntLinkedList findCorners(MapController map) {
         IntLinkedList result = new IntLinkedList();
-        int currentPosition1;
-        int nextTile1;
-        int currentPosition2;
-        int nextTile2;
-        boolean currentIsCorner;
 
         for (int x = 0; x < map.getWidth(); x++) {
-            
             for (int y = 0; y < map.getHeight(); y++) {
-                
-                if(map.getTile(x, y) != '-'){
+                if (map.getTile(x, y) == '-') continue;
 
-                    currentIsCorner = true;
+                boolean currentIsCorner = true;
 
-                    for (int i = 0; i < 4; i++) {
-                        
-                        currentPosition1 = MoveVerifier.encodePosition(x, y, i);
-                        nextTile1 = map.getNextTile(currentPosition1);
-                        currentPosition2 = MoveVerifier.encodePosition(x, y, i+4);
-                        nextTile2 = map.getNextTile(currentPosition2);
+                for (int i = 0; i < 4; i++) {
+                    int next1 = map.getNextTile(MoveVerifier.encodePosition(x, y, i));
+                    int next2 = map.getNextTile(MoveVerifier.encodePosition(x, y, i + 4));
 
-                        if (nextTile1 != -1 && map.getTile(MoveVerifier.decodePosX(nextTile1), MoveVerifier.decodePosY(nextTile1)) != '-') {
-                            if (nextTile2 != -1 && map.getTile(MoveVerifier.decodePosX(nextTile2), MoveVerifier.decodePosY(nextTile2)) != '-') {
-                                currentIsCorner = false;
-                                break;
-                            }
+                    if (next1 != -1 && map.getTile(MoveVerifier.decodePosX(next1), MoveVerifier.decodePosY(next1)) != '-') {
+                        if (next2 != -1 && map.getTile(MoveVerifier.decodePosX(next2), MoveVerifier.decodePosY(next2)) != '-') {
+                            currentIsCorner = false;
+                            break;
                         }
-                        
                     }
-                    if (currentIsCorner) {
-                        result.add(MoveVerifier.encodeCoordinate(x,y));
-                    } 
+                }
+
+                if (currentIsCorner) {
+                    result.add(MoveVerifier.encodeCoordinate(x, y));
                 }
             }
         }
@@ -51,76 +50,269 @@ public class Heuristics {
         return result;
     }
 
-    public double amountOfCornersCaptured(MapController map, byte playerId){
-        
+    /**
+     * Computes the ratio of captured corner tiles for a given player.
+     * @param map The map to analyze.
+     * @param playerId The ID of the player (0-indexed).
+     * @return Fraction of all corners held by the player.
+     */
+    public double amountOfCornersCaptured(MapController map, int  playerId) {
+        if (corners.isEmpty()) return 0;
+
         double counter = 0;
+        ListNode node = corners.getHead();
 
-        ListNode coordinate = corners.getHead();
-        while (coordinate != null) {
-            if (map.getTile(MoveVerifier.decodeXCoords(coordinate.getValue()), MoveVerifier.decodeYCoords(coordinate.getValue())) == (playerId + '0')) {
-                counter++;
-            }
-            coordinate = coordinate.getNext();
+        while (node != null) {
+            int x = MoveVerifier.decodeXCoords(node.getValue());
+            int y = MoveVerifier.decodeYCoords(node.getValue());
+            if (map.getTile(x, y) == (char) (playerId + '0')) counter++;
+            node = node.getNext();
         }
 
-        if (corners.isEmpty()) {
-            return 0;
-        }else{
-            return counter / corners.getSize();
-        }
+        return counter / corners.getSize();
     }
 
-    public static double amountOfOwnTilesOverall(MapController map, byte playerId){
-
-        double own = 0;
-
-        for (int x = 0; x < map.getWidth(); x++) {
-            
-            for (int y = 0; y < map.getHeight(); y++) {
-                if (map.getTile(x, y) == (playerId + '0')) {
-                    own++;
-                }
-            }
-
-        }
-        return own/(map.getHeight()*map.getWidth());
-    } 
-
-    public static double amountOfOwnTilesToOthers(MapController map, byte playerId){
-        
-        double own = 0;
-        int other = 0;
+    /**
+     * Calculates the percentage of all tiles on the board that are occupied by the player.
+     * @param map The current map.
+     * @param playerId The player's ID.
+     * @return A normalized score between 0 and 1.
+     */
+    public static double amountOfOwnTilesOverall(MapController map, int playerId) {
+        int own = 0;
+        int total = 0;
 
         for (int x = 0; x < map.getWidth(); x++) {
-            
             for (int y = 0; y < map.getHeight(); y++) {
-                if (map.getTile(x, y) == (playerId + '0')) {
-                    own++;
-                }else if (isPlayer(map.getTile(x, y))) {
-                    other++;
-                }
+                char tile = map.getTile(x, y);
+                if (tile != '-') total++;  // Count valid tiles only
+                if (tile == (char) (playerId + '0')) own++;
             }
-
         }
 
-        return own/other;
-
+        return total == 0 ? 0 : (double) own / total;
     }
 
-    private static boolean isPlayer(char c){
+    /**
+     * Compares the number of own tiles to the number of all other players' tiles.
+     * @param map The map to analyze.
+     * @param playerId The player ID.
+     * @return Ratio of own tiles to others’ tiles.
+     */
+    public static double amountOfOwnTilesToOthers(MapController map, int playerId) {
+        double own = 0, other = 0;
+
+        for (int x = 0; x < map.getWidth(); x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                char tile = map.getTile(x, y);
+                if (tile == (char) (playerId + '0')) own++;
+                else if (isPlayer(tile)) other++;
+            }
+        }
+
+        return other == 0 ? 1 : own / other;
+    }
+
+
+
+    /**
+     * Calculates a normalized mobility value for the player.
+     * @param map The map state.
+     * @param att The game state attributes.
+     * @param playerId The player's ID.
+     * @return A normalized score for relative mobility.
+     */
+    public static double mobility(MapController map, GameAttributes att, int playerId) {
+        int own = att.getPlayer(playerId).getTiles().getSize();
+        int totalOthers = 0;
+
+        for (int i = 0; i < att.getNumberPlayers(); i++) {
+            if (i != playerId) {
+                totalOthers += att.getPlayer(i).getTiles().getSize();
+            }
+        }
+
+        return (own + totalOthers == 0) ? 0 : (double) (own - totalOthers / (att.getNumberPlayers() - 1)) / (own + totalOthers);
+    }
+
+    /**
+     * Measures how many of a player's stones are in "safe" positions,
+     * i.e., either in a corner or cannot be captured by normal or special moves.
+     * @param map The current game map.
+     * @param att Game state information.
+     * @param playerId The player ID.
+     * @return A normalized safety score for the player's stones.
+     */
+    public double amountSaveStones(MapController map, GameAttributes att, int playerId) {
+        IntLinkedList ownTiles = att.getPlayer(playerId).getTiles();
+        if (ownTiles.getSize() == 0) return 0;
+
+        double score = 0;
+        ListNode node = ownTiles.getHead();
+
+        while (node != null) {
+            int x = MoveVerifier.decodeXCoords(node.getValue());
+            int y = MoveVerifier.decodeYCoords(node.getValue());
+
+            if (corners.contains(MoveVerifier.encodeCoordinate(x, y))) score += att.getNumberPlayers();
+            if(bigCorner(map, att, x, y)) score += att.getNumberPlayers();
+            for(int i = 0; i < att.getNumberPlayers(); i++) {
+                if(att.getPlayer(i).getNumberOverwrites() == 0) score++;
+            }
+
+            node = node.getNext();
+        }
+
+        return score / ownTiles.getSize() * att.getNumberPlayers();
+    }
+
+    private static boolean bigCorner(MapController map, GameAttributes a, int x, int y) {
+        int next;
+        int counter = 3;
+        for (int i = 0; i < 8; i++) {
+            if (counter == 0) return true;
+
+            next = map.getNextTile(MoveVerifier.encodePosition(x, y, i));
+            if (next == -1) {
+                counter--;
+                continue;
+            }
+
+            int nextx = MoveVerifier.decodePosX(next);
+            int nexty = MoveVerifier.decodePosY(next);
+            if (map.getTile(nextx, nexty) == '0' + a.getOurPlayerId()) {
+                while (true) {
+                    next = map.getNextTile(MoveVerifier.encodePosition(nextx, nexty, i));
+                    if (next == -1) {
+                        counter--;
+                        break;
+                    }
+                    nextx = MoveVerifier.decodePosX(next);
+                    nexty = MoveVerifier.decodePosY(next);
+                    if (map.getTile(nextx, nexty) != '0' + a.getOurPlayerId()) {
+                        if (i % 2 == 1) counter = 3;
+                        break;
+                    }
+                }
+            }
+        }
+        return counter == 0;
+    }
+
+
+    /**
+     * Calculates a heuristic score representing how many of a player's tiles are surrounded
+     * by their own tiles in adjacent cardinal directions (up, down, left, right).
+     * <p>
+     * This metric can be used to evaluate how compact or "walled-in" a player's territory is.
+     * Walls tend to decrease the mobility of a player, that's why it is desirable to have a spread position.
+     *
+     * @param map The game map controller.
+     * @param att The current game attributes, including player tile ownership.
+     * @param playerId The ID of the player being evaluated.
+     * @return A normalized score (negative or close to zero is better), indicating tile connectivity.
+     */
+    public static double walls(MapController map, GameAttributes att, int playerId) {
+        IntLinkedList ownTiles = att.getPlayer(playerId).getTiles();
+        int size = ownTiles.getSize();
+        if (size == 0) return 0;
+
+        double adjacentCount = 0;
+        ListNode node = ownTiles.getHead();
+
+        // Iterate over each tile
+        while (node != null) {
+            int value = node.getValue();
+
+            // Check the 4 cardinal directions around each tile
+            int[] directions = {
+                    value - 51, // up
+                    value + 51, // down
+                    value - 1,  // left
+                    value + 1   // right
+            };
+
+            for (int neighbor : directions) {
+                if (neighbor >= 0) {
+                    int nx = MoveVerifier.decodePosX(neighbor);
+                    int ny = MoveVerifier.decodePosY(neighbor);
+
+                    // Increase count if neighbor tile is ours
+                    if (map.getTile(nx, ny) == (char) ('0' + playerId)) {
+                        adjacentCount++;
+                    }
+                }
+            }
+            node = node.getNext();
+        }
+
+        // Ratio of total tiles to number of own neighbors
+        double ratio = size / adjacentCount;
+
+        // Normalize the score to be negative if ratio > 1 (less compact), positive otherwise
+        return (ratio > 1) ? -ratio + 1 : ratio - 1;
+    }
+
+
+    /*private static boolean cantBeCapturedMoveAtAll(MapController map, int x, int y, GameAttributes att) {
+        for (byte i = 0; i < att.getNumberPlayers(); i++) {
+            for (int special : new int[]{0, att.getOurPlayerId(), 20, 21}) {
+                int move = MoveVerifier.encodeMove(x, y, special, i);
+                if (MoveVerifier.isValid(move, map, att)) return false;
+            }
+        }
+        return true;
+    }*/
+
+    private static boolean isPlayer(char c) {
         return !(c == '-' || c == '0' || c == 'x' || c == 'i' || c == 'b' || c == 'c');
     }
 
-    public static int numberOfOverrides(GameAttributes state, byte playerId){
+    /**
+     * Returns the number of overwrite tokens the player has.
+     * @param state The game state.
+     * @param playerId The player ID.
+     * @return The number of available overwrites.
+     */
+    public static int numberOfOverrides(GameAttributes state, int playerId) {
         return state.getPlayer(playerId).getNumberOverwrites();
     }
 
-    public static int numberOfBombs(GameAttributes state, byte playerId){
+    /**
+     * Returns the number of bombs the player has.
+     * @param state The game state.
+     * @param playerId The player ID.
+     * @return The number of available bombs.
+     */
+    public static int numberOfBombs(GameAttributes state, int playerId) {
         return state.getPlayer(playerId).getNumberBombs();
     }
 
-    public int evaluate(GameState gameState){
-        return (int)((amountOfOwnTilesOverall(gameState.mapController(), gameState.attributes().getOurPlayerId()) + 
-        amountOfOwnTilesToOthers(gameState.mapController(), gameState.attributes().getOurPlayerId()) + 2*amountOfCornersCaptured(gameState.mapController(), gameState.attributes().getOurPlayerId())) * 100);
+    /**
+     * Combines several heuristics into a single evaluation score for a player in a given game state.
+     * Weights should be tuned experimentally or via machine learning.
+     * @param map The current map.
+     * @param att The game attributes.
+     * @param playerId The player ID.
+     * @return A combined heuristic score.
+     */
+    public int evaluate(MapController map, GameAttributes att, int playerId) {
+        double wCorners = 0.4;
+        double wMobility = 0.2;
+        double wSafeStones = 0.6;
+        double wTileRatio = 0.2;
+        double wWalls = 0.2;
+        double wSpecials = 0.2;
+
+        double score = 0;
+        score += wCorners * amountOfCornersCaptured(map, playerId);
+        score += wMobility * mobility(map, att, playerId);
+        score += wSafeStones * amountSaveStones(map, att, playerId);
+        score += wTileRatio * amountOfOwnTilesToOthers(map, playerId);
+        score += wWalls * walls(map, att, playerId);
+        score += wSpecials * (numberOfBombs(att, playerId) + numberOfOverrides(att, playerId)) / 10.0;
+
+        return (int) Math.round(score * 1000); // 0-1000 points
     }
+
 }
