@@ -12,7 +12,7 @@ public class GameClientTest {
         int startPosition = MoveVerifier.encodePosition(1, 1, 5);
         int endPosition =  MoveVerifier.encodePosition(4, 0, 1+4);
 
-        game.init(lines);
+        game.init(lines,false,1);
 
         assertEquals(game.getCurrentGameAttributes().getNumberPlayers(), 2);
         assertEquals(game.getCurrentGameAttributes().getPlayer(1).getNumberOverwrites(), 0);

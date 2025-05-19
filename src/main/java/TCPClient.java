@@ -18,7 +18,7 @@ public class TCPClient {
      * @param port The port number.
      * @throws IOException In case of connection or stream errors.
      */
-    public static void connect(InetAddress server, int port) throws IOException {
+    public static void connect(InetAddress server, int port, boolean compare, int depthLimit) throws IOException {
         Socket socket = new Socket(server, port);
         System.out.println("Verbunden mit Server " + server + ":" + port);
 
@@ -48,7 +48,7 @@ public class TCPClient {
                     in.readFully(mapBytes);
                     String map = new String(mapBytes);
                     String[] lines = map.split("\\R");
-                    game.init(lines);
+                    game.init(lines, compare, depthLimit);
                     break;
 
                 case 3:

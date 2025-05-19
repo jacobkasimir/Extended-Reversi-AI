@@ -527,7 +527,7 @@ public class MapTests {
         String[] lines = input.split("\\R");
 
         GameClient game = new GameClient();
-        game.init(lines);
+        game.init(lines,false,1);
         game.setOurPlayerId((byte)2);
 
         IntLinkedList coordinates = new IntLinkedList();
@@ -556,7 +556,7 @@ public class MapTests {
         String[] lines = input.split("\\R");
 
         GameClient game = new GameClient();
-        game.init(lines);
+        game.init(lines,false,1);
         game.setOurPlayerId((byte)2);
 
         IntLinkedList coordinates = new IntLinkedList();

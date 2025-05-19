@@ -10,6 +10,7 @@ public class GameClient {
     private Heuristics heuristics;
     private int depthLimit;
     private int timeLimit;
+    private boolean compareOn;
 
     /**
      * Returns the map controller for the current game.
@@ -53,7 +54,7 @@ public class GameClient {
      *
      * @param lines the input map file content as an array of lines
      */
-    public void init(String[] lines) {
+    public void init(String[] lines, boolean compare, int depthLimit) {
         int playerCount = Integer.parseInt(lines[0]);
         int overrideCount = Integer.parseInt(lines[1]);
 
@@ -78,6 +79,10 @@ public class GameClient {
         );
 
         this.heuristics = new Heuristics(getCurrentMapController());
+
+        this.compareOn = compare;
+        
+        this.depthLimit = depthLimit;
 
         System.out.println("Initialization completed.");
     }
@@ -154,8 +159,26 @@ public class GameClient {
      * @return the encoded move
      */
     public int calculateMove() {
-        AlphaBeta alphaBeta = new AlphaBeta(current_gameState, heuristics, timeLimit, depthLimit);
-        return alphaBeta.chooseMove();
+        if(compareOn){
+
+            MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
+            int moveMiniMax = miniMax.chooseMove();
+
+            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
+            int moveAlphaBeta = alphaBeta.chooseMove();
+
+            if (moveMiniMax != moveAlphaBeta) {
+            System.err.println("Unterschiedliches Ergebnis! MiniMax: " + moveMiniMax + " | AlphaBeta: " + moveAlphaBeta);
+            }
+            return moveAlphaBeta;
+
+        }else{
+
+            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
+            int moveAlphaBeta = alphaBeta.chooseMove();
+            return moveAlphaBeta;
+
+        }
     }
 
     /**

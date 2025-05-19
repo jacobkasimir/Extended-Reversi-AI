@@ -10,6 +10,8 @@ public class Main {
     public static void main(String[] args) {
         String serverInput = "localhost";
         int port = 12345;
+        boolean compare = false;
+        int depthLimit = 1;
 
         try {
             for (int i = 0; i < args.length; i++) {
@@ -17,10 +19,13 @@ public class Main {
                     case "-h":
                     case "--help":
                         System.out.println("Usage:");
-                        System.out.println("  -s, --server <Host/IP>  Server address (IPv4, IPv6 or hostname)");
-                        System.out.println("  -p, --port <Port>       Port number (default: 12345)");
-                        System.out.println("  -h, --help              Show this help");
+                        System.out.println("  -s, --server <Host/IP>    Server address (IPv4, IPv6 or hostname)");
+                        System.out.println("  -p, --port <Port>         Port number (default: 12345)");
+                        System.out.println("  -d, --depth <SearchDepth> Depth of the search algorithm (default: 5)");
+                        System.out.println("  -c, --compare             Compare MiniMax and Alpha-Beta results");
+                        System.out.println("  -h, --help                Show this help");
                         return;
+
                     case "-s":
                     case "--server":
                         if (i + 1 < args.length) {
@@ -30,6 +35,7 @@ public class Main {
                             return;
                         }
                         break;
+
                     case "-p":
                     case "--port":
                         if (i + 1 < args.length) {
@@ -44,13 +50,33 @@ public class Main {
                             return;
                         }
                         break;
+
+                    case "-d":
+                    case "--depth":
+                        if (i + 1 < args.length) {
+                            try {
+                                depthLimit = Integer.parseInt(args[++i]);
+                            } catch (NumberFormatException e) {
+                                System.err.println("Error: Search depth must be a number.");
+                                return;
+                            }
+                        } else {
+                            System.err.println("Error: -d requires a depth value.");
+                            return;
+                        }
+                        break;
+
+                    case "-c":
+                    case "--compare":
+                        compare = true;
+                        break;
+
                     default:
                         System.err.println("Unknown parameter: " + args[i]);
                         return;
                 }
             }
 
-            // Handles adress/hostname resolution
             InetAddress[] addresses = InetAddress.getAllByName(serverInput);
 
             if (addresses.length == 0) {
@@ -58,10 +84,12 @@ public class Main {
                 return;
             }
 
-            InetAddress selectedAddress = addresses[0]; // simple strategy: first match
+            InetAddress selectedAddress = addresses[0];
             System.out.println("Connecting to " + selectedAddress.getHostAddress() + " (" + selectedAddress.getHostName() + ") on port " + port);
+            System.out.println("Search depth: " + depthLimit + ", Compare mode: " + (compare ? "enabled" : "disabled"));
 
-            TCPClient.connect(selectedAddress, port);
+            // Übergib zusätzliche Parameter an den TCPClient
+            TCPClient.connect(selectedAddress, port, compare, depthLimit);
 
         } catch (UnknownHostException e) {
             System.err.println("Error: Could not resolve host '" + serverInput + "'.");
