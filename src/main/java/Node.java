@@ -91,17 +91,14 @@ public class Node {
             }
             int result;
             if(MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()){
-                result = Integer.MAX_VALUE;
-                for (Node child : nextMoves) {
-                    result = Math.min(result, child.dfs(searchDepth-1, MoveVerifier.decodePlayerId(this.move)));
-                    if(result == Integer.MAX_VALUE){
-                        break;
-                    }
-                }
-            }else{
                 result = Integer.MIN_VALUE;
                 for (Node child : nextMoves) {
                     result = Math.max(result, child.dfs(searchDepth-1, MoveVerifier.decodePlayerId(this.move)));
+                }
+            }else{
+                result = Integer.MAX_VALUE;
+                for (Node child : nextMoves) {
+                    result = Math.min(result, child.dfs(searchDepth-1, MoveVerifier.decodePlayerId(this.move)));
                 }
             }
             this.nextMoves = null;
@@ -135,19 +132,19 @@ public class Node {
             }
             int result;
             if(MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()){
-                result = Integer.MAX_VALUE;
+                result = Integer.MIN_VALUE;
                 for (Node child : nextMoves) {
-                    result = Math.min(result, child.pruning(searchDepth-1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
-                    beta = Math.min(beta, result);
+                    result = Math.max(result, child.pruning(searchDepth-1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
+                    alpha = Math.max(alpha, result);
                     if(beta <= alpha){
                         break;
                     }
                 }
             }else{
-                result = Integer.MIN_VALUE;
+                result = Integer.MAX_VALUE;
                 for (Node child : nextMoves) {
-                    result = Math.max(result, child.pruning(searchDepth-1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
-                    alpha = Math.max(alpha, result);
+                    result = Math.min(result, child.pruning(searchDepth-1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
+                    beta = Math.min(beta, result);
                     if(beta <= alpha){
                         break;
                     }
