@@ -1,0 +1,40 @@
+\section*{Exercise 2}
+\textit{Task: Alpha-Beta pruning implementation.} \\
+
+\noindent The second exercise of this assignment was about improving the MiniMax algorithm. Therefore, we implemented an optimized version of Minimax called Alpha-Beta pruning. \\
+The main issue with MiniMax is the enormous increase in runtime when you evaluate the search tree to a higher depth. On each layer the number of children per node is growing exponentially. Through the depth-first-search implemented in MiniMax you enter each new way until you reach the leaves. This requires a lot of time and leads to many disqualifications due to timeouts.\\
+The idea behind Alpha-Beta Pruning is to only evaluate some parts of the tree to avoid unnecessary computations. Then you can speak of pruning parts of the tree that do not have an impact on the final result. Because of the assumption that we always choose the best move and our opponents choose the worst move according to the heuristics, we can sometimes be sure that we do not need to enter certain paths in the tree with our depth-first-search. \\
+Assume it is our turn. So we want to maximize the heuristics score and already evaluated one child with a result of $x$. Then MiniMax continues evaluating the next child of the current node. After making further recursive calls on one of the child's children we get a provisional result for the child with a value $y$ less than $x$. Now we know that the final result for this child will never be greater than $y$ because our opponents always choose the minimum. At this point we can stop the depth-first search on this child because we know that we already have a better option than $y$. The better option is $x$. Therefore we do not need to further explore the child. We can prune this part of the search tree. This strategy works analogously when a node represents a game state where one of our opponents must make a move. Then you only change the comparison (prune when you find a $y$ greater than $x$) because we assume that our opponents want to minimize our heuristics score.\\
+\\
+We introduced two new parameters in our implementation. The \texttt{alpha} value represents the best heuristic score we have computed so far and the \texttt{beta} value stores the lowest heuristic score we have found along the way. So our new function header for the recursive method looks as the the follows because we must keep track of the two values and hand them to the next recursive call.
+
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\small]
+public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta)
+\end{lstlisting}
+
+\noindent The implementation is based on the \texttt{dfs} method for MiniMax. We only added the parts shown below to the loop that evaluates the children of the current node, enabling pruning.
+
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\small]
+...
+//our turn
+alpha = Math.max(alpha, result);
+if(beta <= alpha){
+    break;
+}
+...
+
+...
+//the opponents turn
+beta = Math.min(beta, result);
+if(beta <= alpha){
+    break;
+}
+...
+\end{lstlisting}
+
+\noindent As you can see, we update the \texttt{alpha} and \texttt{beta} values and check if we can prune.\\
+This recursive method is also located in the class \texttt{Node}. Then we added a new class called \texttt{AlphaBeta}. It is very smiliar to \texttt{MiniMax} as well. We only added the few lines to achieve pruning and initialize \texttt{alpha} and \texttt{beta} with the corresponding minimal or maximal integer value.\\
+
+\noindent In the previous chapter, we already mentioned that we want to optimize our game simulation mechanics. As we analyzed with a java profiler, the \texttt{copy()} method still takes a significant amount of our computations. Therefore, there is the ongoing need for improvements to avoid disqualifications through timeouts. With online search and in the recommended literature, we have found that sorting the nodes in each layer can speed up the Alpha-Beta pruning strategy. We also discovered that the provided binaries perform a move sorting. So we think this could be part of assignment 4. Otherwise we might implement it anyway.
+
+

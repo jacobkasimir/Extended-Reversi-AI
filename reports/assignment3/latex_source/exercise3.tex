@@ -1,0 +1,125 @@
+\section*{Exercise 3}
+\textit{Plotting MiniMax and Alpha-Beta Pruning}
+
+\noindent We evaluated the efficiency of the \textit{MiniMax} algorithm and its optimized variant with \textit{Alpha-Beta pruning} on two different types of maps:
+
+\begin{itemize}
+    \item \textbf{Standard map}
+    \item \textbf{50x50 map} (high complexity and large branching factor)
+\end{itemize}
+
+\noindent In each move, both algorithms were run independently to ensure consistency and correctness. The following metrics were collected:
+\begin{itemize}
+    \item Number of visited nodes per move
+    \item Computation time per move (ms)
+    \item Total number of nodes visited
+    \item Total computation time
+\end{itemize}
+
+\noindent To capture the variability of the results across different runs or maps, we additionally visualize the spread of the data as shaded regions behind the performance curves. This visual representation of data spread (or coincidence) illustrates how tightly the individual measurements are clustered around the average. A narrow band indicates stable and consistent performance, while a wider band suggests greater variance in the results. These shaded areas are based on the standard deviation of the recorded values and help to better interpret the reliability and robustness of each algorithm's performance.
+
+\noindent On the 50x50 map, the values on the y-axis are displayed in scientific notation and represent multiples of either $10^6$ or $10^8$, as indicated by the corresponding axis label (e.g., $1\mathrm{e}{6}$ or $1\mathrm{e}{8}$).
+
+\vspace{1em}
+
+\subsection*{Visited Nodes per Move}
+
+\noindent The number of visited nodes per turn reflects how efficiently the search tree is explored.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assignment3/plots/nodes_comparison_standart.png}
+    \caption{Visited nodes per move — Standard map}
+    \label{fig:nodes_standard}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assignment3/plots/nodes_comparison_50.png}
+    \caption{Visited nodes per move — 50x50 map}
+    \label{fig:nodes_50}
+\end{figure}
+
+\noindent Across both maps, Alpha-Beta pruning consistently visits fewer nodes. The difference is most prominent in midgame situations where the branching factor is high. On the standard map, node reduction is strongest around turns 15–25. On the 50x50 map (see Figure~\ref{fig:nodes_50}), pruning prevents an explosion in visited nodes, which is shown by the huge differences in figures \ref{fig:nodes_50} and \ref{fig:total_nodes_50} between the standard and the 50x50 map.
+
+\vspace{1em}
+
+\subsection*{Computation Time per Move}
+
+\noindent Computation time per turn directly reflects the algorithm’s runtime performance.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assignment3/plots/time_comparison_standart.png}
+    \caption{Computation time per move — Standard map}
+    \label{fig:time_standard}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assignment3/plots/time_comparison_50.png}
+    \caption{Computation time per move — 50x50 map}
+    \label{fig:time_50}
+\end{figure}
+
+\noindent The pruning effect clearly reduces computation time per move. While some variance exists due to game state complexity, Alpha-Beta pruning is up to 3–4 seconds faster in high-branching phases. In game states with very few legal moves (e.g., early or late game), the time difference is smaller, as pruning has less opportunity to reduce search.
+
+\vspace{1em}
+
+\subsection*{Total Nodes Visited}
+
+\noindent The total number of visited nodes provides a cumulative perspective on algorithmic efficiency.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assignment3/plots/total_nodes_comparison_standart.png}
+    \caption{Total nodes visited — Standard map}
+    \label{fig:total_nodes_standard}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assignment3/plots/total_nodes_comparison_50.png}
+    \caption{Total nodes visited — 50x50 map}
+    \label{fig:total_nodes_50}
+\end{figure}
+
+\noindent As shown in Figures~\ref{fig:total_nodes_standard} and \ref{fig:total_nodes_50}, Alpha-Beta pruning dramatically reduces the total number of visited nodes across both maps. While the absolute node count on the 50x50 map is higher due to the larger search space, the relative efficiency gain from pruning is substantial.
+
+\vspace{1em}
+
+\subsection*{Total Computation Time}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assignment3/plots/total_time_comparison_standart.png}
+    \caption{Total computation time — Standard map}
+    \label{fig:total_time_standard}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assignment3/plots/total_time_comparison_50.png}
+    \caption{Total computation time — 50x50 map}
+    \label{fig:total_time_50}
+\end{figure}
+
+\noindent The total computation time (Figures~\ref{fig:total_time_standard} and \ref{fig:total_time_50}) clearly demonstrates Alpha-Beta's advantage. On both maps, the pruned version is considerably faster — especially on the 50x50 map, where raw MiniMax becomes infeasible at deeper search depths.
+
+\vspace{1em}
+
+\subsection*{Map-Based Observations}
+
+\noindent Several key differences emerge when comparing results across the two map types:
+
+\begin{itemize}
+    \item On the \textbf{50x50 map}, even at depth 2, the branching factor is extremely high. Alpha-Beta pruning prevents combinatorial explosion in node visits and runtime. That is why it looks almost like the nodes visited is consistently at zero.
+    \item The \textbf{impact of pruning} becomes more pronounced as the map complexity increases. Alpha-Beta scales significantly better with map size.
+    \item In both maps, \textbf{early and late game phases} show similar performance between algorithms due to fewer available moves — resulting in fewer pruning opportunities.
+\end{itemize}
+
+\vspace{1em}
+
+\subsection*{Conclusion}
+
+\noindent The experimental data strongly supports the theoretical expectation that Alpha-Beta pruning offers significant efficiency improvements over plain MiniMax. The effect is consistent across all metrics and map types, with the advantage increasing alongside game complexity. Although both algorithms produce identical moves (verified through assertion), Alpha-Beta is vastly more efficient and scalable for larger maps or deeper searches.

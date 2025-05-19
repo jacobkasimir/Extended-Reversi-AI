@@ -1,0 +1,119 @@
+\section*{Exercise 1}
+\textit{Task: MiniMax implementation}
+
+\noindent The task was to implement the MiniMax algorithm for $n$ players with a depth cut-off provided by the server. The core logic is implemented in the \texttt{MiniMax} class, which is instantiated anew each time a move is requested by the server. In the constructor, we initialize the root node of the MiniMax tree and generate all immediate child nodes corresponding to the possible moves for our player. The initial layer of the tree is built as follows:
+
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\small]
+public MiniMax(GameState gameState, Heuristics heuristics, 
+int searchTime, int searchdepth) {
+    this.moves = MoveVerifier.calculateMoves(gameState, 
+        gameState.attributes().getOurPlayerId());
+    this.current_GameState = gameState;
+    this.heuristics = heuristics;
+    this.root = new Node(0, null, gameState.clone(), heuristics);
+    this.searchdepth = searchdepth;
+    this.searchTime = searchTime;
+
+    ArrayList<Node> children = new ArrayList<>();
+
+    ListNode m = moves.getHead();
+    while (m != null) {
+        GameState newGameState = gameState.clone();
+        children.add(new Node(m.getValue(), root, newGameState, 
+            heuristics));
+        m = m.getNext();
+    }
+    root.setNextMoves(children);
+}
+\end{lstlisting}
+
+\noindent The main decision-making logic is encapsulated in the \texttt{chooseMove()} method. It iterates over each child node (i.e., each possible move from the current state), and performs a depth-first search (DFS) to the given depth. After evaluating a move's subtree, the resulting score is propagated back to the root. The move that yields the highest score is selected and returned.
+
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\small]
+public int chooseMove() {
+    int maxValue = Integer.MIN_VALUE;
+    int result = 0;
+    for (Node child : root.getNextMoves()) {
+        int childScore = child.dfs(searchdepth - 1, 
+            current_GameState.attributes().getOurPlayerId());
+        if (maxValue < childScore) {
+            result = child.getMove();
+            maxValue = childScore;
+        }
+    }
+    return result;
+}
+\end{lstlisting}
+
+\subsection*{DFS and MiniMax evaluation}
+
+\noindent The decision-making algorithm is implemented as a depth-first search (DFS) in the \texttt{dfs()} method of the \texttt{Node} class. This method performs a recursive traversal of the game tree according to the MiniMax principle, adapted for multiple players. Each node corresponds to a game state after a certain move has been made. The search continues until a predefined depth is reached, or no further moves are available. At each recursive level, the current move is applied to the game state using \texttt{updateGameState()}. If the maximum search depth has not been reached, and if valid next moves exist, the method generates child nodes corresponding to these moves. Note that we use \texttt{calculateNextMoves(GameState g, int lastPlayerId)} to calculate the moves of the player who is up next which could possibly not be the next player id if a player is disqualified or has no possible moves left. If we reached the end of the game (each player has no moves left) the method returns an empty set, which we also pay intention to by evaluating the current gamestate directly and therefore ending the recursive calls. Otherwise, for each child, the \texttt{dfs()} method is called recursively, reducing the remaining search depth.
+
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\small]
+public int dfs(int searchDepth, int lastPlayerId){
+    if(searchDepth > 0){
+            gameState.updateGameState(this.move);
+            IntLinkedList possibleMoves = 
+            MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
+            if(possibleMoves.isEmpty()) {
+                return heuristics.evaluate(gameState);
+            }
+
+            ListNode node = possibleMoves.getHead();
+
+            while (node != null) {
+                this.nextMoves.add(new Node(node.getValue(), this, 
+                gameState.clone(), this.heuristics));
+                node = node.getNext();
+            }
+            
+            ...
+            
+    }else{
+        return heuristics.evaluate(gameState);
+    }
+}
+\end{lstlisting}
+
+\noindent The evaluation follows the MiniMax strategy:
+\begin{itemize}
+    \item If the current node belongs to the \textit{maximizing player} (our own player ID), we seek to maximize the score among the child nodes. This reflects the assumption that opponents will attempt to reduce our score.
+    \item If the node belongs to another player, we seek to minimize the score, assuming that they will act in their own best interest.
+\end{itemize}
+
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\small]
+...
+   int result;
+    if(MoveVerifier.decodePlayerId(move) == 
+    gameState.attributes().getOurPlayerId()){
+        result = Integer.MIN_VALUE;
+        for (Node child : nextMoves) {
+            result = Math.max(result, child.dfs(searchDepth-1, 
+            MoveVerifier.decodePlayerId(this.move)));
+        }
+    }else{
+        result = Integer.MAX_VALUE;
+        for (Node child : nextMoves) {
+            result = Math.min(result, child.dfs(searchDepth-1, 
+            MoveVerifier.decodePlayerId(this.move)));
+        }
+    }
+    this.nextMoves = null;
+    return result;     
+...
+\end{lstlisting}
+
+\noindent This alternating minimization and maximization propagates back up the tree until a score is assigned to each move at the root level. The best move is selected in the \texttt{chooseMove()} method, as described previously.
+
+\medskip
+
+\noindent Note that the \texttt{gameState.clone()} call ensures that each child node works with an independent copy of the game state, preventing interference between recursive branches.
+
+\subsection*{Performance Optimization}
+
+\noindent After analyzing the time distribution across different parts of our search algorithm, we found that (despite having optimized our data structures (see \textit{Changes})) approximately 70\% of the runtime was still spent on generating deep copies of the game state via the \texttt{copy()} method. This overhead became particularly significant due to the frequent cloning required in each recursive step of the MiniMax algorithm.
+
+\medskip
+
+\noindent To address this bottleneck, we plan to replace the cloning approach with a dedicated undo mechanism. Instead of copying the entire game state for every simulated move, we will store just enough information during each move to be able to revert it afterward. While this is more complex than in deterministic games such as chess we expect a substantial reduction in runtime once the mechanism is fully integrated.
+

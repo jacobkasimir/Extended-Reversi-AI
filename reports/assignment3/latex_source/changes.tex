@@ -1,0 +1,53 @@
+\section*{Changes and optimization}
+\textit{Implementation add-on, error correcting and optimizations}\\
+\\
+\noindent Before even starting this assignment, we had to first debug small errors in our \texttt{updateMap()} and \texttt{calculateAllMoves()} method. \\
+\noindent After finding and fixing all these errors we had to generalize our \texttt{calculateAllMoves()} method so that it can calculate the moves for a given playerId. Because before we only had to calculate our own moves, and now with \texttt{Mini-Max} and \texttt{Alpha-Beta} we must also calculate the moves of the other players. \\
+\noindent For \texttt{Mini-Max} we had to also optimize our heuristics further because we did not invest enough time in the last assignment. We implemented new heuristics and added an evaluate method that returns one value for a given \texttt{GameState}.\\
+\noindent When we finished implementing \texttt{Mini-Max} and \texttt{Alpha-Beta} we noticed that we were being disqualified a lot because of timeouts. Therefore, we first contacted the SPP-support-team and then found out how to track the memory cost and run time of our program with help of a profiler (visualvm).\\
+In the following we will explain in depth how we solved all three problems:
+\begin{enumerate}
+    \item \textbf{Debugging invalid moves}
+        \begin{enumerate}
+            \item 
+            We had several errors in our \texttt{updateMap()} method. As an example, we did not calculate the bombed area correctly when there were already holes in the area. This was because our recursive method stopped if there was a hole on which it was called on and therefore corners, behind these holes, would not be bombed. To solve this problem we implemented a new method \texttt{resolveBombing()}. Now \texttt{bombing()} switches the bombed tiles to ‘\#’ and \texttt{resolveBombing()} switches ‘\#’ back to holes (‘-‘).
+            \item
+            We also found an error in \texttt{calculateAllMovesPhase1()}. There we had the problem with moves that place an override stone on an opponent’s tile and where then in one direction all the tiles are occupied by opponent’s so that, with a transition, a loop is created. Our algorithm then did not terminate because it would wait until there was a non-player tile or an own tile which would never occur. We fixed the problem by adding a simple if-case which checks if the starting tile was already reached again.
+        \end{enumerate}
+
+    \item \textbf{Generalising \texttt{calculateAllMoves} for every player}
+        In order for our method \texttt{calculateAllMoves()} to work on every player we had to add the attribute \texttt{tiles} in the class \texttt{Player} which contains all the tiles occupied by the player. This list is updated in every method call of \texttt{updateMap()}. We then added a \texttt{playerId} parameter to every necessary method and added the record class \texttt{GameState} after switching the name of our old \texttt{GameState} class to \texttt{GameAttributes}. A \texttt{GameState} objects contains a \texttt{MapController-} and \texttt{GameAttributes} object. Now we can create new \texttt{GameStates} and calculate all possible moves for every player. In addition we also made sure that only one \texttt{Transitions} object exists by initializing it only in the \texttt{GameClient} class. When a new \texttt{MapController} object is being initialized, the \texttt{Transitions} object is simply passed on through the constructor.
+        
+    \item \textbf{Updating our heuristics}
+        \noindent We added two new heuristics that evaluate the position to identify and reward safe stones, and to penalize large walls.
+
+        \noindent In the original Othello (Reversi), safe stones are those that can no longer be captured (e.g., stones in a corner). Since our game includes additional mechanics such as transitions, overriding, choice, and inversion, which complicate situations at the margins, a heuristic that rewards completely safe positions is less useful. There are always choice and inversion tiles, that can change the possession of a tile.  Therefore, we ignored those effects and focused only on Phase 1, as no tiles are truly safe in Phase 2 (unless no player has bombs left, but applying this heuristic in Phase 2 would not be practical).
+        
+        \noindent In this heuristic, we assign credit based on different levels of "safeness" and return a value relative to the number of our tiles. Specifically, if one of our stones is in a corner or cannot be captured because in three consecutive directions (starting with a direction indexed by an even number) there are only our own stones or the board margin, we reward this position by:
+        
+        \begin{lstlisting}
+        score += numberOfPlayers;
+        \end{lstlisting}
+        
+        \noindent Additionally, we increase the score by the number of players who have no overwrite stones left, as they cannot capture this particular tile anymore.
+        
+        \noindent Finally, the \textit{evaluate()} method returns the following score:
+        
+        \begin{lstlisting}
+        return score / ownTiles.getSize() * numberOfPlayers;
+        \end{lstlisting}
+        
+        \noindent We also added a new heuristic called \textit{walls()}, which penalizes a player for having a relatively large number of walls. In original Reversi, and we believe in this variation as well, having many walls is destructive because it reduces your mobility while increasing your opponent's.
+        
+        \noindent To calculate this, we iterate over all our tiles and increment the score by one for every adjacent tile (vertically or horizontally) that belongs to us. This approach counts each wall segment twice (once from each adjacent tile). Since a higher score is bad in this heuristic, we decided to return a negative value, but only if the score exceeds a certain threshold x (we decided for x = 1). Otherwise, a low score indicates a better position and should yield a positive, favorable value. Therefore, we return:
+        
+        \begin{lstlisting}
+        return score > 1 ? score * (-1) + 1 : score - 1;
+        \end{lstlisting}
+        \noindent Another update was made to the \textit{evaluate()} method, which now multiplies each heuristic by a weight, sums the results, and returns an \textit{int} value between 0 and 1000.
+    \item \textbf{Optimizing run time and memory cost}
+        When using the profiler visualvm we noticed that the data structure \texttt{LinkedHashSet<T>} which we were using is extremely inefficient. We came to the conclusion that using simple lists and filtering multiple elements is significantly more efficient. Because we did not want to use \texttt{Integer} objects we implemented a simple \texttt{IntLinkedList} that is only linked in one way, holds for every element only one \texttt{int} value and adds only in the front elements. This change already decreased the run time significantly.\\
+        \noindent We also got the idea from the SPP-support-team that using \texttt{record} objects for coordinates, moves and positions is not the most proficient way. Therefore, we added static \texttt{encode} and \texttt{decode} methods which enable us to store two, three or four \texttt{int} values in one. Switching all of the \texttt{record} objects (which we used in nearly every method) took hours of time. In future we should really think about whether such a major change is worthwhile or not. In this case it definitely is.\\
+        Because of these changes we already managed to improve the run time of our program a lot, however we still have problems which will be discussed later on in the report.
+\end{enumerate}
+
