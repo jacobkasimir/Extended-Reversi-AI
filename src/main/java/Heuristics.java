@@ -306,11 +306,16 @@ public class Heuristics {
 
         double score = 0;
         score += wCorners * amountOfCornersCaptured(map, playerId);
-        score += wMobility * mobility(map, att, playerId);
-        score += wSafeStones * amountSaveStones(map, att, playerId);
+        //score += wMobility * mobility(map, att, playerId);
+        //score += wSafeStones * amountSaveStones(map, att, playerId); 
         score += wTileRatio * amountOfOwnTilesToOthers(map, playerId);
-        score += wWalls * walls(map, att, playerId);
+        //score += wWalls * walls(map, att, playerId);
         score += wSpecials * (numberOfBombs(att, playerId) + numberOfOverrides(att, playerId)) / 10.0;
+
+        /*
+         * The heuristics in comments still cause exceptions
+         * //TODO further debugging required to avoid disqualifications
+         */
 
         return (int) Math.round(score * 1000); // 0-1000 points
     }
