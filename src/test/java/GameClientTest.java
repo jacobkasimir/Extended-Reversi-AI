@@ -1,6 +1,9 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
+import control.GameClient;
+import validation.MoveVerifier;
+
 public class GameClientTest {
 
     @Test

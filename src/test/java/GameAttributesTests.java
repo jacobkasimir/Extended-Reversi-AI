@@ -3,11 +3,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import gamestate.GameState;
-import validation.MoveVerifier;
-import gamestate.map.MapController;
-import gamestate.attributes.GameAttributes;
 import control.GameClient;
+import gamestate.GameState;
+import gamestate.attributes.GameAttributes;
+import gamestate.map.MapController;
+import validation.MoveVerifier;
 
 public class GameAttributesTests {
 
