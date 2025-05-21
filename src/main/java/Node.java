@@ -1,22 +1,35 @@
 import java.util.ArrayList;
+
 /**
  * Represents a node in a game tree for implementing game AI algorithms like minimax.
  * Each node contains game state information and methods for tree traversal.
  */
 public class Node {
-    /** The heuristic value of this node */
+    /**
+     * The heuristic value of this node
+     */
     private int heuristicValue;
-    /** The move associated with this node */
+    /**
+     * The move associated with this node
+     */
     private int move;
-    /** The current game state at this node */
-    private GameState gameState;
-    /** The heuristics calculator */
-    private Heuristics heuristics;
-    /** List of possible next moves from this position */
+    /**
+     * The current game state at this node
+     */
+    private final GameState gameState;
+    /**
+     * The heuristics calculator
+     */
+    private final Heuristics heuristics;
+    /**
+     * List of possible next moves from this position
+     */
     private ArrayList<Node> nextMoves;
-    /** Reference to the parent node */
+    /**
+     * Reference to the parent node
+     */
     private Node parent;
-    
+
     /**
      * Creates a new Node with the specified parameters.
      *
@@ -25,7 +38,7 @@ public class Node {
      * @param gameState  The game state at this node
      * @param heuristics The heuristics calculator to evaluate positions
      */
-    public Node(int move, Node parent, GameState gameState, Heuristics heuristics){
+    public Node(int move, Node parent, GameState gameState, Heuristics heuristics) {
         this.move = move;
         this.parent = parent;
         this.gameState = gameState;
@@ -67,43 +80,59 @@ public class Node {
         this.parent = parent;
     }
 
-    
+
     /**
      * Performs a depth-first search in the game tree implementing minimax algorithm.
      *
-     * @param searchDepth   The maximum depth to search
-     * @param lastPlayerId  The ID of the player who made the last move
-     * @return             The heuristic value of the best move found
+     * @param searchDepth  The maximum depth to search
+     * @param lastPlayerId The ID of the player who made the last move
+     * @return The heuristic value of the best move found
      */
-    public int dfs(int searchDepth, int lastPlayerId){
-        if(searchDepth > 0){
+    public int dfs(int searchDepth, int lastPlayerId) {
+        if (searchDepth > 0) {
+            //update the game state when performing the move "related" to this node
             gameState.updateGameState(this.move);
+
+            //calculate all possible moves in this state
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
-            if(possibleMoves.isEmpty()) {
+
+            //use the heuristics if no moves available
+            if (possibleMoves.isEmpty()) {
                 return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
             }
 
             ListNode node = possibleMoves.getHead();
 
+            //iterate over all possible moves in the current game state
             while (node != null) {
+
+                //create the next layer of the "mini-max"-tree
                 this.nextMoves.add(new Node(node.getValue(), this, gameState.clone(), this.heuristics));
                 node = node.getNext();
             }
             int result;
-            if(MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()){
+            //decide if we performed the move creating the current state:
+            if (MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()) {   //our move
                 result = Integer.MIN_VALUE;
+                //iterate over all moves in the next layer
                 for (Node child : nextMoves) {
-                    result = Math.max(result, child.dfs(searchDepth-1, MoveVerifier.decodePlayerId(this.move)));
+                    //recursive call of depth-first search algorithm (with lower depth) and update result
+                    result = Math.max(result, child.dfs(searchDepth - 1, MoveVerifier.decodePlayerId(this.move)));
                 }
-            }else{
+            } else {  //opponents move
                 result = Integer.MAX_VALUE;
+                //iterate over all moves in the deeper layer
                 for (Node child : nextMoves) {
-                    result = Math.min(result, child.dfs(searchDepth-1, MoveVerifier.decodePlayerId(this.move)));
+                    //recursive call of depth-first search algorithm (with lower depth) and update result
+                    result = Math.min(result, child.dfs(searchDepth - 1, MoveVerifier.decodePlayerId(this.move)));
                 }
             }
             this.nextMoves = null;
-            return result;      
-        }else{
+            //return result that is used in "AlphaBeta"-class
+            return result;
+        } else {
+
+            //use heursitics if searchDepth is 0
             return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
         }
     }
@@ -111,48 +140,57 @@ public class Node {
     /**
      * Performs alpha-beta pruning search in the game tree, an optimized version of minimax algorithm.
      *
-     * @param searchDepth   The maximum depth to search
-     * @param lastPlayerId  The ID of the player who made the last move
+     * @param searchDepth  The maximum depth to search
+     * @param lastPlayerId The ID of the player who made the last move
      * @param alpha        The alpha value for pruning
      * @param beta         The beta value for pruning
-     * @return             The heuristic value of the best move found
+     * @return The heuristic value of the best move found
      */
-    public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta){
-        if(searchDepth > 0){
+    public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta) {
+        if (searchDepth > 0) {
+            //update gameState by performing the move of this node
             gameState.updateGameState(this.move);
+
+            //calculate all possible moves
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
-            if(possibleMoves.isEmpty()) {
+            if (possibleMoves.isEmpty()) {
                 return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
             }
 
             ListNode m = possibleMoves.getHead();
-            while (m != null){
+            //iterate over all possible moves and add them as children of the current node
+            while (m != null) {
                 this.nextMoves.add(new Node(m.getValue(), this, gameState.clone(), this.heuristics));
                 m = m.getNext();
             }
             int result;
-            if(MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()){
+            //decide whether the move was performed by our player or an opponent
+            if (MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()) {   //our move
                 result = Integer.MIN_VALUE;
+                //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.max(result, child.pruning(searchDepth-1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
+                    result = Math.max(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
                     alpha = Math.max(alpha, result);
-                    if(beta <= alpha){
+                    if (beta <= alpha) {
                         break;
                     }
                 }
-            }else{
+            } else {  //opponents move
                 result = Integer.MAX_VALUE;
+                //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.min(result, child.pruning(searchDepth-1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
+                    result = Math.min(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
                     beta = Math.min(beta, result);
-                    if(beta <= alpha){
+                    if (beta <= alpha) {
                         break;
                     }
                 }
             }
             this.nextMoves = null;
-            return result;      
-        }else{
+            //return result that is used in "AlphaBeta"-class
+            return result;
+        } else {
+            //use heursitics if searchDepth is 0
             return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
         }
     }
