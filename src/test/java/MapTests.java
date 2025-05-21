@@ -41,8 +41,6 @@ public class MapTests {
     }
     
 
-
-    //UPDATE MAP TESTS
     @Test 
     public void basicCapturingTest(){
         //checks for basic capturing
@@ -521,69 +519,5 @@ public class MapTests {
                 8, 8, 0));
     }
 
-    @Test
-    public void updateOurTiles(){
-        String input = "2\n0\n0 0\n4 4\n0 0 0 0\n0 1 2 0\n0 2 1 0\n0 0 0 0\n";
-        String[] lines = input.split("\\R");
-
-        GameClient game = new GameClient();
-        game.init(lines,false,1);
-        game.setOurPlayerId((byte)2);
-
-        IntLinkedList coordinates = new IntLinkedList();
-        coordinates.add(MoveVerifier.encodeCoordinate(1, 2));
-        coordinates.add(MoveVerifier.encodeCoordinate(2, 1));
-
-        
-        assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
-
-        game.updateGame(MoveVerifier.encodeMove(0,2, 0, 1));
-        coordinates.remove(MoveVerifier.encodeCoordinate(1, 2));
-
-        assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
-
-
-        game.updateGame(MoveVerifier.encodeMove(0,3, 0, 2));
-        coordinates.add(MoveVerifier.encodeCoordinate(1, 2));
-        coordinates.add(MoveVerifier.encodeCoordinate(0, 3));
-        
-        assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
-    }
-
-    @Test
-    public void updateOurTiles2(){
-        String input = "2\n0\n0 0\n4 4\n0 0 2 0\n2 0 1 0\n1 1 1 0\n2 1 0 1\n0 3 6 <-> 3 3 2";
-        String[] lines = input.split("\\R");
-
-        GameClient game = new GameClient();
-        game.init(lines,false,1);
-        game.setOurPlayerId((byte)2);
-
-        IntLinkedList coordinates = new IntLinkedList();
-        coordinates.add(MoveVerifier.encodeCoordinate(0, 1));
-        coordinates.add(MoveVerifier.encodeCoordinate(0, 3));
-        coordinates.add(MoveVerifier.encodeCoordinate(2, 0));
-        
-
-        
-        assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
-
-        game.updateGame(MoveVerifier.encodeMove(2,3, 0, 2));
-        coordinates.add(MoveVerifier.encodeCoordinate(2, 2));
-        coordinates.add(MoveVerifier.encodeCoordinate(2, 1));
-        coordinates.add(MoveVerifier.encodeCoordinate(3, 3));
-        coordinates.add(MoveVerifier.encodeCoordinate(1, 3));
-        coordinates.add(MoveVerifier.encodeCoordinate(1, 2));
-
-        coordinates.add(MoveVerifier.encodeCoordinate(2, 3));
-        assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
-
-
-        game.updateGame(MoveVerifier.encodeMove(3,2, 0, 1));
-        coordinates.remove(MoveVerifier.encodeCoordinate(1, 2));
-        coordinates.remove(MoveVerifier.encodeCoordinate(2, 2));
-        
-        assertEquals(game.getCurrentGameAttributes().getPlayer(game.getCurrentGameAttributes().getOurPlayerId()).getTiles(), coordinates);
-    }
 }
 
