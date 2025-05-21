@@ -1,4 +1,6 @@
 
+
+
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
  */
@@ -14,9 +16,8 @@ public class MoveVerifier {
      */
     public static boolean isValid(int move, MapController map, GameAttributes state){
 
-        if(!(GameRules.insideMap(move, map) &&
-        GameRules.validMove(move, state) &&
-        GameRules.isNotHole(move, map) && GameRules.checkSpecial(state, move, map))) {
+        if(!(GameRules.insideMap(move, map) && GameRules.validPlayer(move, state) &&
+            GameRules.isNotHole(move, map) && GameRules.checkSpecial(state, move, map))) {
             return false;
         }
 
@@ -50,43 +51,46 @@ public class MoveVerifier {
         IntLinkedList moves = new IntLinkedList();
         int width   = controller.getWidth();
         int height  = controller.getHeight();
-        int ownId   = state.getOurPlayerId();
         int numPlayers = state.getNumberPlayers();
+        char tile;
+        int move;
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                char tile = controller.getTile(x, y);
+                tile = controller.getTile(x, y);
 
-                //Bonus zwei für Bombe und Override
-                if (tile == 'b') {
-                    int mBomb = encodeMove(x, y, 20, playerId);
-                    if (MoveVerifier.isValid(mBomb, controller, state)) {
-                        moves.addIfNotContains(mBomb);
-                    }
-                    int mOverride = encodeMove(x, y, 21, playerId);
-                    if (MoveVerifier.isValid(mOverride, controller, state)) {
-                        moves.addIfNotContains(mOverride);
-                    }
-                }
-                //Choice für jede Player-ID einmal
-                else if (tile == 'c') {
-                    for (int choice = 1; choice <= numPlayers; choice++) {
-                        int m = encodeMove(x, y, choice, playerId);
-                        if (MoveVerifier.isValid(m, controller, state)) {
-                            moves.addIfNotContains(m);
+                
+                switch (tile) {
+                    //Bonus zwei für Bombe und Override
+                    case 'b' -> {
+                        move = encodeMove(x, y, 20, playerId);
+                        if (MoveVerifier.isValid(move, controller, state)) {
+                            moves.add(move);
+                        }
+                        move = encodeMove(x, y, 21, playerId);
+                        if (MoveVerifier.isValid(move, controller, state)) {
+                            moves.add(move);
                         }
                     }
-                }
-                // Normales Feld, Expansion, Override 
-                else {
-                    int m = encodeMove(x, y, 0, playerId);
-                    if (MoveVerifier.isValid(m, controller, state)) {
-                        moves.addIfNotContains(m);
+                    //Choice für jeden Spieler
+                    case 'c' -> {
+                        for (int choice = 1; choice <= numPlayers; choice++) {
+                            move = encodeMove(x, y, choice, playerId);
+                            if (MoveVerifier.isValid(move, controller, state)) {
+                                moves.add(move);
+                            }
+                        }
+                    }
+                    //expansion stones, inversion tiles, normal tiles
+                    default -> {
+                        move = encodeMove(x, y, 0, playerId);
+                        if (MoveVerifier.isValid(move, controller, state)) {
+                            moves.add(move);
+                        }
                     }
                 }
             }
         }
-
         return moves;
     }
 
