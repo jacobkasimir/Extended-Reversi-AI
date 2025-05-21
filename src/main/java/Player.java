@@ -14,7 +14,7 @@ public class Player {
      * @param bombs       initial number of bombs available to the player
      * @param overrides   initial number of overrides stones available
      * @param id          unique identifier for the player
-     * @param in          initial in-game status (true if active)
+     * @param inGame          initial in-game status (true if active)
      */
     public Player(int bombs, int overrides, int id, boolean inGame) {
         this.numberBombs = bombs;
