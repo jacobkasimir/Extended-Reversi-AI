@@ -19,7 +19,7 @@ public class GameAttributes {
      * @param bombRadius the bomb radius (currently unused)
      * @param gamePhase 1 for phase 1, 2 for phase 2
      */
-    public GameAttributes(int numberPlayers, int overwrites, int bombs, int bombRadius, byte gamePhase) {
+    public GameAttributes(int numberPlayers, int overwrites, int bombs, int bombRadius, int gamePhase) {
         this.numberPlayers = numberPlayers;
         this.setGamePhase(gamePhase);
         this.players = new Player[numberPlayers];
@@ -134,7 +134,7 @@ public class GameAttributes {
      *
      * @param phase 1 for phase 1, 2 for phase 2
      */
-    public void setGamePhase(byte phase) {
+    public void setGamePhase(int phase) {
         this.phase1 = (phase == 1);
     }
 
@@ -143,8 +143,8 @@ public class GameAttributes {
      *
      * @return 1 for phase 1, 2 for phase 2
      */
-    public byte getGamePhase() {
-        return (byte) (phase1 ? 1 : 2);
+    public int getGamePhase() {
+        return (phase1 ? 1 : 2);
     }
 
     /**
