@@ -3,6 +3,7 @@ package validation;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
+import algorithms.datastructures.IntLinkedList;
 
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
