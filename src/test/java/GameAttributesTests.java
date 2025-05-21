@@ -4,6 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import gamestate.GameState;
+import validation.MoveVerifier;
+import gamestate.map.MapController;
+import gamestate.attributes.GameAttributes;
+import control.GameClient;
 
 public class GameAttributesTests {
 
