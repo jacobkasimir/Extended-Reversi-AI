@@ -46,36 +46,67 @@ public class Node {
         this.nextMoves = new ArrayList<Node>();
     }
 
-    // Getter and setter methods ...
 
+    /**
+     * Getter function for the value of our heuristics.
+     * @return heuristic value
+     */
     public int getHeuristicValue() {
         return heuristicValue;
     }
 
+    /**
+     * Set the heuristicValue.
+     * @param heuristicValue
+     */
     public void setHeuristicValue(int heuristicValue) {
         this.heuristicValue = heuristicValue;
     }
 
+    /**
+     * Get the move contained by this node.
+     * @return move.
+     */
     public int getMove() {
         return move;
     }
 
+    /**
+     * Set move for an object of this class
+     * @param move contained by node object
+     */
     public void setMove(int move) {
         this.move = move;
     }
 
+    /**
+     * Retrieves the next possible moves from the current node in the game tree.
+     * @return An ArrayList of Node objects representing the next potential moves.
+     */
     public ArrayList<Node> getNextMoves() {
         return nextMoves;
     }
 
+    /**
+     * Sets the list of next possible moves for this node in the game tree.
+     * @param nextMoves An ArrayList of Node objects representing the next potential moves.
+     */
     public void setNextMoves(ArrayList<Node> nextMoves) {
         this.nextMoves = nextMoves;
     }
 
+    /**
+     * Retrieves the parent node of the current node in the game tree.
+     * @return The parent node of this node, or null if this node does not have a parent.
+     */
     public Node getParent() {
         return parent;
     }
 
+    /**
+     * Sets the parent node of the current node.
+     * @param parent The parent node to be assigned to this node.
+     */
     public void setParent(Node parent) {
         this.parent = parent;
     }

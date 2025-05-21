@@ -4,28 +4,28 @@ import java.util.ArrayList;
  * Implementation of the Alpha-Beta pruning algorithm.
  * This class performs minimax search with alpha-beta pruning to determine 
  * the optimal move in a game state.
- *
- * <p>The algorithm evaluates possible moves up to a specified depth, using
- * heuristic evaluation to estimate positions beyond the search depth.</p>
+ * <p>
+ * The algorithm evaluates possible moves up to a specified depth, using
+ * heuristic evaluation to estimate positions beyond the search depth.
  */
 public class AlphaBeta {
     /** Root node of the game tree */
-    private Node root;
+    private final Node root;
     
     /** List of possible moves from the current position */
     private IntLinkedList moves;
     
     /** Current state of the game */
-    private GameState current_GameState;
+    private final GameState current_GameState;
     
     /** Heuristic evaluator used to assess game positions */
-    private Heuristics heuristics;
+    private final Heuristics heuristics;
     
     /** Maximum depth of search in the game tree */
-    private int searchdepth;
+    private final int searchdepth;
     
     /** Maximum time allowed for search in milliseconds */
-    private int searchTime;
+    private final int searchTime;
 
     /**
      * Constructs a new Alpha-Beta search instance.
@@ -81,14 +81,13 @@ public class AlphaBeta {
             int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha, beta);
 
             // Update the result if the score is higher than the current maxValue
-            if(maxValue < childScore){
+            if(maxValue < childScore) {
                 result = child.getMove();
                 maxValue = childScore;
             }
-
             // Update alpha and exit early if alpha is greater than or equal to beta
             alpha = Math.max(alpha, maxValue);
-            if(beta <= alpha){
+            if(beta <= alpha) {
                 break;
             }
         }

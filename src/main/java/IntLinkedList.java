@@ -9,7 +9,7 @@ public class IntLinkedList {
 
 
     /**
-     * @return he first element of the list.
+     * @return the first element of the list.
      */
     public ListNode getHead() {
         return head;
