@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import control.TCPClient;
+
 /**
  * Main class to launch the TCP client for the board game.
  * Handles command line argument parsing and initiates the server connection.
