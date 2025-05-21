@@ -1,4 +1,4 @@
-package gameState.map;
+package gamestate.map;
 import java.util.Arrays;
 
 /**

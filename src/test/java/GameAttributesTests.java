@@ -3,6 +3,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import gamestate.GameState;
+
 public class GameAttributesTests {
 
     private MapController map;

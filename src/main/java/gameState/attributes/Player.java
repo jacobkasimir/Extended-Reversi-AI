@@ -1,4 +1,4 @@
-package gameState.attributes;
+package gamestate.attributes;
 /**
  * Represents a player in the game, tracking their available bombs,
  * override stones, player number, and in-game status.

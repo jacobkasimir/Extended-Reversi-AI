@@ -1,4 +1,4 @@
-package gameState.map;
+package gamestate.map;
 /**
  * The MapController class manages the game map and its transitions.
  * It serves as the central interface for map operations, tile management and game mechanics.

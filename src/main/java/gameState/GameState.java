@@ -1,5 +1,7 @@
-import gameState.attributes.GameAttributes;
-import gameState.map.MapController;
+package gamestate;
+
+import gamestate.attributes.GameAttributes;
+import gamestate.map.MapController;
 
 /**
  * Represents the current state of the game, containing the map controller and game attributes.

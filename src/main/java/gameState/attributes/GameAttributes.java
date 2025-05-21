@@ -1,5 +1,6 @@
-package gameState.attributes;
-import gameState.map.MapController;
+package gamestate.attributes;
+import gamestate.map.MapController;
+import validation.*;
 
 /**
  * Represents the current attributes of a game state.

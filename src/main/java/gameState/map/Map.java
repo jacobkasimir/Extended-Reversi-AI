@@ -1,4 +1,4 @@
-package gameState.map;
+package gamestate.map;
 /**
  * The Map class provides a two-dimensional grid structure for storing character-based map data.
  * This class is designed for representing game maps or similar grid-based structures
