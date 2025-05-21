@@ -1,12 +1,13 @@
 package control;
 
 import algorithms.strategies.AlphaBeta;
-import gamestate.*;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 import gamestate.map.Transitions;
 import algorithms.strategies.MiniMax;
 import algorithms.strategies.Heuristics;
+import gamestate.GameState;
+
 /**
  * GameClient manages the overall game logic on the client side, including the game state,
  * with player attributes, map controller, transitions, and move calculations.
