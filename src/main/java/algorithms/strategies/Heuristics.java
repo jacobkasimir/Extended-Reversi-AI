@@ -2,6 +2,9 @@ package algorithms.strategies;
 
 import algorithms.datastructures.IntLinkedList;
 import algorithms.datastructures.ListNode;
+import gamestate.attributes.GameAttributes;
+import gamestate.map.MapController;
+import validation.MoveVerifier;
 
 /**
  * Provides heuristic evaluation methods to assess board positions

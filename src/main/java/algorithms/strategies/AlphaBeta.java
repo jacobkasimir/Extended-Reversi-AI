@@ -1,5 +1,8 @@
 package algorithms.strategies;
 import java.util.ArrayList;
+import gamestate.GameState;
+import algorithms.datastructures.*;
+import validation.MoveVerifier;
 
 /**
  * Implementation of the Alpha-Beta pruning algorithm.

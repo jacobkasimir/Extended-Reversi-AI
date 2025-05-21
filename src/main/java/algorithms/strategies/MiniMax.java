@@ -1,5 +1,9 @@
 package algorithms.strategies;
+
 import java.util.ArrayList;
+import gamestate.GameState;
+import algorithms.datastructures.*;
+import validation.MoveVerifier;
 /**
  * Implementation of the MiniMax algorithm.
  * This class enables the calculation of optimal game moves based on a given game state

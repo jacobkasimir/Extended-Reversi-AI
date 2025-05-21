@@ -1,6 +1,10 @@
 package algorithms.strategies;
 import java.util.ArrayList;
 
+import algorithms.datastructures.*;
+import gamestate.GameState;
+import validation.MoveVerifier;
+
 /**
  * Represents a node in a game tree for implementing game AI algorithms like minimax.
  * Each node contains game state information and methods for tree traversal.
