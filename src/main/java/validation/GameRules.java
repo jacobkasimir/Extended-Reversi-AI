@@ -1,3 +1,5 @@
+package validation;
+
 /**
  * Class with different static methods to validate single parts of the game rules.
  * There is no need to create an instance of this class because all methods are static.

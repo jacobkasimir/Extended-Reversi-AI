@@ -1,3 +1,5 @@
+package validation;
+
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
  */
