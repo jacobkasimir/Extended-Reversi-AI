@@ -1,3 +1,8 @@
+package algorithms.strategies;
+
+import algorithms.datastructures.IntLinkedList;
+import algorithms.datastructures.ListNode;
+
 /**
  * Provides heuristic evaluation methods to assess board positions
  * in a generalized multi-player Reversi-like game with a dynamic map.

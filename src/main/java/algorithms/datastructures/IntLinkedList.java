@@ -1,3 +1,4 @@
+package algorithms.datastructures;
 /**
  * A singly linked list optimized for primitive int values.
  * Provides basic operations such as add, remove, contains.

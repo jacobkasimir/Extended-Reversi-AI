@@ -1,3 +1,6 @@
+package gameState.attributes;
+import gameState.map.MapController;
+
 /**
  * Represents the current attributes of a game state.
  * Tracks the number of players, their individual states, the current game phase,

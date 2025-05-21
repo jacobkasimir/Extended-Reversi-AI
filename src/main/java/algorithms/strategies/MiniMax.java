@@ -1,3 +1,4 @@
+package algorithms.strategies;
 import java.util.ArrayList;
 /**
  * Implementation of the MiniMax algorithm.

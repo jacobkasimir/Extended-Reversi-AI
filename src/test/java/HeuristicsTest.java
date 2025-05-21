@@ -1,6 +1,8 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
+import algorithms.strategies.Heuristics;
+
 public class HeuristicsTest {
 
     @Test

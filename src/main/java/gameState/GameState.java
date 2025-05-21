@@ -1,3 +1,6 @@
+import gameState.attributes.GameAttributes;
+import gameState.map.MapController;
+
 /**
  * Represents the current state of the game, containing the map controller and game attributes.
  * This class is implemented as a record to maintain immutability of its components and efiiciency.

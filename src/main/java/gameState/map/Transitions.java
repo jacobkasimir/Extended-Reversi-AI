@@ -1,3 +1,4 @@
+package gameState.map;
 import java.util.Arrays;
 
 /**
