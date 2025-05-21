@@ -162,13 +162,13 @@ public class GameAttributes {
         if (phase1) {
             if (GameRules.occupied(move, map) || GameRules.isExpansion(map, move)) {
                 //Placing a stone on an occupied field or an expnsion tile requires an override
-                player.setNumberOverwrites(player.getNumberOverwrites() - 1);
+                player.setNumberOverrides(player.getNumberOverrides() - 1);
             } else if (special == 20) {
                 //getting an extra bomb through a bonus field
                 player.setNumberBombs(player.getNumberBombs() + 1);
             } else if (special == 21) {
                 //getting an extra override stone through a bonus field
-                player.setNumberOverwrites(player.getNumberOverwrites() + 1);
+                player.setNumberOverrides(player.getNumberOverrides() + 1);
             }
         } else {
             //Moves in phase 2 are always bomb throws -> bombCount must be decremented by 1

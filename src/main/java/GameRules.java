@@ -58,7 +58,7 @@ public class GameRules {
      * @return true if overwrites are available.
      */
     public static boolean hasOverwrite(GameAttributes state, int move) {
-        return state.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberOverwrites() > 0;
+        return state.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberOverrides() > 0;
     }
 
     /**

@@ -333,7 +333,7 @@ public class HeuristicsTest {
     @Test
     public void numberOfOverridesTest(){
         GameAttributes state = new GameAttributes(4, 3, 2, 2, (byte) 1);
-        state.getPlayer(1).setNumberOverwrites(1);
+        state.getPlayer(1).setNumberOverrides(1);
 
         assertEquals(3, Heuristics.numberOfOverrides(state, (byte) 2));
         assertEquals(1, Heuristics.numberOfOverrides(state, (byte) 1));

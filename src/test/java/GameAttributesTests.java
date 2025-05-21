@@ -42,7 +42,7 @@ public class GameAttributesTests {
             throw new Error("Test not valid.");
         }
 
-        assertEquals(3-1, state.getPlayer(1).getNumberOverwrites());
+        assertEquals(3-1, state.getPlayer(1).getNumberOverrides());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class GameAttributesTests {
 
         state.updateState(move, map);
 
-        assertEquals(3+1, state.getPlayer(1).getNumberOverwrites());
+        assertEquals(3+1, state.getPlayer(1).getNumberOverrides());
     }
 
 }

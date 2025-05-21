@@ -1,32 +1,37 @@
 /**
  * Represents a player in the game, tracking their available bombs,
- * overwrites, player number, and in-game status.
+ * override stones, player number, and in-game status.
  */
 public class Player {
     private int numberBombs;
-    private int numberOverwrites;
-    private int playerNumber;
+    private int numberOverrides;
+    private int playerId;
     private boolean inGame = true;
 
     /**
-     * Constructs a Player with specified resources and status.
+     * Constructs a Player with specified parameters.
      *
      * @param bombs       initial number of bombs available to the player
-     * @param overwrites  initial number of overwrite tokens available
-     * @param number      unique identifier for the player
+     * @param overrides   initial number of overrides stones available
+     * @param id          unique identifier for the player
      * @param in          initial in-game status (true if active)
      */
-    public Player(int bombs, int overwrites, int number, boolean in) {
+    public Player(int bombs, int overrides, int id, boolean inGame) {
         this.numberBombs = bombs;
-        this.numberOverwrites = overwrites;
-        this.playerNumber = number;
-        this.inGame = in;
+        this.numberOverrides = overrides;
+        this.playerId = id;
+        this.inGame = inGame;
     }
 
+    /**
+     * Copy constructor. Creates a deep copy of another Player instance.
+     *
+     * @param player the Player instance to copy
+     */
     public Player(Player player){
         this.numberBombs = player.getNumberBombs();
-        this.numberOverwrites = player.getNumberOverwrites();
-        this.playerNumber = player.getPlayerNumber();
+        this.numberOverrides = player.getNumberOverrides();
+        this.playerId = player.getPlayerNumber();
         this.inGame = player.isInGame();
     }
 
@@ -49,43 +54,43 @@ public class Player {
     }
 
     /**
-     * Retrieves the player's unique identifier.
+     * Returns the player's unique identifier.
      *
      * @return the integer representing the player's number
      */
     public int getPlayerNumber() {
-        return playerNumber;
+        return playerId;
     }
 
     /**
      * Updates the player's unique identifier.
      *
-     * @param playerNumber new player number to set
+     * @param id new playerId to set
      */
-    public void setPlayerNumber(byte playerNumber) {
-        this.playerNumber = playerNumber;
+    public void setPlayerId(int id) {
+        this.playerId = id;
     }
 
     /**
-     * Retrieves the current number of overwrite tokens the player has.
+     * Returns the current number of override stones the player has.
      *
-     * @return the count of overwrites available
+     * @return the count of override stones available
      */
-    public int getNumberOverwrites() {
-        return numberOverwrites;
+    public int getNumberOverrides() {
+        return numberOverrides;
     }
 
     /**
-     * Sets the number of overwrite stones for the player.
+     * Sets the number of override stones for the player.
      *
-     * @param numberOverwrites new count of overwrites
+     * @param numberOverrides new count of override stones
      */
-    public void setNumberOverwrites(int numberOverwrites) {
-        this.numberOverwrites = numberOverwrites;
+    public void setNumberOverrides(int numberOverrides) {
+        this.numberOverrides = numberOverrides;
     }
 
     /**
-     * Retrieves the current number of bombs the player has.
+     * Returns the current number of bombs the player has.
      *
      * @return the count of bombs available
      */
