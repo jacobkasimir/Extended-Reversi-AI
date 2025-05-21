@@ -1,7 +1,9 @@
 package algorithms.strategies;
 import java.util.ArrayList;
+
+import algorithms.datastructures.IntLinkedList;
+import algorithms.datastructures.ListNode;
 import gamestate.GameState;
-import algorithms.datastructures.*;
 import validation.MoveVerifier;
 
 /**

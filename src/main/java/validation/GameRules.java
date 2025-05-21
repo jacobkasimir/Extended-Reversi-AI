@@ -1,8 +1,8 @@
 package validation;
 
-import gamestate.map.MapController;
-import gamestate.attributes.GameAttributes;
 import control.Constants;
+import gamestate.attributes.GameAttributes;
+import gamestate.map.MapController;
 
 /**
  * Class with different static methods to validate single parts of the game rules.
