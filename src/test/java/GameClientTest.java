@@ -15,7 +15,7 @@ public class GameClientTest {
         game.init(lines,false,1);
 
         assertEquals(game.getCurrentGameAttributes().getNumberPlayers(), 2);
-        assertEquals(game.getCurrentGameAttributes().getPlayer(1).getNumberOverwrites(), 0);
+        assertEquals(game.getCurrentGameAttributes().getPlayer(1).getNumberOverrides(), 0);
         assertEquals(game.getCurrentGameAttributes().getPlayer(1).getNumberBombs(), 1);
         assertEquals(game.getCurrentMapController().getBombRadius(), 1);
         assertEquals(game.getCurrentMapController().getHeight(), 2);

@@ -157,7 +157,7 @@ public class Heuristics {
             if (corners.contains(MoveVerifier.encodeCoordinate(x, y))) score += att.getNumberPlayers();
             if(bigCorner(map, att, x, y)) score += att.getNumberPlayers();
             for(int i = 0; i < att.getNumberPlayers(); i++) {
-                if(att.getPlayer(i).getNumberOverwrites() == 0) score++;
+                if(att.getPlayer(i).getNumberOverrides() == 0) score++;
             }
 
             node = node.getNext();
@@ -275,7 +275,7 @@ public class Heuristics {
      * @return The number of available overwrites.
      */
     public static int numberOfOverrides(GameAttributes state, int playerId) {
-        return state.getPlayer(playerId).getNumberOverwrites();
+        return state.getPlayer(playerId).getNumberOverrides();
     }
 
     /**

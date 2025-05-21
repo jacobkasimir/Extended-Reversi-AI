@@ -98,11 +98,11 @@ public class SingleRulesTest {
     }
 
     @Test
-    public void hasOverwriteTest(){
+    public void hasOverrideTest(){
         int move = MoveVerifier.encodeMove(4, 4, 0, 1);
 
-        boolean resultTrue = GameRules.hasOverwrite(gameAttributes1, move);
-        boolean resultFalse = GameRules.hasOverwrite(gameAttributes2, move);
+        boolean resultTrue = GameRules.hasOverride(gameAttributes1, move);
+        boolean resultFalse = GameRules.hasOverride(gameAttributes2, move);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse);
