@@ -2,6 +2,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import algorithms.strategies.Heuristics;
+import gamestate.attributes.GameAttributes;
+import gamestate.map.*;
+import algorithms.datastructures.IntLinkedList;
+import validation.MoveVerifier;
+
 
 public class HeuristicsTest {
 
