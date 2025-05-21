@@ -247,29 +247,17 @@ public class MapController{
                     if (getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) == 'x') {
                         expansionTiles.remove(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
                     }
-                    //add tile to tiles of the player
-                    state.getPlayer(MoveVerifier.decodePlayerId(move)).getTiles().addIfNotContains(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
-                    //remove tile from the opponents tiles
-                    if(isPlayer(getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)))){
-                        state.getPlayer((int)(getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) - '0')).getTiles().remove(MoveVerifier.encodeCoordinate(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)));
-                    }
                     //update the map
                     setTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition), (char)(MoveVerifier.decodePlayerId(move) + '0'));
                     currentPosition = getNextTile(currentPosition);
                 }
             }
-            state.getPlayer(MoveVerifier.decodePlayerId(move)).getTiles().addIfNotContains(MoveVerifier.encodeCoordinate(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)));
             
 
             if(isChoice) {
                 choiceHandling(move);  //update if choice tile
-                resetTiles(MoveVerifier.decodePlayerId(move), state);
-                resetTiles(MoveVerifier.decodeSpecial(move), state);
             } else if(isInversion) {
                 inversionHandling(state);   //update if inversion tile
-                for (int player = 1; player < state.getNumberPlayers()+1; player++) {
-                    resetTiles(player, state);
-                }
             } 
         }
         else {
@@ -348,26 +336,9 @@ public class MapController{
     }
 
     /**
-     * Resets and updates the list of tiles owned by a player.
+     * Checks if a char represents a player.
      *
-     * @param playerId The ID of the player
-     * @param attributes The current game attributes
-     */
-    public void resetTiles(int playerId, GameAttributes attributes){
-        attributes.getPlayer(playerId).getTiles().clear();
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if(map.getTile(i, j) == playerId + '0'){
-                    attributes.getPlayer(playerId).getTiles().add(MoveVerifier.encodeCoordinate(i, j));
-                }
-            }
-        }
-    }
-
-    /**
-     * Checks if a character represents a player.
-     *
-     * @param c The character to check
+     * @param c The char to check
      * @return true if the character represents a player, false otherwise
      */
     private boolean isPlayer(char c){
@@ -399,9 +370,5 @@ public class MapController{
 
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
             this.map.equals(other.map) && transitions.equals(transitions);
-    }
-
-    
-
-   
+    }   
 }

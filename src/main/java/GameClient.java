@@ -122,13 +122,12 @@ public class GameClient {
     }
 
     /**
-     * Sets the ID of the current player and resets the map tiles accordingly.
+     * Sets the ID of the current player.
      *
      * @param id the player's ID
      */
     public void setOurPlayerId(int id) {
         current_gameState.attributes().setOurPlayerId(id);
-        current_gameState.mapController().resetTiles(id, current_gameState.attributes());
 
         System.out.println("Player ID received: " + id);
     }
@@ -143,7 +142,7 @@ public class GameClient {
     }
 
     /**
-     * Configures the time and depth limits for move calculations (used in AI search).
+     * Configures the time and depth limits for move calculations.
      *
      * @param timeLimit the time limit in milliseconds
      * @param maxDepth the maximum depth of search

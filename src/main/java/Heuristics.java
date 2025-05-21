@@ -123,12 +123,12 @@ public class Heuristics {
      * @return A normalized score for relative mobility.
      */
     public static double mobility(MapController map, GameAttributes att, int playerId) {
-        int own = att.getPlayer(playerId).getTiles().getSize();
+        int own = 0;//int own = att.getPlayer(playerId).getTiles().getSize();
         int totalOthers = 0;
 
         for (int i = 0; i < att.getNumberPlayers(); i++) {
             if (i != playerId) {
-                totalOthers += att.getPlayer(i).getTiles().getSize();
+                //totalOthers += att.getPlayer(i).getTiles().getSize();
             }
         }
 
@@ -144,7 +144,7 @@ public class Heuristics {
      * @return A normalized safety score for the player's stones.
      */
     public double amountSaveStones(MapController map, GameAttributes att, int playerId) {
-        IntLinkedList ownTiles = att.getPlayer(playerId).getTiles();
+        IntLinkedList ownTiles = new IntLinkedList();//att.getPlayer(playerId).getTiles();
         if (ownTiles.getSize() == 0) return 0;
 
         double score = 0;
@@ -213,7 +213,7 @@ public class Heuristics {
      * @return A normalized score (negative or close to zero is better), indicating tile connectivity.
      */
     public static double walls(MapController map, GameAttributes att, int playerId) {
-        IntLinkedList ownTiles = att.getPlayer(playerId).getTiles();
+        IntLinkedList ownTiles = new IntLinkedList();//att.getPlayer(playerId).getTiles();
         int size = ownTiles.getSize();
         if (size == 0) return 0;
 

@@ -44,76 +44,6 @@ public class MoveVerifier {
         return res;
     }
 
-    public static IntLinkedList allMovesPhase1(MapController controller, GameAttributes state, int playerId) {
-        IntLinkedList res = new IntLinkedList();          // Damit keine Duplikate eingefügt werden (siehe overwrite von equals in Move)
-        IntLinkedList expansions = controller.getExpansionTiles();
-        IntLinkedList temp =  state.getPlayer(playerId).getTiles();
-        ListNode node = temp.getHead();
-
-        //Tiefensuche für jeden unserer Steine in alle Richtungen
-        while(node != null ) {
-            int x = decodeXCoords(node.getValue());
-            int y = decodeYCoords(node.getValue());
-
-            for (int dir = 0; dir < 8; dir++) {
-                int pos = encodePosition(x, y, dir);
-                int tilesPassed = 0;
-                boolean search = true;
-                while (search) {
-                    pos = controller.getNextTile(pos);
-                    if (pos < 0) break;
-
-                    int move =  MoveVerifier.encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 0, playerId);
-                    if (!GameRules.isNotHole(move, controller) ||
-                        !GameRules.insideMap(move, controller)) {
-                        break;
-                    }
-
-                    char tile = (char)controller.getTile(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos));
-                    boolean isOwn = tile == ('0' + playerId);
-
-                    if (GameRules.occupied(move, controller)) {
-                        if (//GameRules.isExpansion(controller, move) ||
-                            (tilesPassed > 0 && GameRules.hasOverwrite(state, move) && x != decodeX(move) && y != decodeY(move))) {
-                            res.addIfNotContains(move); //auskommentiert für debugging //TODO
-                        }
-                        if (isOwn) search = false; //Damit bei eigenem Feld nicht hochgzählt wird
-                        tilesPassed++;
-
-                    } else {
-                        // Bonusfelder beide Wahlen
-                        if (tilesPassed > 0 && tile == 'b') {
-                            res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 20, playerId));
-                            res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 21, playerId));
-                        }
-                        // Choice-Felder alle Player-IDs
-                        else if (tilesPassed > 0 && tile == 'c') {
-                            for (int j = 1; j <= state.getNumberPlayers(); j++) {
-                                res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), j, playerId));
-                            }
-                        }
-                        //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
-                        else if (tilesPassed > 0 && (x != decodeX(move) || y != decodeY(move))) {
-                            res.addIfNotContains(move);
-                        }
-                        search = false;
-                    }
-                }
-            }
-            node = node.getNext();
-        }
-
-        //Alle Expansion stones sind mögliche Züge
-        node = expansions.getHead();
-        while (node != null){
-            if(GameRules.hasOverwrite(state,encodeMove(decodeXCoords(node.getValue()),decodeYCoords(node.getValue()),0,playerId))){
-                res.addIfNotContains(encodeMove(decodeXCoords(node.getValue()),decodeYCoords(node.getValue()), 0, playerId));
-            }
-            node = node.getNext();
-        }
-
-        return res;
-    }
 
     public static IntLinkedList calculateAllMoves_Bruteforce(MapController controller, GameAttributes state, int playerId) {
 
@@ -168,15 +98,11 @@ public class MoveVerifier {
      * @return A valid move or a dummy move if none found.
      */
     public static IntLinkedList calculateMoves(GameState gameState, int playerId) {
-        // for(Coordinate c : this.gameAttributes.getPlayer(gameAttributes.getOurPlayerId()).tiles){
-        //     System.out.println(c);
-        // }
         if(!gameState.attributes().getPlayer(playerId).isInGame()){
             return new IntLinkedList();
         }
         if(gameState.attributes().isPhase1()){
-            return allMovesPhase1(gameState.mapController(), gameState.attributes(), playerId);
-            //return MoveVerifier.calculateAllMoves_Bruteforce(gameState.mapController(), gameState.attributes(), playerId);
+            return MoveVerifier.calculateAllMoves_Bruteforce(gameState.mapController(), gameState.attributes(), playerId);
         }
         else return allMovesPhase2(gameState.mapController(), gameState.attributes());
     }

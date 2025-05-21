@@ -7,7 +7,6 @@ public class Player {
     private int numberOverwrites;
     private int playerNumber;
     private boolean inGame = true;
-    IntLinkedList tiles;
 
     /**
      * Constructs a Player with specified resources and status.
@@ -22,7 +21,6 @@ public class Player {
         this.numberOverwrites = overwrites;
         this.playerNumber = number;
         this.inGame = in;
-        this.tiles = new IntLinkedList();
     }
 
     public Player(Player player){
@@ -30,8 +28,6 @@ public class Player {
         this.numberOverwrites = player.getNumberOverwrites();
         this.playerNumber = player.getPlayerNumber();
         this.inGame = player.isInGame();
-        this.tiles = new IntLinkedList();
-        this.tiles.addAll(player.getTiles());
     }
 
     /**
@@ -80,7 +76,7 @@ public class Player {
     }
 
     /**
-     * Sets the number of overwrite tokens for the player.
+     * Sets the number of overwrite stones for the player.
      *
      * @param numberOverwrites new count of overwrites
      */
@@ -105,30 +101,5 @@ public class Player {
     public void setNumberBombs(int numberBombs) {
         this.numberBombs = numberBombs;
     }
-
-    /**
-     * Getter function for the set containing all tiles of one player.
-     * @return tiles of one player.
-     */
-    public IntLinkedList getTiles() {
-        return tiles;
-    }
-
-
-    /**
-     * Sets the Set of tiles, to the tiles given by the function.
-     */
-    public void setTiles(IntLinkedList tiles) {
-        this.tiles = tiles;
-    }
-
-
-    /**
-     * Adds one tile to the set if it isn't already added.
-     */
-    public void addTile(int c){
-        this.tiles.addIfNotContains(c);
-    }    
-
 
 }
