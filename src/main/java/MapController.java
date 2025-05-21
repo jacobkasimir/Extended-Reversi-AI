@@ -1,3 +1,5 @@
+
+
 /**
  * The MapController class manages the game map and its transitions.
  * It serves as the central interface for map operations, tile management and game mechanics.
@@ -342,8 +344,7 @@ public class MapController{
      * @return true if the character represents a player, false otherwise
      */
     private boolean isPlayer(char c){
-        if(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x') return false;
-        else return true;
+        return !(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x');
     }
 
     /**

@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 /**
  * The Map class provides a two-dimensional grid structure for storing character-based map data.
@@ -7,10 +6,11 @@ import java.util.Arrays;
  */
 public class Map {
     /**
-     * The underlying two-dimensional array that holds the map data.
-     * First dimension represents width (x-axis), second dimension represents height (y-axis).
+     * The underlying one-dimensional array that holds the map data.
      */
-    private char[][] map;
+    private char[] map;
+    private final int width;
+    private final int height;
     
     /**
      * Constructs a new Map with the specified dimensions.
@@ -20,22 +20,16 @@ public class Map {
      * @param height The height (y-axis) of the map
      */
     public Map(int width, int height){
-        this.map = new char[width][height];
+        this.width = width;
+        this.height = height;
+        this.map = new char[width*height];
     }
     
-    /**
-     * Creates a deep copy of an existing Map.
-     * All character values from the source map are copied to the new instance.
-     *
-     * @param obj The source Map to copy from
-     */
-    public Map(Map obj){
-        this.map = new char[obj.getWidth()][obj.getHeight()];
-        for(int i=0; i<obj.getWidth();i++){
-            for(int y=0;y<obj.getHeight();y++){
-                this.map[i][y] = obj.getTile(i, y);
-            }
-        }
+    public Map(Map other){
+        this.width = other.getWidth();
+        this.height = other.getHeight();
+        this.map = new char[width*height];
+        System.arraycopy(other.getMap(), 0, this.map, 0, other.getMap().length);
     }
     
     /**
@@ -46,7 +40,7 @@ public class Map {
      * @return The character at the specified position
      */
     public char getTile(int x, int y) {
-        return map[x][y];
+        return map[(x*height) +y];
     }
 
     /**
@@ -57,7 +51,7 @@ public class Map {
      * @param c The character to place at the specified position
      */
     public void setTile(int x, int y, char c) {
-        map[x][y] = c;
+        map[(x*height) +y] = c;
     }
 
     /**
@@ -74,27 +68,13 @@ public class Map {
 
         if(this.map.length == other.map.length){
             for (int i = 0; i < this.map.length; i++) {
-                if(this.map[i].length != other.map[i].length) return false;
-
-                for (int j = 0; j < this.map[i].length; j++) {
-                    if(this.map[i][j] != other.map[i][j]) return false;
-                }
+                if(this.map[i] != other.getMap()[i]) return false;
             }
             return true;
         }
         return false;
     }
 
-    /**
-     * Generates a hash code for this Map.
-     * The hash code is based on the content of the map array.
-     *
-     * @return A hash code value for this Map
-     */
-    @Override
-    public int hashCode(){
-        return Arrays.deepHashCode(map);
-    }
 
     /**
      * Returns the internal array representing the map.
@@ -102,7 +82,7 @@ public class Map {
      *
      * @return The two-dimensional char array containing the map data
      */
-    public char[][] getMap() {
+    public char[] getMap() {
         return map;
     }
 
@@ -112,7 +92,7 @@ public class Map {
      * @return The number of rows in the map (y-axis size)
      */
     public int getHeight(){
-        return map[0].length;
+        return this.height;
     }
 
     /**
@@ -121,6 +101,6 @@ public class Map {
      * @return The number of columns in the map (x-axis size)
      */
     public int getWidth(){
-        return map.length;
+        return this.width;
     }
 }
