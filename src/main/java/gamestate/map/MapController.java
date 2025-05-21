@@ -1,4 +1,9 @@
 package gamestate.map;
+import control.Constants;
+import gamestate.attributes.GameAttributes;
+import validation.GameRules;
+import validation.MoveVerifier;
+
 /**
  * The MapController class manages the game map and its transitions.
  * It serves as the central interface for map operations, tile management and game mechanics.

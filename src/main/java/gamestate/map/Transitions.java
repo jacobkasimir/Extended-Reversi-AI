@@ -1,7 +1,8 @@
 package gamestate.map;
 import java.util.Arrays;
-import validation.MoveVerifier;
 
+import control.Constants;
+import validation.MoveVerifier;
 
 /**
  * Manages transitions between tiles.
