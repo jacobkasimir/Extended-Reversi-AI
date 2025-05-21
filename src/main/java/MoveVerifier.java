@@ -131,14 +131,17 @@ public class MoveVerifier {
     public static IntLinkedList calculateNextMoves(GameState gameState, int lastPlayerId){
         lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers())+1;
         IntLinkedList res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
-        int counter = 1;
+        int counter = 1; //counts how many players have been checked
 
+        //Iterates over players until someone does have moves left
         while(res.isEmpty() && counter < gameState.attributes().getNumberPlayers()+1) {
             lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers())+1;
             res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
             counter++;
         }
+        //Handles logic if no player has moves left
         if(counter == gameState.attributes().getNumberPlayers()) {
+            //Switch from phase 1 in 2
             if(gameState.attributes().isPhase1()){
                 gameState.attributes().setGamePhase(2);
                 int nextPlayerId = lastPlayerId;
@@ -149,11 +152,10 @@ public class MoveVerifier {
                     nextPlayerId--;
                 }
                 return calculateNextMoves(gameState, nextPlayerId);
-            }
-            else{
+            } else { //End game logic
                 return new IntLinkedList();
             }
-        } else{
+        } else {
             return res;
         }
     }
