@@ -85,7 +85,7 @@ public class GameAttributesTests {
 
         gameState.attributes().updateState(move, map);
 
-        assertEquals(3+1, state.getPlayer(1).getNumberOverwrites());
+        assertEquals(3+1, gameState.attributes().getPlayer(1).getNumberOverrides());
     }
 
 }
