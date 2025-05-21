@@ -1,6 +1,6 @@
 /**
  * Represents the current state of the game, containing the map controller and game attributes.
- * This class is implemented as a record to maintain immutability of its components.
+ * This class is implemented as a record to maintain immutability of its components and efiiciency.
  * 
  * @param mapController The controller managing the game map
  * @param attributes The attributes and properties of the current game

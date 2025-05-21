@@ -1,6 +1,6 @@
 
 /**
- * The constants for the GameStates
+ * The constants for the game
 **/
 public class Constants {
     public static final int NUMBER_OF_DIRECTIONS = 8;
