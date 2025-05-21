@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -16,8 +17,7 @@ public class Main {
         try {
             for (int i = 0; i < args.length; i++) {
                 switch (args[i]) {
-                    case "-h":
-                    case "--help":
+                    case "-h", "--help" -> {
                         System.out.println("Usage:");
                         System.out.println("  -s, --server <Host/IP>    Server address (IPv4, IPv6 or hostname)");
                         System.out.println("  -p, --port <Port>         Port number (default: 12345)");
@@ -25,19 +25,17 @@ public class Main {
                         System.out.println("  -c, --compare             Compare MiniMax and Alpha-Beta results");
                         System.out.println("  -h, --help                Show this help");
                         return;
-
-                    case "-s":
-                    case "--server":
+                    }
+                    case "-s", "--server" -> {
                         if (i + 1 < args.length) {
                             serverInput = args[++i];
                         } else {
                             System.err.println("Error: -s requires a server address.");
                             return;
                         }
-                        break;
+                    }
 
-                    case "-p":
-                    case "--port":
+                    case "-p", "--port" -> {
                         if (i + 1 < args.length) {
                             try {
                                 port = Integer.parseInt(args[++i]);
@@ -49,10 +47,8 @@ public class Main {
                             System.err.println("Error: -p requires a port number.");
                             return;
                         }
-                        break;
-
-                    case "-d":
-                    case "--depth":
+                    }
+                    case "-d", "--depth" -> {
                         if (i + 1 < args.length) {
                             try {
                                 depthLimit = Integer.parseInt(args[++i]);
@@ -64,16 +60,13 @@ public class Main {
                             System.err.println("Error: -d requires a depth value.");
                             return;
                         }
-                        break;
+                    }
 
-                    case "-c":
-                    case "--compare":
-                        compare = true;
-                        break;
-
-                    default:
+                    case "-c", "--compare" -> compare = true;
+                    default -> {
                         System.err.println("Unknown parameter: " + args[i]);
                         return;
+                    }
                 }
             }
 
@@ -88,12 +81,11 @@ public class Main {
             System.out.println("Connecting to " + selectedAddress.getHostAddress() + " (" + selectedAddress.getHostName() + ") on port " + port);
             System.out.println("Search depth: " + depthLimit + ", Compare mode: " + (compare ? "enabled" : "disabled"));
 
-            // Übergib zusätzliche Parameter an den TCPClient
             TCPClient.connect(selectedAddress, port, compare, depthLimit);
 
         } catch (UnknownHostException e) {
             System.err.println("Error: Could not resolve host '" + serverInput + "'.");
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Unexpected error: " + e.getMessage());
         }
     }

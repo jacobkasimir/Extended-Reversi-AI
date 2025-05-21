@@ -132,8 +132,8 @@ public class MapTests {
             new Transitions(8,8), 
             8, 8, 0);
 
-            assertTrue(MoveVerifier.isValid(MoveVerifier.encodeMove(5, 3, 2, 1), choiceTestController, 
-            new GameAttributes(2,2,0,0,(byte)1)));
+            GameState gameState = new GameState(choiceTestController,new GameAttributes(2,2,0,0,1));
+            assertTrue(MoveVerifier.isValid(MoveVerifier.encodeMove(5, 3, 2, 1), gameState));
 
             choiceTestController.updateMap(MoveVerifier.encodeMove(5, 3, 2, 1),
             new GameAttributes(2,0,0,0,(byte)1));
