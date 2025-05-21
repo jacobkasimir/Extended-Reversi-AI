@@ -1,4 +1,6 @@
 
+
+
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
  */
@@ -14,9 +16,8 @@ public class MoveVerifier {
      */
     public static boolean isValid(int move, MapController map, GameAttributes state){
 
-        if(!(GameRules.insideMap(move, map) &&
-        GameRules.validMove(move, state) &&
-        GameRules.isNotHole(move, map) && GameRules.checkSpecial(state, move, map))) {
+        if(!(GameRules.insideMap(move, map) && GameRules.validPlayer(move, state) &&
+            GameRules.isNotHole(move, map) && GameRules.checkSpecial(state, move, map))) {
             return false;
         }
 
@@ -44,119 +45,52 @@ public class MoveVerifier {
         return res;
     }
 
-    public static IntLinkedList allMovesPhase1(MapController controller, GameAttributes state, int playerId) {
-        IntLinkedList res = new IntLinkedList();          // Damit keine Duplikate eingefügt werden (siehe overwrite von equals in Move)
-        IntLinkedList expansions = controller.getExpansionTiles();
-        IntLinkedList temp =  state.getPlayer(playerId).getTiles();
-        ListNode node = temp.getHead();
-
-        //Tiefensuche für jeden unserer Steine in alle Richtungen
-        while(node != null ) {
-            int x = decodeXCoords(node.getValue());
-            int y = decodeYCoords(node.getValue());
-
-            for (int dir = 0; dir < 8; dir++) {
-                int pos = encodePosition(x, y, dir);
-                int tilesPassed = 0;
-                boolean search = true;
-                while (search) {
-                    pos = controller.getNextTile(pos);
-                    if (pos < 0) break;
-
-                    int move =  MoveVerifier.encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 0, playerId);
-                    if (!GameRules.isNotHole(move, controller) ||
-                        !GameRules.insideMap(move, controller)) {
-                        break;
-                    }
-
-                    char tile = (char)controller.getTile(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos));
-                    boolean isOwn = tile == ('0' + playerId);
-
-                    if (GameRules.occupied(move, controller)) {
-                        if (//GameRules.isExpansion(controller, move) ||
-                            (tilesPassed > 0 && GameRules.hasOverwrite(state, move) && x != decodeX(move) && y != decodeY(move))) {
-                            res.addIfNotContains(move); //auskommentiert für debugging //TODO
-                        }
-                        if (isOwn) search = false; //Damit bei eigenem Feld nicht hochgzählt wird
-                        tilesPassed++;
-
-                    } else {
-                        // Bonusfelder beide Wahlen
-                        if (tilesPassed > 0 && tile == 'b') {
-                            res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 20, playerId));
-                            res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), 21, playerId));
-                        }
-                        // Choice-Felder alle Player-IDs
-                        else if (tilesPassed > 0 && tile == 'c') {
-                            for (int j = 1; j <= state.getNumberPlayers(); j++) {
-                                res.addIfNotContains(encodeMove(MoveVerifier.decodePosX(pos), MoveVerifier.decodePosY(pos), j, playerId));
-                            }
-                        }
-                        //Leeres Feld oder Expansion Feld + bereits occupied überlaufen
-                        else if (tilesPassed > 0 && (x != decodeX(move) || y != decodeY(move))) {
-                            res.addIfNotContains(move);
-                        }
-                        search = false;
-                    }
-                }
-            }
-            node = node.getNext();
-        }
-
-        //Alle Expansion stones sind mögliche Züge
-        node = expansions.getHead();
-        while (node != null){
-            if(GameRules.hasOverwrite(state,encodeMove(decodeXCoords(node.getValue()),decodeYCoords(node.getValue()),0,playerId))){
-                res.addIfNotContains(encodeMove(decodeXCoords(node.getValue()),decodeYCoords(node.getValue()), 0, playerId));
-            }
-            node = node.getNext();
-        }
-
-        return res;
-    }
 
     public static IntLinkedList calculateAllMoves_Bruteforce(MapController controller, GameAttributes state, int playerId) {
 
         IntLinkedList moves = new IntLinkedList();
         int width   = controller.getWidth();
         int height  = controller.getHeight();
-        int ownId   = state.getOurPlayerId();
         int numPlayers = state.getNumberPlayers();
+        char tile;
+        int move;
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                char tile = controller.getTile(x, y);
+                tile = controller.getTile(x, y);
 
-                //Bonus zwei für Bombe und Override
-                if (tile == 'b') {
-                    int mBomb = encodeMove(x, y, 20, playerId);
-                    if (MoveVerifier.isValid(mBomb, controller, state)) {
-                        moves.addIfNotContains(mBomb);
-                    }
-                    int mOverride = encodeMove(x, y, 21, playerId);
-                    if (MoveVerifier.isValid(mOverride, controller, state)) {
-                        moves.addIfNotContains(mOverride);
-                    }
-                }
-                //Choice für jede Player-ID einmal
-                else if (tile == 'c') {
-                    for (int choice = 1; choice <= numPlayers; choice++) {
-                        int m = encodeMove(x, y, choice, playerId);
-                        if (MoveVerifier.isValid(m, controller, state)) {
-                            moves.addIfNotContains(m);
+                
+                switch (tile) {
+                    //Bonus zwei für Bombe und Override
+                    case 'b' -> {
+                        move = encodeMove(x, y, 20, playerId);
+                        if (MoveVerifier.isValid(move, controller, state)) {
+                            moves.add(move);
+                        }
+                        move = encodeMove(x, y, 21, playerId);
+                        if (MoveVerifier.isValid(move, controller, state)) {
+                            moves.add(move);
                         }
                     }
-                }
-                // Normales Feld, Expansion, Override 
-                else {
-                    int m = encodeMove(x, y, 0, playerId);
-                    if (MoveVerifier.isValid(m, controller, state)) {
-                        moves.addIfNotContains(m);
+                    //Choice für jeden Spieler
+                    case 'c' -> {
+                        for (int choice = 1; choice <= numPlayers; choice++) {
+                            move = encodeMove(x, y, choice, playerId);
+                            if (MoveVerifier.isValid(move, controller, state)) {
+                                moves.add(move);
+                            }
+                        }
+                    }
+                    //expansion stones, inversion tiles, normal tiles
+                    default -> {
+                        move = encodeMove(x, y, 0, playerId);
+                        if (MoveVerifier.isValid(move, controller, state)) {
+                            moves.add(move);
+                        }
                     }
                 }
             }
         }
-
         return moves;
     }
 
@@ -168,15 +102,11 @@ public class MoveVerifier {
      * @return A valid move or a dummy move if none found.
      */
     public static IntLinkedList calculateMoves(GameState gameState, int playerId) {
-        // for(Coordinate c : this.gameAttributes.getPlayer(gameAttributes.getOurPlayerId()).tiles){
-        //     System.out.println(c);
-        // }
         if(!gameState.attributes().getPlayer(playerId).isInGame()){
             return new IntLinkedList();
         }
         if(gameState.attributes().isPhase1()){
-            return allMovesPhase1(gameState.mapController(), gameState.attributes(), playerId);
-            //return MoveVerifier.calculateAllMoves_Bruteforce(gameState.mapController(), gameState.attributes(), playerId);
+            return MoveVerifier.calculateAllMoves_Bruteforce(gameState.mapController(), gameState.attributes(), playerId);
         }
         else return allMovesPhase2(gameState.mapController(), gameState.attributes());
     }

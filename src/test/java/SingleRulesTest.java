@@ -116,11 +116,11 @@ public class SingleRulesTest {
         int moveFalse3 = MoveVerifier.encodeMove(1, 1, 0, 0);
         int moveFalse4 = MoveVerifier.encodeMove(1, 1, 0, 10);
 
-        boolean resultTrue = GameRules.validMove(moveTrue, gameAttributes2);
-        boolean resultFalse1 = GameRules.validMove(moveFalse1, gameAttributes2);
-        boolean resultFalse2 = GameRules.validMove(moveFalse2, gameAttributes2);
-        boolean resultFalse3 = GameRules.validMove(moveFalse3, gameAttributes2);
-        boolean resultFalse4 = GameRules.validMove(moveFalse4, gameAttributes2);
+        boolean resultTrue = GameRules.validPlayer(moveTrue, gameAttributes2);
+        boolean resultFalse1 = GameRules.validPlayer(moveFalse1, gameAttributes2);
+        boolean resultFalse2 = GameRules.validPlayer(moveFalse2, gameAttributes2);
+        boolean resultFalse3 = GameRules.validPlayer(moveFalse3, gameAttributes2);
+        boolean resultFalse4 = GameRules.validPlayer(moveFalse4, gameAttributes2);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse1);

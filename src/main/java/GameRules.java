@@ -68,7 +68,7 @@ public class GameRules {
      * @param state Game state.
      * @return true if move is from a valid player in-game.
      */
-    public static boolean validMove(int move, GameAttributes state) {
+    public static boolean validPlayer(int move, GameAttributes state) {
         byte playerId = (byte) MoveVerifier.decodePlayerId(move);
         return playerId >= 1 && playerId <= state.getNumberPlayers()
                 && state.getPlayer(playerId).isInGame();
