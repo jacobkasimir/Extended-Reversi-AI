@@ -46,11 +46,16 @@ public class AlphaBeta {
         ArrayList<Node> children = new ArrayList<>();
 
         ListNode m = moves.getHead();
+        //for each of our moves, do:
         while (m != null){
+            //clone game state
             GameState newGameState = gameState.clone();
+
+            //create nodes for each possible move, with the cloned game state
             children.add(new Node(m.getValue(), root, newGameState, heuristics));
             m = m.getNext();
         }
+        // add all nodes (possible states) to the root node
         root.setNextMoves(children);
     }
 
@@ -70,12 +75,18 @@ public class AlphaBeta {
         int result = 0;
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
+        // Iterate over all possible child nodes (moves) of the root node
         for (Node child : root.getNextMoves()) {
-            int childScore = child.pruning(searchdepth-1, current_GameState.attributes().getOurPlayerId(), alpha, beta);
+            // Perform alpha-beta pruning on this node and retrieve its score
+            int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha, beta);
+
+            // Update the result if the score is higher than the current maxValue
             if(maxValue < childScore){
                 result = child.getMove();
                 maxValue = childScore;
             }
+
+            // Update alpha and exit early if alpha is greater than or equal to beta
             alpha = Math.max(alpha, maxValue);
             if(beta <= alpha){
                 break;
