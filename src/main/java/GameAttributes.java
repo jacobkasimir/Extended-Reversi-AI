@@ -1,5 +1,5 @@
 /**
- * Represents the current state of the game.
+ * Represents the current attributes of a game state.
  * Tracks the number of players, their individual states, the current game phase,
  * and the ID of the player using this client.
  */
@@ -11,7 +11,7 @@ public class GameAttributes {
     private int ourPlayerId;
 
     /**
-     * Constructs a new GameAttributes instance with the specified initial game setup.
+     * Constructs a new GameAttributes instance with the specified parameters.
      *
      * @param numberPlayers the number of players participating in the game
      * @param overwrites the initial number of Overwrites per player
@@ -53,7 +53,7 @@ public class GameAttributes {
      * @param number the 1-based player number
      */
     private void setPlayer(Player p, int number) {
-        players[number - 1] = p;
+        this.players[number - 1] = p;
     }
 
     /**
@@ -66,7 +66,7 @@ public class GameAttributes {
     }
 
     /**
-     * Sets the number of players (adjusting internal tracking, but not player data).
+     * Sets the number of players.
      *
      * @param numberPlayers the number of players to set
      */
@@ -75,7 +75,7 @@ public class GameAttributes {
     }
 
     /**
-     * Enables or disables phase 1.
+     * Set boolean value for phase 1.
      *
      * @param phase1 true to enable phase 1, false for phase 2
      */
@@ -93,26 +93,26 @@ public class GameAttributes {
     }
 
     /**
-     * Gets the Player instance for the given 1-based player number.
+     * Gets the Player for the playerId (from 1...).
      *
-     * @param number the 1-based player number
+     * @param id the 1-based playerId
      * @return the Player object
      */
-    public Player getPlayer(int number) {
-        return players[number - 1];
+    public Player getPlayer(int id) {
+        return players[id - 1];
     }
 
     /**
-     * Gets the ID of the current player using this client.
+     * Gets the ID of the current player which represents our Group.
      *
-     * @return the player ID
+     * @return our player ID
      */
     public int getOurPlayerId() {
         return ourPlayerId;
     }
 
     /**
-     * Sets the ID of the player using this client.
+     * Sets the ID of the current player which represent our Group.
      *
      * @param id the player ID
      */
@@ -148,7 +148,7 @@ public class GameAttributes {
     }
 
     /**
-     * Updates the game state according to the given move.
+     * Updates the game attributes according to the given move.
      * Handles Overwrites and bomb gains/losses according to current phase and rules.
      *
      * @param move the encoded move
@@ -161,13 +161,17 @@ public class GameAttributes {
 
         if (phase1) {
             if (GameRules.occupied(move, map) || GameRules.isExpansion(map, move)) {
+                //Placing a stone on an occupied field or an expnsion tile requires an override
                 player.setNumberOverwrites(player.getNumberOverwrites() - 1);
             } else if (special == 20) {
+                //getting an extra bomb through a bonus field
                 player.setNumberBombs(player.getNumberBombs() + 1);
             } else if (special == 21) {
+                //getting an extra override stone through a bonus field
                 player.setNumberOverwrites(player.getNumberOverwrites() + 1);
             }
         } else {
+            //Moves in phase 2 are always bomb throws -> bombCount must be decremented by 1
             player.setNumberBombs(player.getNumberBombs() - 1);
         }
     }
