@@ -1,3 +1,4 @@
+package control;
 
 /**
  * The constants for the game

@@ -1,8 +1,11 @@
+package control;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import validation.MoveVerifier;
 
 /**
  * TCPClient establishes a TCP connection to the game server and handles the network protocol.
