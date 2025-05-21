@@ -1,5 +1,9 @@
 package validation;
 
+import gamestate.GameState;
+import gamestate.attributes.GameAttributes;
+import gamestate.map.MapController;
+
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
  */
