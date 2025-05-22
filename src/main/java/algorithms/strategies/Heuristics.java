@@ -13,6 +13,8 @@ import validation.MoveVerifier;
 public class Heuristics {
 
     private final IntLinkedList corners;
+    //private final int initialBombs;
+    //private final int initialOverrides;
 
     /**
      * Constructs a new Heuristics object and detects the corner positions on the map.
@@ -20,6 +22,8 @@ public class Heuristics {
      */
     public Heuristics(MapController map) {
         this.corners = findCorners(map);
+        //this.initialBombs = bombs;
+        //this.initialOverrides = overrides;
     }
 
     /**
@@ -119,28 +123,6 @@ public class Heuristics {
         }
 
         return other == 0 ? 1 : own / other;
-    }
-
-
-
-    /**
-     * Calculates a normalized mobility value for the player.
-     * @param map The map state.
-     * @param att The game state attributes.
-     * @param playerId The player's ID.
-     * @return A normalized score for relative mobility.
-     */
-    public static double mobility(MapController map, GameAttributes att, int playerId) {
-        int own = 0;//int own = att.getPlayer(playerId).getTiles().getSize();
-        int totalOthers = 0;
-
-        for (int i = 0; i < att.getNumberPlayers(); i++) {
-            if (i != playerId) {
-                //totalOthers += att.getPlayer(i).getTiles().getSize();
-            }
-        }
-
-        return (own + totalOthers == 0) ? 0 : (double) (own - totalOthers / (att.getNumberPlayers() - 1)) / (own + totalOthers);
     }
 
     /**
@@ -306,7 +288,6 @@ public class Heuristics {
      */
     public int evaluate(MapController map, GameAttributes att, int playerId) {
         double wCorners = 0.4;
-        double wMobility = 0.2;
         double wSafeStones = 0.6;
         double wTileRatio = 0.2;
         double wWalls = 0.2;
@@ -314,8 +295,7 @@ public class Heuristics {
 
         double score = 0;
         score += wCorners * amountOfCornersCaptured(map, playerId);
-        //score += wMobility * mobility(map, att, playerId);
-        //score += wSafeStones * amountSaveStones(map, att, playerId); 
+        //score += wSafeStones * amountSaveStones(map, att, playerId);
         score += wTileRatio * amountOfOwnTilesToOthers(map, playerId);
         //score += wWalls * walls(map, att, playerId);
         score += wSpecials * (numberOfBombs(att, playerId) + numberOfOverrides(att, playerId)) / 10.0;
