@@ -1,12 +1,13 @@
 package control;
 
 import algorithms.strategies.AlphaBeta;
+import algorithms.strategies.Heuristics;
+import algorithms.strategies.IterativeDeepening;
+import algorithms.strategies.MiniMax;
+import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 import gamestate.map.Transitions;
-import algorithms.strategies.MiniMax;
-import algorithms.strategies.Heuristics;
-import gamestate.GameState;
 
 /**
  * GameClient manages the overall game logic on the client side, including the game state,
@@ -180,10 +181,14 @@ public class GameClient {
             return moveAlphaBeta;
 
         } else {
+            if(timeLimit == 0){
+                AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
+                int moveAlphaBeta = alphaBeta.chooseMove();
+                return moveAlphaBeta;
+            }else{
+                return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState);
+            }
 
-            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
-            int moveAlphaBeta = alphaBeta.chooseMove();
-            return moveAlphaBeta;
 
         }
     }
