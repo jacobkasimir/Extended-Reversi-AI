@@ -147,8 +147,11 @@ public class Node {
                 node = node.getNext();
             }
             int result;
-            //decide if we performed the move creating the current state:
-            if (MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()) {   //our move
+
+            int playerIdUpcomingMove = MoveVerifier.decodePlayerId(possibleMoves.getHead().getValue());
+            
+            //decide if we perform the next move or one of our opponents:
+            if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move
                 result = Integer.MIN_VALUE;
                 //iterate over all moves in the next layer
                 for (Node child : nextMoves) {
@@ -200,8 +203,11 @@ public class Node {
                 m = m.getNext();
             }
             int result;
-            //decide whether the move was performed by our player or an opponent
-            if (MoveVerifier.decodePlayerId(move) == gameState.attributes().getOurPlayerId()) {   //our move
+
+            int playerIdUpcomingMove = MoveVerifier.decodePlayerId(possibleMoves.getHead().getValue());
+            
+            //decide if we perform the next move or one of our opponents:
+            if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move
                 result = Integer.MIN_VALUE;
                 //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
