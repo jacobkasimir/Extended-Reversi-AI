@@ -128,7 +128,7 @@ public class Heuristics {
      * Calculates three different ratios in parallel.
      * 1.: ratioOfOwnTilesOverall() - ratio of own occupied tiles to all reachable tiles.
      * 2.: ratioOfOwnTilesToOthers() - ratio of own occupied tiles to all tiles occupied by opponents.
-     * 3.: walls() - ratio of how much the own tiles are connected (neighboring) with each other (the smaller the value the better).
+     * 3.: walls() - ratio of how much the own tiles are connected (neighboring) with each other.
      * 
      * @param map The current map.
      * @param playerId The player ID.
@@ -203,8 +203,8 @@ public class Heuristics {
         res[1] = ownTiles / opponentTiles;
         
         //walls()
-        double maxNeighbors = ownTiles * 12; //times twelve because horizontal and vertical neighbors are valued with 2 and diagonal neighbors with 1
-        res[2] = countNeighboring / maxNeighbors; 
+        double maxNeighboring = ownTiles * 12; //times twelve because horizontal and vertical neighbors are valued with 2 and diagonal neighbors with 1
+        res[2] = 1.0 - (countNeighboring / maxNeighboring); //inverted so that the bigger the ratio the better for the player
 
         return res;
     }
