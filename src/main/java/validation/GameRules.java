@@ -171,4 +171,14 @@ public class GameRules {
     private static char getTileAtMove(MapController map, int move) {
         return map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move));
     }
+
+    /**
+     * Checks if a char represents a player.
+     *
+     * @param c The char to check.
+     * @return true if the character represents a player, false otherwise.
+     */
+    public static boolean isPlayer(char c){
+        return !(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x');
+    }
 }

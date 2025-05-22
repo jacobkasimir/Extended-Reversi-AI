@@ -1,12 +1,12 @@
 package control;
 
 import algorithms.strategies.AlphaBeta;
+import algorithms.strategies.Heuristics;
+import algorithms.strategies.MiniMax;
+import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 import gamestate.map.Transitions;
-import algorithms.strategies.MiniMax;
-import algorithms.strategies.Heuristics;
-import gamestate.GameState;
 
 /**
  * GameClient manages the overall game logic on the client side, including the game state,
@@ -86,7 +86,7 @@ public class GameClient {
                 new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase)
         );
 
-        this.heuristics = new Heuristics(getCurrentMapController());
+        this.heuristics = new Heuristics(this.getCurrentGameState(), bombCount, overrideCount);
 
         this.compareOn = compare;
         

@@ -316,22 +316,14 @@ public class MapController{
     private void inversionHandling(GameAttributes attributes){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if(isPlayer(getTile(i, j))) {
+                if(GameRules.isPlayer(getTile(i, j))) {
                     setTile(i, j, (char)(((getTile(i, j) - '0') % attributes.getNumberPlayers() +1) +'0'));
                 }
             }
         }
     }
 
-    /**
-     * Checks if a char represents a player.
-     *
-     * @param c The char to check.
-     * @return true if the character represents a player, false otherwise.
-     */
-    private boolean isPlayer(char c){
-        return !(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x');
-    }
+    
 
     /**
      * Helper method to compare a tile at a position with a specified character.
