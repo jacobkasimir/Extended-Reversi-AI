@@ -23,7 +23,7 @@ public class Heuristics {
 
     /**
      * Constructs a new Heuristics object and detects the corner positions on the map.
-     * @param map The map on which to identify corner tiles.
+     * @param gameState The initial game state, when instantiating the Heuristics object.
      */
     public Heuristics(GameState gameState, int bombCount, int overrideCount) {
         this.corners = findCorners(gameState.mapController());
@@ -135,7 +135,7 @@ public class Heuristics {
      * @return An array holding all three ratios.
      */
     public double[] mapRelatedHeuristics(MapController map, int playerId){
-        double[] res = new double[3];
+        double[] res = new double[5];
 
         //for ratioOfOwnTilesOverall()
         double ownTiles = 0;
@@ -174,10 +174,10 @@ public class Heuristics {
                             xNeighbor--;
                         }
 
-                        if(i > 6 && i < 3){
+                        if(i > 6 || i < 2){
                             yNeighbor--;
                         }
-                        else if(i > 3 && i < 6){
+                        else if(i > 2 && i < 6){
                             yNeighbor++;
                         }
                         
@@ -240,6 +240,14 @@ public class Heuristics {
      * @return A combined heuristic score.
      */
     public int evaluate(MapController map, GameAttributes att, int playerId) {
+
+        //scores of heuristics
+        double[] res = mapRelatedHeuristics(map, playerId); //TODO oder own playerId
+        double ownOverall = res[0];
+        double ownOpponent = res[1];
+        double walls = res[2];
+
+        //weights of heuristics (we can modify them)
         double wCorners = 0.4;
         double wSafeStones = 0.6;
         double wTileRatio = 0.2;
@@ -249,8 +257,8 @@ public class Heuristics {
         double score = 0;
         score += wCorners * ratioOfCornersCaptured(map, playerId);
         //score += wSafeStones * amountSaveStones(map, att, playerId);
-        score += wTileRatio * ratioOfOwnTilesToOthers(map, playerId);
-        //score += wWalls * walls(map, att, playerId);
+        score += wTileRatio * (ownOpponent + ownOpponent);
+        score += wWalls * walls;
         score += wSpecials * (ratioBombs(att, playerId) + ratioOverrides(att, playerId)) / 10.0;
 
         /*
