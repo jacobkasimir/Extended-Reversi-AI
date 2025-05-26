@@ -298,22 +298,24 @@ public class MoveVerifier {
         return value % 51;
     }
 
-    public static int playerBombs(int value) {
+
+
+    public static int decodeplayerBombs(int value) {
         value /= 51 * 51 * 51;
         return value;
     }
 
-    public static int playerOverrides(int value) {
+    public static int decodeplayerOverrides(int value) {
         value /= 51 * 51;
         return value % 51;
     }
 
-    public static int playerId(int value) {
+    public static int decodeplayerId(int value) {
         value /=51;
         return value % 51;
     }
 
-    public static int playerInGame(int value) {
+    public static int decodeplayerInGame(int value) {
         return value % 51;
     }
 
