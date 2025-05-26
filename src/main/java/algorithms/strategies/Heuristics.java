@@ -243,8 +243,8 @@ public class Heuristics {
                 else if (GameRules.isPlayer(tile)) opponentTiles++;
 
                 //for distanceToStrongestOpponent()
-                if (GameRules.isPlayer(state.mapController().getTile(x, y))){
-                    tilesPerPlayer[state.mapController().getTile(x, y) - 1]++;
+                if (GameRules.isPlayer(tile)){
+                    tilesPerPlayer[(int) tile - 49 ]++;
                 }
                 
             }

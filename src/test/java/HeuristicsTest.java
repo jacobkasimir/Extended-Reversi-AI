@@ -9,6 +9,8 @@ import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 import gamestate.map.Transitions;
 
+import java.util.Arrays;
+
 
 public class HeuristicsTest {
 
@@ -444,5 +446,65 @@ public class HeuristicsTest {
         assertEquals(6/40.0, values[1]);
 
         assertEquals(1.0 - (0 / ((double) 12*6)), values[2]);
+    }
+
+    @Test
+    public void mapRelatedHeuristicsPhase2Test4(){
+        MapController map = new MapController(
+                new String[]{
+                        "1 - 7 0 2 3 3 4",
+                        "4 2 4 7 4 4 2 4",
+                        "3 4 4 x 4 4 i 3",
+                        "4 - - 4 3 4 c 4",
+                        "7 0 4 4 4 5 4 4",
+                        "4 6 4 4 - 6 6 6",
+                        "7 7 - 7 7 7 - 4",
+                        "4 4 1 x 4 4 2 -"
+                },
+                new Transitions(8,8),
+                8, 8, 1);
+
+        GameAttributes attributes = new GameAttributes(7, 1, 1, 1, (byte) 1);
+        attributes.setOurPlayerId((byte) 4);
+        GameState state = new  GameState(map, attributes);
+        Heuristics heuristics = new Heuristics(state, 1, 1, 8);
+        double[] values = heuristics.mapRelatedHeuristicsPhase2(state, (byte) 4);
+
+        assertEquals(1, values[2]);
+
+        assertEquals(8/27.0, values[3]);
+
+        assertEquals(7/8.0, values[4]);
+    }
+
+    @Test
+    public void mapRelatedHeuristicsPhase2Test5(){
+        MapController map = new MapController(
+                new String[]{
+                        "1 - 7 0 2 3 3 4",
+                        "4 2 4 7 4 4 2 4",
+                        "3 4 4 x 4 4 i 3",
+                        "4 - - 4 3 4 c 4",
+                        "7 0 4 4 4 5 4 4",
+                        "4 6 4 4 - 6 6 6",
+                        "7 7 - 7 7 7 - 4",
+                        "4 4 1 x 4 4 2 -"
+                },
+                new Transitions(8,8),
+                8, 8, 1);
+
+        GameAttributes attributes = new GameAttributes(8, 1, 1, 1, (byte) 1);
+        attributes.setOurPlayerId((byte) 7);
+        GameState state = new  GameState(map, attributes);
+
+
+        Heuristics heuristics = new Heuristics(state, 1, 1, 8);
+        double values[] = heuristics.mapRelatedHeuristicsPhase2(state, (byte) 7);
+
+        assertEquals(8/27.0, values[2]);
+
+        assertEquals(0, values[3]);
+
+        assertEquals(0, values[4]);
     }
 }
