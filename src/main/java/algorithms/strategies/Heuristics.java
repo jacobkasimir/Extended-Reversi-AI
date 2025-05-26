@@ -4,8 +4,8 @@ package algorithms.strategies;
 
 import algorithms.datastructures.IntLinkedList;
 import algorithms.datastructures.ListNode;
-import control.Constants;
 import control.Coder;
+import control.Constants;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
@@ -168,33 +168,17 @@ public class Heuristics {
                 //for walls() (index = 2)
                 if(tile == (char) (playerId + '0')){
                     for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) { //counting neighboring tiles that are occupied by the playerId
-                        int xNeighbor = x;
-                        int yNeighbor = y;
-
-                        //calculate the coordinates for the neighboring tile for a given direction (i)
-                        if(i > 0 && i < 4){
-                            xNeighbor++;
-                        }
-                        else if(i > 4 && i < 8){
-                            xNeighbor--;
-                        }
-
-                        if(i > 6 || i < 2){
-                            yNeighbor--;
-                        }
-                        else if(i > 2 && i < 6){
-                            yNeighbor++;
-                        }
                         
                         //vertical and horizontal neighbors add value 2, diagonal only 1
-                        if(insideMap(xNeighbor, yNeighbor, map) && map.getTile(xNeighbor, yNeighbor) == (char) (playerId + '0')){
-                            if(x != xNeighbor && y != yNeighbor){
+                        int nextPosition = map.getNextTile(Coder.encodePosition(x, y, i));
+                        if(nextPosition != -1){
+                            if (i == 1 || i == 3 || i == 5 || i == 7) {
                                 countNeighboring++;
                             }
                             else{
                                 countNeighboring += 2;
                             }
-                        }
+                        }   
                     }
                 }
                 
@@ -300,7 +284,7 @@ public class Heuristics {
     /**
      * Returns the ratio of players in the game to the number of players that started the game.
      * @param attributes The game attributes.
-     *
+     * @param playerId The player ID.
      * @return The number of available overwrites.
      */
     private double ratioPlayersInGame(GameAttributes attributes) {
