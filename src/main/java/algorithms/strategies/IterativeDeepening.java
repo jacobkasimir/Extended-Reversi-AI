@@ -33,11 +33,7 @@ public class IterativeDeepening {
             }
         }
 
-        int estimatedBranchingFactor = total / playersInGame;
-
-        estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; //safety
-
-        System.out.println("Estimated Branching Factor: " + estimatedBranchingFactor);
+        //int estimatedBranchingFactor = total / playersInGame;
 
         while (true) {
 
@@ -55,6 +51,14 @@ public class IterativeDeepening {
             // System.out.println("Duration " + duration);
 
             duration /= 1000000;
+
+            int estimatedBranchingFactor = info.getAverageBranchingAtDepth(1);
+
+            estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; //safety
+
+            if(info.isBombPhaseReached()) estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth());
+
+            System.out.println("Estimated Branching Factor: " + estimatedBranchingFactor);
 
             //old version
             // int numberOfMovesDepthOne = MoveVerifier.calculateMoves(state, state.attributes().getOurPlayerId()).getSize();

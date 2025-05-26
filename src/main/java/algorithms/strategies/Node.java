@@ -187,8 +187,11 @@ public class Node {
      */
     public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info) {
         if (searchDepth > 0) {
+            
             //update gameState by performing the move of this node
             gameState.updateGameState(this.move);
+
+            if(!gameState.attributes().isPhase1()) info.setReachedBombPhase();
 
             //calculate all possible moves
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
@@ -202,6 +205,7 @@ public class Node {
                 this.nextMoves.add(new Node(m.getValue(), this, gameState.clone(), this.heuristics));
                 m = m.getNext();
             }
+            info.addNewBranchingFactor(possibleMoves.getSize(), searchDepth);
             int result;
 
             int playerIdUpcomingMove = MoveVerifier.decodePlayerId(possibleMoves.getHead().getValue());
