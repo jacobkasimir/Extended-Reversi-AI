@@ -48,7 +48,7 @@ public class GameAttributesTests {
             throw new Error("Test not valid.");
         }
 
-        assertEquals(3-1, gameState.attributes().getPlayer(1).getNumberOverrides());
+        assertEquals(3-1, Coder.decodeplayerOverrides(gameState.attributes().getPlayer(1)));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class GameAttributesTests {
 
         gameState.attributes().updateState(move, map);
 
-        assertEquals(1-1, gameState.attributes().getPlayer(2).getNumberBombs());
+        assertEquals(1-1, Coder.decodeplayerBombs(gameState.attributes().getPlayer(2)));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class GameAttributesTests {
 
         gameState.attributes().updateState(move, map);
 
-        assertEquals(1+1, gameState.attributes().getPlayer(1).getNumberBombs());
+        assertEquals(1+1, Coder.decodeplayerBombs(gameState.attributes().getPlayer(1)));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class GameAttributesTests {
 
         gameState.attributes().updateState(move, map);
 
-        assertEquals(3+1, gameState.attributes().getPlayer(1).getNumberOverrides());
+        assertEquals(3+1, Coder.decodeplayerOverrides(gameState.attributes().getPlayer(1)));
     }
 
 }

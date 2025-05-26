@@ -3,7 +3,7 @@ package gamestate.attributes;
  * Represents a player in the game, tracking their available bombs,
  * override stones, player number, and in-game status.
  */
-public class Player {
+public class Playe {
     private int numberBombs;
     private int numberOverrides;
     private int playerId;

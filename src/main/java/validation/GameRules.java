@@ -59,7 +59,7 @@ public class GameRules {
      * @return true if player has bombs.
      */
     public static boolean hasBomb(GameAttributes attr, int move) {
-        return attr.getPlayer(Coder.decodePlayerId(move)).getNumberBombs() > 0;
+        return Coder.decodeplayerBombs(attr.getPlayer(Coder.decodePlayerId(move))) > 0;
     }
 
     /**
@@ -70,7 +70,7 @@ public class GameRules {
      * @return true if override stones are available.
      */
     public static boolean hasOverride(GameAttributes attr, int move) {
-        return attr.getPlayer(Coder.decodePlayerId(move)).getNumberOverrides() > 0;
+        return Coder.decodeplayerOverrides(attr.getPlayer(Coder.decodePlayerId(move))) > 0;
     }
 
     /**
@@ -83,7 +83,7 @@ public class GameRules {
     public static boolean validPlayer(int move, GameAttributes attr) {
         int playerId = Coder.decodePlayerId(move);
         return playerId >= 1 && playerId <= attr.getNumberPlayers()
-                && attr.getPlayer(playerId).isInGame();
+                && Coder.decodeplayerInGame(attr.getPlayer(playerId)) == 1;
     }
 
     /**

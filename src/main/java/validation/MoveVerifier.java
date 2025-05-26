@@ -106,7 +106,7 @@ public class MoveVerifier {
         IntLinkedList res = new IntLinkedList();
         for (int i = 0; i < map.getWidth(); i++) {
             for (int j = 0; j < map.getHeight(); j++) {
-                if (map.getTile(i, j) != '-' && attributes.getPlayer(attributes.getOurPlayerId()).getNumberBombs() > 0) {
+                if (map.getTile(i, j) != '-' && Coder.decodeplayerBombs(attributes.getPlayer(attributes.getOurPlayerId())) > 0) {
                     res.addIfNotContains(Coder.encodeMove(i, j, 0, attributes.getOurPlayerId()));
                 }
             }
@@ -122,7 +122,7 @@ public class MoveVerifier {
      * @return All possible moves in a IntLinkedList.
      */
     public static IntLinkedList calculateMoves(GameState gameState, int playerId) {
-        if (!gameState.attributes().getPlayer(playerId).isInGame()) {
+        if (Coder.decodeplayerInGame(gameState.attributes().getPlayer(playerId)) == 0) {
             return new IntLinkedList();
         }
         if (gameState.attributes().isPhase1()) {

@@ -114,7 +114,7 @@ public class Heuristics {
      * @return The number of available overwrites.
      */
     public double ratioOverrides(GameAttributes state, int playerId) {
-        return state.getPlayer(playerId).getNumberOverrides() / ((double) initialOverrides);
+        return Coder.decodeplayerOverrides(state.getPlayer(playerId)) / ((double) initialOverrides);
     }
 
     /**
@@ -124,7 +124,7 @@ public class Heuristics {
      * @return The number of available bombs.
      */
     public double ratioBombs(GameAttributes state, int playerId) {
-        return state.getPlayer(playerId).getNumberBombs() / ((double) initialBombs);
+        return Coder.decodeplayerBombs(state.getPlayer(playerId)) / ((double) initialBombs);
     }
 
     
@@ -395,7 +395,7 @@ public class Heuristics {
             if (corners.contains(Coder.encodeCoordinate(x, y))) score += att.getNumberPlayers();
             if(bigCorner(map, att, x, y)) score += att.getNumberPlayers();
             for(int i = 0; i < att.getNumberPlayers(); i++) {
-                if(att.getPlayer(i).getNumberOverrides() == 0) score++;
+                if(Coder.decodeplayerOverrides(att.getPlayer(i)) == 0) score++;
             }
 
             node = node.getNext();

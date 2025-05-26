@@ -161,7 +161,7 @@ public class Coder {
      * @param value containing all the information of a single player.
      * @return playerId.
      */
-    public static int decodeplayerId(int value) {
+    public static int decodePlayerPlayerId(int value) {
         value /=51;
         return value % 51;
     }
