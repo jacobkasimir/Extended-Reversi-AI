@@ -171,7 +171,7 @@ public class Heuristics {
                         
                         //vertical and horizontal neighbors add value 2, diagonal only 1
                         int nextPosition = map.getNextTile(Coder.encodePosition(x, y, i));
-                        if(nextPosition != -1){
+                        if(nextPosition != -1 && map.getTile(Coder.decodePosX(nextPosition), Coder.decodePosY(nextPosition)) == (char) (playerId + '0')){
                             if (i == 1 || i == 3 || i == 5 || i == 7) {
                                 countNeighboring++;
                             }
