@@ -25,6 +25,9 @@ public class Heuristics {
     /**
      * Constructs a new Heuristics object and detects the corner positions on the map.
      * @param gameState The initial game state, when instantiating the Heuristics object.
+     * @param bombCount The initial number of bombs per player.
+     * @param overrideCount The initial number of override stones per player.
+     * @param numberPlayers The initial number of players.
      */
     public Heuristics(GameState gameState, int bombCount, int overrideCount, int numberPlayers) {
         this.corners = findCorners(gameState.mapController());
@@ -132,7 +135,7 @@ public class Heuristics {
      * 2.: ratioOfOwnTilesToOthers() - ratio of own occupied tiles to all tiles occupied by opponents.
      * 3.: walls() - ratio of how much the own tiles are connected (neighboring) with each other.
      * 
-     * @param map The current map.
+     * @param map The current MapController.
      * @param playerId The player ID.
      * @return An array holding all three ratios.
      */
@@ -216,15 +219,17 @@ public class Heuristics {
 
 
 ///////////////////////////////////////////////////// HEURISTICS PHASE 2 //////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Calculates three different ratios in parallel.
      * 1.: ratioOfOwnTilesOverall() - ratio of own occupied tiles to all reachable tiles.
      * 2.: ratioOfOwnTilesToOthers() - ratio of own occupied tiles to all tiles occupied by opponents.
-     * 3.: distanceToStrongestOpponent() - ratio of own Tiles to the amount of tiles of the strongest opponent (1 means greaterEquals).
+     * 3.: distanceToStrongestOpponent1() - ratio of own Tiles to the amount of tiles of the strongest opponent (1 means greaterEquals).
+     * 4.: distanceToStrongestOpponent2() - ratio of the amount of tiles of the strongest opponent to our own Tiles (0 if ownTiles > strongestPlayerTiles).
+     * 5.: ratioPlayersInGame() - ratio of alive players to number of initial players.
      * 
-     * @param map The current map.
+     * @param state The current game state.
      * @param playerId The player ID.
      * @return An array holding all three ratios.
      */
@@ -269,7 +274,7 @@ public class Heuristics {
         //ratioOfOwnTilesToOthers()
         res[1] = ownTiles / opponentTiles;
         
-        //distanceToStrongestPlayer()
+        //distanceToStrongestPlayer1() & distanceToStrongestPlayer2() & ratioPlayersInGame()
         tilesPerPlayer[playerId-1] = 1;
         int strongestOpponent = 1;
         for (int i : tilesPerPlayer) {
@@ -277,86 +282,93 @@ public class Heuristics {
                 strongestOpponent = i;
             }
         }
-        if(strongestOpponent >= ownTiles){
-            res[2] = ownTiles / strongestOpponent;
+        if(strongestOpponent > ownTiles){
+            res[2] = ownTiles / Math.max(1, strongestOpponent);
+            res[3] = 0;
+            res[4] = 0;
         }
         else{
             res[2] = 1;
+            res[3] = strongestOpponent / Math.max(ownTiles,1);
+            res[4] = ratioPlayersInGame(state.attributes());
         }
-    
+        
         return res;
     }
 
 
     /**
      * Returns the ratio of players in the game to the number of players that started the game.
-     * @param state The game state.
+     * @param attributes The game attributes.
      * @param playerId The player ID.
      * @return The number of available overwrites.
      */
-    public double ratioPlayersInGame(GameAttributes attributes, int playerId) {
-        return attributes.getNumberPlayers() / ((double) initialOverrides);
+    private double ratioPlayersInGame(GameAttributes attributes) {
+        return attributes.getNumberPlayers() / ((double) initalNumberPlayers);
     }
 
 
-
-
-
-
-
-
-
+///////////////////////////////////////////////////// EVALUATE ///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
     /**
      * Combines several heuristics into a single evaluation score for a player in a given game state.
      * Weights should be tuned experimentally or via machine learning.
-     * @param map The current map.
-     * @param att The game attributes.
+     * @param state The game state
      * @param playerId The player ID.
      * @return A combined heuristic score.
      */
-    public int evaluate(MapController map, GameAttributes att, int playerId) {
-        if(att.isPhase1()){
+    public int evaluate(GameState state, int playerId) {
+        if(state.attributes().isPhase1()){
             //scores of heuristics
-            double[] res = mapRelatedHeuristicsPhase1(map, playerId); //TODO oder own playerId
+            double[] res = mapRelatedHeuristicsPhase2(state, playerId);
             double ownToOverall = res[0];
             double ownToOpponents = res[1];
             double walls = res[2];
 
             //weights of heuristics (we can modify them)
-            double weightCorners = 0.4;
+            double weightCorners = 0.5;
             double weightOwnToOverall = 0.6;
             double weightOwnToOpponents = 0.2;
             double weightWalls = 0.2;
-            double weightOverrides = 0.2;
             double weightBombs = 0.2;
+            double weightOverrides = 0.2;
 
             double score = 0;
-            score += weightCorners * ratioOfCornersCaptured(map, playerId);
+
+            score += weightCorners * ratioOfCornersCaptured(state.mapController(), playerId);
             score += weightOwnToOverall * ownToOverall;
             score += weightOwnToOpponents * ownToOpponents;
             score += weightWalls * walls;
-            score += weightOverrides * ratioOverrides(att, playerId);
-            score += weightBombs * ratioBombs(att, playerId);
+            score += weightBombs * ratioBombs(state.attributes(), playerId);
+            score += weightOverrides * ratioOverrides(state.attributes(), playerId);
 
             return (int) Math.round(score * 1000); // 0-1000 points
         }
         else{
-            //scores of heuristics
-            double[] res = mapRelatedHeuristicsPhase2(map, playerId); //TODO oder own playerId
+            double[] res = mapRelatedHeuristicsPhase1(state.mapController(), playerId);
             double ownToOverall = res[0];
             double ownToOpponents = res[1];
-            double walls = res[2];
+            double distanceToStrongestOpponent1 = res[2];
+            double distanceToStrongestOpponent2 = res[3];
+            double ratioPlayersInGame = res[4];
 
             //weights of heuristics (we can modify them)
             double weightOwnToOverall = 0.6;
             double weightOwnToOpponents = 0.2;
+            double weightdistStrongest1 = 0.2;
+            double weightdistStrongest2 = 0.2;
+            double weightPlayersInGame = 0.2;
 
             double score = 0;
+
             score += weightOwnToOverall * ownToOverall;
             score += weightOwnToOpponents * ownToOpponents;
+            score += weightdistStrongest1 * distanceToStrongestOpponent1;
+            score += weightdistStrongest2 * distanceToStrongestOpponent2;
+            score += weightPlayersInGame * ratioPlayersInGame;
 
             return (int) Math.round(score * 1000); // 0-1000 points
         }        
@@ -376,50 +388,6 @@ public class Heuristics {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     
-    /**
-     * Calculates the percentage of all tiles on the board that are occupied by the player.
-     * 
-     * @param map The current map.
-     * @param playerId The player's ID.
-     * @return A normalized score between 0 and 1.
-     */
-    public static double ratioOfOwnTilesOverall(MapController map, int playerId) {
-        int own = 0;
-        int total = 0;
-
-        for (int x = 0; x < map.getWidth(); x++) {
-            for (int y = 0; y < map.getHeight(); y++) {
-                char tile = map.getTile(x, y);
-                if (tile != '-') total++;  // Count valid tiles only
-                if (tile == (char) (playerId + '0')) own++;
-            }
-        }
-
-        return total == 0 ? 0 : (double) own / total;
-    }
-
-    /**
-     * Compares the number of own tiles to the number of all other players' tiles.
-     * @param map The map to analyze.
-     * @param playerId The player ID.
-     * @return Ratio of own tiles to others’ tiles.
-     */
-    public static double ratioOfOwnTilesToOthers(MapController map, int playerId) {
-        double own = 0, other = 0;
-
-        for (int x = 0; x < map.getWidth(); x++) {
-            for (int y = 0; y < map.getHeight(); y++) {
-                char tile = map.getTile(x, y);
-                if (tile == (char) (playerId + '0')) own++;
-                else if (GameRules.isPlayer(tile)) other++;
-            }
-        }
-
-        return other == 0 ? 1 : own / other;
-    }
-
-
-
 
     /**
      * Measures how many of a player's stones are in "safe" positions,
@@ -485,68 +453,4 @@ public class Heuristics {
         return counter == 0;
     }
 
-
-    /**
-     * Calculates a heuristic score representing how many of a player's tiles are surrounded
-     * by their own tiles in adjacent cardinal directions (up, down, left, right).
-     * <p>
-     * This metric can be used to evaluate how compact or "walled-in" a player's territory is.
-     * Walls tend to decrease the mobility of a player, that's why it is desirable to have a spread position.
-     *
-     * @param map The game map controller.
-     * @param att The current game attributes, including player tile ownership.
-     * @param playerId The ID of the player being evaluated.
-     * @return A normalized score (negative or close to zero is better), indicating tile connectivity.
-     */
-    public static double walls(MapController map, GameAttributes att, int playerId) {
-        IntLinkedList ownTiles = new IntLinkedList();//att.getPlayer(playerId).getTiles();
-        int size = ownTiles.getSize();
-        if (size == 0) return 0;
-
-        double adjacentCount = 0;
-        ListNode node = ownTiles.getHead();
-
-        // Iterate over each tile
-        while (node != null) {
-            int value = node.getValue();
-
-            // Check the 4 cardinal directions around each tile
-            int[] directions = {
-                    value - 51, // up
-                    value + 51, // down
-                    value - 1,  // left
-                    value + 1   // right
-            };
-
-            for (int neighbor : directions) {
-                if (neighbor >= 0) {
-                    int nx = MoveVerifier.decodePosX(neighbor);
-                    int ny = MoveVerifier.decodePosY(neighbor);
-
-                    // Increase count if neighbor tile is ours
-                    if (map.getTile(nx, ny) == (char) ('0' + playerId)) {
-                        adjacentCount++;
-                    }
-                }
-            }
-            node = node.getNext();
-        }
-
-        // Ratio of total tiles to number of own neighbors
-        double ratio = size / adjacentCount;
-
-        // Normalize the score to be negative if ratio > 1 (less compact), positive otherwise
-        return (ratio > 1) ? -ratio + 1 : ratio - 1;
-    }
-
-
-    /*private static boolean cantBeCapturedMoveAtAll(MapController map, int x, int y, GameAttributes att) {
-        for (byte i = 0; i < att.getNumberPlayers(); i++) {
-            for (int special : new int[]{0, att.getOurPlayerId(), 20, 21}) {
-                int move = MoveVerifier.encodeMove(x, y, special, i);
-                if (MoveVerifier.isValid(move, map, att)) return false;
-            }
-        }
-        return true;
-    }*/
 }
