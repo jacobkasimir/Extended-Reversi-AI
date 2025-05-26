@@ -52,7 +52,7 @@ public class IterativeDeepening {
 
             duration /= 1000000;
 
-            int estimatedBranchingFactor = info.getAverageBranchingAtDepth(1);
+            int estimatedBranchingFactor = info.getAverageBranchingAtDepth(0);
 
             estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; //safety
 

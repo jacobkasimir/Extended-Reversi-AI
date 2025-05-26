@@ -24,6 +24,9 @@ public class SearchInfo {
         overallAverageBranchingFactor = 0;
         numberOfValuesAverageBranchingFactor = 0;
         averageBranchingAtDepth = new ArrayList<>(targetDepth); //muss evtl. angepasst werden, wenn man nicht für jede iteration ein neues objekt erstellen will
+        for (int i = 0; i < targetDepth; i++) {
+            averageBranchingAtDepth.add(0);
+        }
     }
 
     public void addNewBranchingFactor(int branching, int currentDepth){
