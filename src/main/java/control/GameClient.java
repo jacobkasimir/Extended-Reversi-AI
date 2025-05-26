@@ -4,6 +4,7 @@ import algorithms.strategies.AlphaBeta;
 import algorithms.strategies.Heuristics;
 import algorithms.strategies.IterativeDeepening;
 import algorithms.strategies.MiniMax;
+import algorithms.strategies.SearchInfo;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
@@ -172,7 +173,9 @@ public class GameClient {
             MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
             int moveMiniMax = miniMax.chooseMove();
 
-            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
+            SearchInfo info = new SearchInfo(depthLimit);
+
+            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit, info);
             int moveAlphaBeta = alphaBeta.chooseMove();
 
             if (moveMiniMax != moveAlphaBeta) {
@@ -182,7 +185,8 @@ public class GameClient {
 
         } else {
             if(timeLimit == 0){
-                AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
+                SearchInfo info = new SearchInfo(depthLimit);
+                AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit, info);
                 int moveAlphaBeta = alphaBeta.chooseMove();
                 return moveAlphaBeta;
             }else{

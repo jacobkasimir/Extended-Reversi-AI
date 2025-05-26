@@ -43,11 +43,12 @@ public class IterativeDeepening {
 
             System.out.println("Aktuelle Tiefe: " + currentDepth);
 
-            long startTimeAlphaBeta = System.nanoTime();
-            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, timeLimit, currentDepth);
+            long startTimeAlphaBeta = System.nanoTime(); //start Timer for one iteration
+            SearchInfo info = new SearchInfo(currentDepth);
+            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, timeLimit, currentDepth, info);
             resultMove = alphaBeta.chooseMove();
             currentDepth++;
-            long endTimeAlphaBeta = System.nanoTime();
+            long endTimeAlphaBeta = System.nanoTime(); //end timer for this iteration
 
             long duration = endTimeAlphaBeta - startTimeAlphaBeta;
 

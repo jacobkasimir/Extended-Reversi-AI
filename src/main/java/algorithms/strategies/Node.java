@@ -185,7 +185,7 @@ public class Node {
      * @param beta         The beta value for pruning
      * @return The heuristic value of the best move found
      */
-    public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta) {
+    public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info) {
         if (searchDepth > 0) {
             //update gameState by performing the move of this node
             gameState.updateGameState(this.move);
@@ -211,7 +211,7 @@ public class Node {
                 result = Integer.MIN_VALUE;
                 //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.max(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
+                    result = Math.max(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta, info));
                     alpha = Math.max(alpha, result);
                     if (beta <= alpha) {
                         break;
@@ -221,7 +221,7 @@ public class Node {
                 result = Integer.MAX_VALUE;
                 //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.min(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
+                    result = Math.min(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta, info));
                     beta = Math.min(beta, result);
                     if (beta <= alpha) {
                         break;

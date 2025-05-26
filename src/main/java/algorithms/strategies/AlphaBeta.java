@@ -33,6 +33,8 @@ public class AlphaBeta {
     /** Maximum time allowed for search in milliseconds */
     private final int searchTime;
 
+    private final SearchInfo info;
+
     /**
      * Constructs a new Alpha-Beta search instance.
      *
@@ -41,13 +43,14 @@ public class AlphaBeta {
      * @param searchTime Maximum time allowed for search in milliseconds
      * @param searchdepth Maximum depth to search in the game tree
      */
-    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchTime, int searchdepth){
+    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchTime, int searchdepth, SearchInfo searchInfo){
         this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId());
         this.current_GameState = gameState;
         this.heuristics = heuristics;
         this.root = new Node(0, null, gameState.clone(), heuristics);
         this.searchdepth = searchdepth;
         this.searchTime = searchTime;
+        this.info = searchInfo;
 
         ArrayList<Node> children = new ArrayList<>();
 
@@ -84,7 +87,7 @@ public class AlphaBeta {
         // Iterate over all possible child nodes (moves) of the root node
         for (Node child : root.getNextMoves()) {
             // Perform alpha-beta pruning on this node and retrieve its score
-            int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha, beta);
+            int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha, beta, info);
 
             // Update the result if the score is higher than the current maxValue
             if(maxValue < childScore) {
