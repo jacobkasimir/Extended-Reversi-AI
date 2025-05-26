@@ -6,7 +6,7 @@ public class SearchInfo {
     
     private int maxDepth;
     private boolean reachedBombPhase;
-    
+
     private ArrayList<Integer> averageBranchingAtDepth; //? [1,2,3,4,5,5]
     private ArrayList<Integer> numberOfValuesAverageBranchingFactorAtDepth; //? 
 
@@ -70,4 +70,13 @@ public class SearchInfo {
         tmp += branching;
         overallAverageBranchingFactor = tmp / numberOfValuesAverageBranchingFactor;
     }
+
+    public boolean isBombPhaseReached(){
+        return reachedBombPhase;
+    }
+
+    public void setReachedBombPhase(){
+        reachedBombPhase = true;
+    }
+
 }
