@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import control.GameClient;
+import control.Coder;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
@@ -39,7 +40,7 @@ public class GameAttributesTests {
     @Test
     public void decrementOverwriteStones(){
         GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 1, 1));
-        int move = MoveVerifier.encodeMove(5, 6, 0, 1);
+        int move = Coder.encodeMove(5, 6, 0, 1);
 
         gameState.attributes().updateState(move, map);
 
@@ -53,7 +54,7 @@ public class GameAttributesTests {
     @Test
     public void decrementBombs(){
         GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2, 2));
-        int move = MoveVerifier.encodeMove(4, 4, 0, 2);
+        int move = Coder.encodeMove(4, 4, 0, 2);
 
         assertFalse(gameState.attributes().isPhase1());
 
@@ -69,7 +70,7 @@ public class GameAttributesTests {
     @Test
     public void bonusIncrementBombs(){
         GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2, 1));
-        int move = MoveVerifier.encodeMove(2, 5, 20, 1);
+        int move = Coder.encodeMove(2, 5, 20, 1);
 
         if (!MoveVerifier.isValid(move, gameState)) {
             throw new Error("Test not valid.");
@@ -83,7 +84,7 @@ public class GameAttributesTests {
     @Test
     public void bonusIncrementOverwrites(){
         GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2,  1));
-        int move = MoveVerifier.encodeMove(2, 5, 21, 1);
+        int move = Coder.encodeMove(2, 5, 21, 1);
 
         if (!MoveVerifier.isValid(move, gameState)) {
             throw new Error("Test not valid.");

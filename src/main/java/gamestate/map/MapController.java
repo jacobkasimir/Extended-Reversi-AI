@@ -1,5 +1,6 @@
 package gamestate.map;
 import control.Constants;
+import control.Coder;
 import gamestate.attributes.GameAttributes;
 import validation.GameRules;
 import validation.MoveVerifier;
@@ -124,7 +125,7 @@ public class MapController{
      * @return The encoded next position after transition.
      */
     public int getNextTile(int p) {
-        return transitions.getNextTile(MoveVerifier.decodePosX(p), MoveVerifier.decodePosY(p), MoveVerifier.decodePosDirec(p));
+        return transitions.getNextTile(Coder.decodePosX(p), Coder.decodePosY(p), Coder.decodePosDirec(p));
     }
 
     /**
@@ -170,23 +171,23 @@ public class MapController{
 
             int[] directionCounts = new int[Constants.NUMBER_OF_DIRECTIONS]; //holds the number of tiles for every direction that are captured by the move
             boolean search; //boolean that decides whether to search further in a direction or not
-            boolean isChoice = getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'c'; //Is the move placed on a choice tile?
-            boolean isInversion = getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move)) == 'i'; //Is the move placed on an inversion tile?
+            boolean isChoice = getTile(Coder.decodeX(move), Coder.decodeY(move)) == 'c'; //Is the move placed on a choice tile?
+            boolean isInversion = getTile(Coder.decodeX(move), Coder.decodeY(move)) == 'i'; //Is the move placed on an inversion tile?
             int tilesPassed; //holds the number of captured tiles for a specific direction
             int currentPosition; //temporary variable
 
             for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) { //search in every direction
-                currentPosition = MoveVerifier.encodePosition(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), i);
+                currentPosition = Coder.encodePosition(Coder.decodeX(move), Coder.decodeY(move), i);
                 search = true;
                 tilesPassed = 0;
 
                 while(search){  //counting the number of captured tiles in a specific direction
                     currentPosition = getNextTile(currentPosition); //updates the currentPosition for direction i
                     if(currentPosition < 0) break;  //checks if nextTile is out of map
-                    if(String.valueOf(MoveVerifier.decodePlayerId(move)).equals(String.valueOf(this.getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition))))){
+                    if(String.valueOf(Coder.decodePlayerId(move)).equals(String.valueOf(this.getTile(Coder.decodePosX(currentPosition), Coder.decodePosY(currentPosition))))){
                         //case that the currentPosition is occupied by a tile owned by the player
                         if(tilesPassed > 0) {
-                            if (MoveVerifier.decodePosX(currentPosition) != MoveVerifier.decodeX(move) || MoveVerifier.decodePosY(currentPosition) != MoveVerifier.decodeY(move)){ 
+                            if (Coder.decodePosX(currentPosition) != Coder.decodeX(move) || Coder.decodePosY(currentPosition) != Coder.decodeY(move)){
                                 //check that found tile is not the starting tile
                                 directionCounts[i] = tilesPassed;
                             }
@@ -199,7 +200,7 @@ public class MapController{
                     else if (helpCompare('i', currentPosition)) search = false;
                     else if (helpCompare('b', currentPosition)) search = false;
                     else if (helpCompare('-', currentPosition)) search = false;
-                    else if (MoveVerifier.decodePosX(currentPosition) == MoveVerifier.decodeX(move) && MoveVerifier.decodePosY(currentPosition) == MoveVerifier.decodeY(move)) search = false;
+                    else if (Coder.decodePosX(currentPosition) == Coder.decodeX(move) && Coder.decodePosY(currentPosition) == Coder.decodeY(move)) search = false;
                     else {
                         tilesPassed++;
                     }
@@ -208,10 +209,10 @@ public class MapController{
 
             //updating captured tiles 
             for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) {
-                currentPosition = MoveVerifier.encodePosition(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), i);
+                currentPosition = Coder.encodePosition(Coder.decodeX(move), Coder.decodeY(move), i);
 
                 for (int j = 0; j < directionCounts[i]+1; j++) { //update the map
-                    setTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition), (char)(MoveVerifier.decodePlayerId(move) + '0'));
+                    setTile(Coder.decodePosX(currentPosition), Coder.decodePosY(currentPosition), (char)(Coder.decodePlayerId(move) + '0'));
                     currentPosition = getNextTile(currentPosition);
                 }
             }
@@ -224,8 +225,8 @@ public class MapController{
         }
         else {
             //handles bombing (phase 2)
-            bombing(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), bombRadius);  
-            resolveBombing(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move), bombRadius);
+            bombing(Coder.decodeX(move), Coder.decodeY(move), bombRadius);
+            resolveBombing(Coder.decodeX(move), Coder.decodeY(move), bombRadius);
         }
     }
 
@@ -254,16 +255,16 @@ public class MapController{
      * @param radius The remaining explosion radius.
      */
     private void bombing(int x, int y, int radius){
-        if(GameRules.insideMap(MoveVerifier.encodeMove(x, y, 0, 0), this) && 
-        GameRules.isNotHole(MoveVerifier.encodeMove(x, y, 0, 0), this)){
+        if(GameRules.insideMap(Coder.encodeMove(x, y, 0, 0), this) &&
+        GameRules.isNotHole(Coder.encodeMove(x, y, 0, 0), this)){
             setTile(x, y, '#');
 
             if(radius > 0){ 
                 int newPosition;
                 for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) {
-                    newPosition = getNextTile(MoveVerifier.encodePosition(x, y, i));
+                    newPosition = getNextTile(Coder.encodePosition(x, y, i));
                     if(newPosition >= 0) {
-                        bombing(MoveVerifier.decodePosX(newPosition), MoveVerifier.decodePosY(newPosition), radius-1);
+                        bombing(Coder.decodePosX(newPosition), Coder.decodePosY(newPosition), radius-1);
                     }
                 }
             }
@@ -278,13 +279,13 @@ public class MapController{
      * @param radius The remaining explosion radius.
      */
     private void resolveBombing(int x, int y, int radius){
-        if(GameRules.insideMap(MoveVerifier.encodeMove(x, y, 0, 0), this)){
+        if(GameRules.insideMap(Coder.encodeMove(x, y, 0, 0), this)){
             if(getTile(x, y) == '#') setTile(x, y, '-');
 
             if(radius > 0){ 
                 for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) {
-                    int newPosition = getNextTile(MoveVerifier.encodePosition(x, y, i));
-                    if(newPosition >= 0) resolveBombing(MoveVerifier.decodePosX(newPosition), MoveVerifier.decodePosY(newPosition), radius-1);
+                    int newPosition = getNextTile(Coder.encodePosition(x, y, i));
+                    if(newPosition >= 0) resolveBombing(Coder.decodePosX(newPosition), Coder.decodePosY(newPosition), radius-1);
                 }
             }
         }
@@ -298,11 +299,11 @@ public class MapController{
     public void choiceHandling(int move){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if(getTile(i, j) == ((char)(MoveVerifier.decodePlayerId(move) + '0'))) {
-                    setTile(i, j, ((char)(MoveVerifier.decodeSpecial(move) + '0')));
+                if(getTile(i, j) == ((char)(Coder.decodePlayerId(move) + '0'))) {
+                    setTile(i, j, ((char)(Coder.decodeSpecial(move) + '0')));
                 }
-                else if(getTile(i, j) == ((char)(MoveVerifier.decodeSpecial(move) + '0'))) {
-                    setTile(i, j, ((char)(MoveVerifier.decodePlayerId(move) + '0')));
+                else if(getTile(i, j) == ((char)(Coder.decodeSpecial(move) + '0'))) {
+                    setTile(i, j, ((char)(Coder.decodePlayerId(move) + '0')));
                 }
             }
         }
@@ -333,7 +334,7 @@ public class MapController{
      * @return true if the tile matches the character, false otherwise.
      */
     private boolean helpCompare(char c, int currentPosition){
-        return (getTile(MoveVerifier.decodePosX(currentPosition), MoveVerifier.decodePosY(currentPosition)) == c);
+        return (getTile(Coder.decodePosX(currentPosition), Coder.decodePosY(currentPosition)) == c);
     }  
 
 }

@@ -1,8 +1,10 @@
 package validation;
 
 import control.Constants;
+import control.Coder;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
+
 
 /**
  * Class with different static methods to validate single parts of the game rules.
@@ -29,8 +31,8 @@ public class GameRules {
      * @return true if within bounds; false otherwise.
      */
     public static boolean insideMap(int move, MapController map) {
-        int x = MoveVerifier.decodeX(move);
-        int y = MoveVerifier.decodeY(move);
+        int x = Coder.decodeX(move);
+        int y = Coder.decodeY(move);
         return x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight();
     }
 
@@ -57,7 +59,7 @@ public class GameRules {
      * @return true if player has bombs.
      */
     public static boolean hasBomb(GameAttributes attr, int move) {
-        return attr.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberBombs() > 0;
+        return attr.getPlayer(Coder.decodePlayerId(move)).getNumberBombs() > 0;
     }
 
     /**
@@ -68,7 +70,7 @@ public class GameRules {
      * @return true if override stones are available.
      */
     public static boolean hasOverride(GameAttributes attr, int move) {
-        return attr.getPlayer(MoveVerifier.decodePlayerId(move)).getNumberOverrides() > 0;
+        return attr.getPlayer(Coder.decodePlayerId(move)).getNumberOverrides() > 0;
     }
 
     /**
@@ -79,7 +81,7 @@ public class GameRules {
      * @return true if move is from a valid player in-game.
      */
     public static boolean validPlayer(int move, GameAttributes attr) {
-        int playerId = MoveVerifier.decodePlayerId(move);
+        int playerId = Coder.decodePlayerId(move);
         return playerId >= 1 && playerId <= attr.getNumberPlayers()
                 && attr.getPlayer(playerId).isInGame();
     }
@@ -104,7 +106,7 @@ public class GameRules {
      * @return true if the special field is valid.
      */
     public static boolean checkSpecial(GameAttributes attr, int move, MapController map) {
-        int special = MoveVerifier.decodeSpecial(move);
+        int special = Coder.decodeSpecial(move);
         if (!attr.isPhase1()) return special == 0; //Special must always be 0 in phase 2 (bombing)
 
         char tile = getTileAtMove(map, move);
@@ -123,15 +125,15 @@ public class GameRules {
      * @return true if a capture occurs.
      */
     public static boolean capturing(int move, MapController map) {
-        int playerId =  MoveVerifier.decodePlayerId(move);
+        int playerId =  Coder.decodePlayerId(move);
 
         //coordinates of the targeted tile
-        int startX = MoveVerifier.decodeX(move);
-        int startY = MoveVerifier.decodeY(move);
+        int startX = Coder.decodeX(move);
+        int startY = Coder.decodeY(move);
 
         //check for each direction from the targeted field if we capture
         for (int dir = 0; dir < Constants.NUMBER_OF_DIRECTIONS; dir++) {
-            int current = MoveVerifier.encodePosition(startX, startY, dir); //create Position
+            int current = Coder.encodePosition(startX, startY, dir); //create Position
             int steps = 0; //count the number of stones that would be captured in this direction
 
             while (true) {
@@ -139,8 +141,8 @@ public class GameRules {
                 if (current < 0) break; //outside of the map
 
                 //decode the new position
-                int currentX = MoveVerifier.decodePosX(current);
-                int currentY = MoveVerifier.decodePosY(current);
+                int currentX = Coder.decodePosX(current);
+                int currentY = Coder.decodePosY(current);
 
                 char tile = map.getTile(currentX, currentY);
 
@@ -169,7 +171,7 @@ public class GameRules {
      * @return char of the tile.
      */
     private static char getTileAtMove(MapController map, int move) {
-        return map.getTile(MoveVerifier.decodeX(move), MoveVerifier.decodeY(move));
+        return map.getTile(Coder.decodeX(move), Coder.decodeY(move));
     }
 
     /**

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import algorithms.datastructures.*;
 import gamestate.GameState;
 import validation.MoveVerifier;
+import control.Coder;
 
 /**
  * Represents a node in a game tree for implementing game AI algorithms like minimax.
@@ -148,7 +149,7 @@ public class Node {
             }
             int result;
 
-            int playerIdUpcomingMove = MoveVerifier.decodePlayerId(possibleMoves.getHead().getValue());
+            int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getHead().getValue());
             
             //decide if we perform the next move or one of our opponents:
             if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move
@@ -156,14 +157,14 @@ public class Node {
                 //iterate over all moves in the next layer
                 for (Node child : nextMoves) {
                     //recursive call of depth-first search algorithm (with lower depth) and update result
-                    result = Math.max(result, child.dfs(searchDepth - 1, MoveVerifier.decodePlayerId(this.move)));
+                    result = Math.max(result, child.dfs(searchDepth - 1, Coder.decodePlayerId(this.move)));
                 }
             } else {  //opponents move
                 result = Integer.MAX_VALUE;
                 //iterate over all moves in the deeper layer
                 for (Node child : nextMoves) {
                     //recursive call of depth-first search algorithm (with lower depth) and update result
-                    result = Math.min(result, child.dfs(searchDepth - 1, MoveVerifier.decodePlayerId(this.move)));
+                    result = Math.min(result, child.dfs(searchDepth - 1, Coder.decodePlayerId(this.move)));
                 }
             }
             this.nextMoves = null;
@@ -204,14 +205,14 @@ public class Node {
             }
             int result;
 
-            int playerIdUpcomingMove = MoveVerifier.decodePlayerId(possibleMoves.getHead().getValue());
+            int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getHead().getValue());
             
             //decide if we perform the next move or one of our opponents:
             if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move
                 result = Integer.MIN_VALUE;
                 //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.max(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
+                    result = Math.max(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta));
                     alpha = Math.max(alpha, result);
                     if (beta <= alpha) {
                         break;
@@ -221,7 +222,7 @@ public class Node {
                 result = Integer.MAX_VALUE;
                 //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.min(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta));
+                    result = Math.min(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta));
                     beta = Math.min(beta, result);
                     if (beta <= alpha) {
                         break;

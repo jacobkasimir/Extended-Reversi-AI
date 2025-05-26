@@ -1,6 +1,7 @@
 package gamestate.attributes;
 import gamestate.map.MapController;
 import validation.*;
+import control.Coder;
 
 /**
  * Represents the current attributes of a game state.
@@ -159,9 +160,9 @@ public class GameAttributes {
      * @param map the current map state
      */
     public void updateState(int move, MapController map) {
-        int playerId = MoveVerifier.decodePlayerId(move);
+        int playerId = Coder.decodePlayerId(move);
         Player player = getPlayer(playerId);
-        int special = MoveVerifier.decodeSpecial(move);
+        int special = Coder.decodeSpecial(move);
 
         if (phase1) {
             if (GameRules.occupied(move, map) || GameRules.isExpansion(map, move)) {

@@ -5,11 +5,11 @@ package algorithms.strategies;
 import algorithms.datastructures.IntLinkedList;
 import algorithms.datastructures.ListNode;
 import control.Constants;
+import control.Coder;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 import validation.GameRules;
-import validation.MoveVerifier;
 
 /**
  * Provides heuristic evaluation methods to assess board positions
@@ -54,11 +54,11 @@ public class Heuristics {
                 boolean currentIsCorner = true;
 
                 for (int i = 0; i < 4; i++) {
-                    int next1 = map.getNextTile(MoveVerifier.encodePosition(x, y, i));
-                    int next2 = map.getNextTile(MoveVerifier.encodePosition(x, y, i + 4));
+                    int next1 = map.getNextTile(Coder.encodePosition(x, y, i));
+                    int next2 = map.getNextTile(Coder.encodePosition(x, y, i + 4));
 
-                    if (next1 != -1 && map.getTile(MoveVerifier.decodePosX(next1), MoveVerifier.decodePosY(next1)) != '-') {
-                        if (next2 != -1 && map.getTile(MoveVerifier.decodePosX(next2), MoveVerifier.decodePosY(next2)) != '-') {
+                    if (next1 != -1 && map.getTile(Coder.decodePosX(next1), Coder.decodePosY(next1)) != '-') {
+                        if (next2 != -1 && map.getTile(Coder.decodePosX(next2), Coder.decodePosY(next2)) != '-') {
                             currentIsCorner = false;
                             break;
                         }
@@ -66,7 +66,7 @@ public class Heuristics {
                 }
 
                 if (currentIsCorner) {
-                    result.add(MoveVerifier.encodeCoordinate(x, y));
+                    result.add(Coder.encodeCoordinate(x, y));
                 }
             }
         }
@@ -95,8 +95,8 @@ public class Heuristics {
         ListNode node = corners.getHead();
 
         while (node != null) {
-            int x = MoveVerifier.decodeXCoords(node.getValue());
-            int y = MoveVerifier.decodeYCoords(node.getValue());
+            int x = Coder.decodeXCoords(node.getValue());
+            int y = Coder.decodeYCoords(node.getValue());
             if (map.getTile(x, y) == (char) (playerId + '0')) cornersCaptured++;
             node = node.getNext();
         }
@@ -300,7 +300,7 @@ public class Heuristics {
     /**
      * Returns the ratio of players in the game to the number of players that started the game.
      * @param attributes The game attributes.
-     * @param playerId The player ID.
+     *
      * @return The number of available overwrites.
      */
     private double ratioPlayersInGame(GameAttributes attributes) {
@@ -405,10 +405,10 @@ public class Heuristics {
         ListNode node = ownTiles.getHead();
 
         while (node != null) {
-            int x = MoveVerifier.decodeXCoords(node.getValue());
-            int y = MoveVerifier.decodeYCoords(node.getValue());
+            int x = Coder.decodeXCoords(node.getValue());
+            int y = Coder.decodeYCoords(node.getValue());
 
-            if (corners.contains(MoveVerifier.encodeCoordinate(x, y))) score += att.getNumberPlayers();
+            if (corners.contains(Coder.encodeCoordinate(x, y))) score += att.getNumberPlayers();
             if(bigCorner(map, att, x, y)) score += att.getNumberPlayers();
             for(int i = 0; i < att.getNumberPlayers(); i++) {
                 if(att.getPlayer(i).getNumberOverrides() == 0) score++;
@@ -426,23 +426,23 @@ public class Heuristics {
         for (int i = 0; i < 8; i++) {
             if (counter == 0) return true;
 
-            next = map.getNextTile(MoveVerifier.encodePosition(x, y, i));
+            next = map.getNextTile(Coder.encodePosition(x, y, i));
             if (next == -1) {
                 counter--;
                 continue;
             }
 
-            int nextx = MoveVerifier.decodePosX(next);
-            int nexty = MoveVerifier.decodePosY(next);
+            int nextx = Coder.decodePosX(next);
+            int nexty = Coder.decodePosY(next);
             if (map.getTile(nextx, nexty) == '0' + a.getOurPlayerId()) {
                 while (true) {
-                    next = map.getNextTile(MoveVerifier.encodePosition(nextx, nexty, i));
+                    next = map.getNextTile(Coder.encodePosition(nextx, nexty, i));
                     if (next == -1) {
                         counter--;
                         break;
                     }
-                    nextx = MoveVerifier.decodePosX(next);
-                    nexty = MoveVerifier.decodePosY(next);
+                    nextx = Coder.decodePosX(next);
+                    nexty = Coder.decodePosY(next);
                     if (map.getTile(nextx, nexty) != '0' + a.getOurPlayerId()) {
                         if (i % 2 == 1) counter = 3;
                         break;
