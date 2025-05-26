@@ -135,7 +135,7 @@ public class Node {
 
             //use the heuristics if no moves available
             if (possibleMoves.isEmpty()) {
-                return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
+                return heuristics.evaluate(gameState, lastPlayerId);
             }
 
             ListNode node = possibleMoves.getHead();
@@ -173,7 +173,7 @@ public class Node {
         } else {
 
             //use heursitics if searchDepth is 0
-            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
+            return heuristics.evaluate(gameState, lastPlayerId);
         }
     }
 
@@ -194,7 +194,7 @@ public class Node {
             //calculate all possible moves
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
             if (possibleMoves.isEmpty()) {
-                return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
+                return heuristics.evaluate(gameState, lastPlayerId);
             }
 
             ListNode m = possibleMoves.getHead();
@@ -234,7 +234,7 @@ public class Node {
             return result;
         } else {
             //use heursitics if searchDepth is 0
-            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
+            return heuristics.evaluate(gameState, lastPlayerId);
         }
     }
 }
