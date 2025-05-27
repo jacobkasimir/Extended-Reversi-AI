@@ -407,9 +407,10 @@ public class HeuristicsTest {
 
         GameAttributes attributes = new GameAttributes((byte)8, 1, 1, 1, (byte) 1);
         attributes.setOurPlayerId((byte) 6);
-
-        Heuristics heuristics = new Heuristics(new GameState(map, attributes), 1, 1, 8);
-        double values[] = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 6);
+        
+        GameState state = new GameState(map, attributes);
+        Heuristics heuristics = new Heuristics(state, 1, 1, 8);
+        double values[] = heuristics.mapRelatedHeuristicsPhase2(state, (byte) 6);
 
         assertEquals(1.0, values[2]);
 
