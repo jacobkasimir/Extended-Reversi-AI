@@ -231,7 +231,7 @@ public class Node implements Comparable<Node>{
                 result = Integer.MIN_VALUE;
                 //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.max(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta, info));
+                    result = Math.max(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info));
                     alpha = Math.max(alpha, result);
                     if (beta <= alpha) {
                         break;
@@ -241,7 +241,7 @@ public class Node implements Comparable<Node>{
                 result = Integer.MAX_VALUE;
                 //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.min(result, child.pruning(searchDepth - 1, MoveVerifier.decodePlayerId(this.move), alpha, beta, info));
+                    result = Math.min(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info));
                     beta = Math.min(beta, result);
                     if (beta <= alpha) {
                         break;
