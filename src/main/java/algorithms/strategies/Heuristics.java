@@ -21,6 +21,7 @@ public class Heuristics {
     private final int initialBombs; //initial number of bombs
     private final int initialOverrides; //initial number of override stones
     private final int initalNumberPlayers; //initial numbers of players
+    private int numberBonusTiles;
 
     /**
      * Constructs a new Heuristics object and detects the corner positions on the map.
@@ -46,9 +47,12 @@ public class Heuristics {
      */
     public IntLinkedList findCorners(MapController map) {
         IntLinkedList result = new IntLinkedList();
+        int bonusTileCounter = 0;
 
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
+                if(map.getTile(x, y) == 'b') bonusTileCounter++;
+
                 if (map.getTile(x, y) == '-') continue;
 
                 boolean currentIsCorner = true;
@@ -71,6 +75,7 @@ public class Heuristics {
             }
         }
 
+        this.numberBonusTiles = bonusTileCounter;
         return result;
     }
 
@@ -114,7 +119,7 @@ public class Heuristics {
      * @return The number of available overwrites.
      */
     public double ratioOverrides(GameAttributes state, int playerId) {
-        return Coder.decodeplayerOverrides(state.getPlayer(playerId)) / ((double) initialOverrides);
+        return Coder.decodeplayerOverrides(state.getPlayer(playerId)) / Math.max((double) initialOverrides + numberBonusTiles, 1.0);
     }
 
     /**
@@ -124,7 +129,7 @@ public class Heuristics {
      * @return The number of available bombs.
      */
     public double ratioBombs(GameAttributes state, int playerId) {
-        return Coder.decodeplayerBombs(state.getPlayer(playerId)) / ((double) initialBombs);
+        return Coder.decodeplayerBombs(state.getPlayer(playerId)) / Math.max((double) numberBonusTiles + initialBombs, 1.0);
     }
 
     
@@ -307,22 +312,21 @@ public class Heuristics {
     public int evaluate(GameState state, int playerId) {
         if(state.attributes().isPhase1()){
             //scores of heuristics
-            double[] res = mapRelatedHeuristicsPhase2(state, playerId);
+            double[] res = mapRelatedHeuristicsPhase1(state.mapController(), playerId);
             double ownToOverall = res[0];
             double ownToOpponents = res[1];
             double walls = res[2];
 
             //weights of heuristics (we can modify them)
-            double weightCorners = 600;
-            double weightOwnToOverall = 700;
-            double weightOwnToOpponents = 700;
-            double weightWalls = 400;
+            double weightCorners = 700;
+            double weightOwnToOverall = 800;
+            double weightOwnToOpponents = 800;
+            double weightWalls = 500;
+            double weightBombs = 400;
+            double weightOverrides = 200;
 
             double bombradiusRatio = (state.mapController().getBombRadius() * 2 +1)^2 / (state.mapController().getWidth() * state.mapController().getHeight());
             
-            double weightBombs = 200;
-            double weightOverrides = 200;
-
             double score = 0;
 
             score += weightCorners * ratioOfCornersCaptured(state.mapController(), playerId);
@@ -335,7 +339,7 @@ public class Heuristics {
             return (int) Math.round(score * 1000); // 0-1000 points
         }
         else{
-            double[] res = mapRelatedHeuristicsPhase1(state.mapController(), playerId);
+            double[] res = mapRelatedHeuristicsPhase2(state, playerId);
             double ownToOverall = res[0];
             double ownToOpponents = res[1];
             double distanceToStrongestOpponent1 = res[2];
@@ -343,10 +347,10 @@ public class Heuristics {
             double ratioPlayersInGame = res[4];
 
             //weights of heuristics (we can modify them)
-            double weightOwnToOverall = 500;
-            double weightOwnToOpponents = 500;
-            double weightdistStrongest1 = 700;
-            double weightdistStrongest2 = 700;
+            double weightOwnToOverall = 700;
+            double weightOwnToOpponents = 700;
+            double weightdistStrongest1 = 500;
+            double weightdistStrongest2 = 500;
             double weightPlayersInGame = 300;
 
             double score = 0;
