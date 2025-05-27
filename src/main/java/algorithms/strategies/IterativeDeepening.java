@@ -15,6 +15,10 @@ public class IterativeDeepening {
      */
     public static int findMove(int timeLimit, Heuristics heuristics, GameState state){
 
+
+        System.out.println("Erhaltenens timelimit: " + timeLimit + "ms."); //#TODO remove before uploading to matchpoint
+
+
         long startTime = System.nanoTime();
 
         System.gc();
@@ -23,79 +27,60 @@ public class IterativeDeepening {
         int resultMove = 0; 
 
 
-        //trying to estimate the branching factor by taking the average of all players
-        int total = 0;
-        int playersInGame = 0;
-        for(int p = 1; p <= state.attributes().getNumberPlayers(); p++){
-            if (state.attributes().getPlayer(p).isInGame()) {
-                playersInGame++;
-                total += MoveVerifier.calculateMoves(state, p).getSize();
-            }
-        }
-
-        //int estimatedBranchingFactor = total / playersInGame;
-
         while (true) {
 
-            System.out.println("Aktuelle Tiefe: " + currentDepth);
+
+            //System.out.println("Aktuelle Tiefe: " + currentDepth); //#TODO remove before uploading to matchpoint
+
+            System.gc();
+
 
             long startTimeAlphaBeta = System.nanoTime(); //start Timer for one iteration
+
             SearchInfo info = new SearchInfo(currentDepth);
             AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, timeLimit, currentDepth, info);
             resultMove = alphaBeta.chooseMove();
             currentDepth++;
+
+
             long endTimeAlphaBeta = System.nanoTime(); //end timer for this iteration
 
             long duration = endTimeAlphaBeta - startTimeAlphaBeta;
 
-            // System.out.println("Duration " + duration);
 
             duration /= 1000000;
 
-            int estimatedBranchingFactor = info.getAverageBranchingAtDepth(0);
+            int estimatedBranchingFactor = info.getMaxBranchingFactor(); //current estimation is the maximum in the entire tree
 
-            estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; //safety
+            estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; //add a safety factor
 
-            if(info.isBombPhaseReached()) estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth());
+            if(info.isBombPhaseReached()){
+                estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth());
+            } 
 
-            System.out.println("Estimated Branching Factor: " + estimatedBranchingFactor);
-
-            //old version
-            // int numberOfMovesDepthOne = MoveVerifier.calculateMoves(state, state.attributes().getOurPlayerId()).getSize();
-            
-            // System.out.println("NumberOfMoves: " + numberOfMovesDepthOne);
-
+           
             long timeSinceStart = System.nanoTime() - startTime;
 
             long timeLeft = timeLimit - timeSinceStart/1000000;
 
-            System.out.println("time left: " + timeLeft);
+            //System.out.println("time left: " + timeLeft); //#TODO Remove before uploading to Matchpoint
 
             
-
-            //vorher: ...*numberOfMovesDepthOne
-            if (duration * estimatedBranchingFactor >= timeLeft) {
+            if (duration * estimatedBranchingFactor + Constants.TIMELIMIT_SAFETY_OFFSET >= timeLeft) {
                 break;
             }
 
         }
 
+        long timeSinceStart = System.nanoTime() - startTime;
+
+        long timeLeft = timeLimit - timeSinceStart/1000000;
+
+        System.out.println("Vermutlich noch " + timeLeft + "ms übrig.");
+        System.out.println("Nächstes Mal vermutliches timelimit: " + (timeLeft + 2000) + "ms.");
+
         return resultMove;
 
     }
-
-    //empty tiles as a lower bound to estimate when bombing phase starts
-    //not usable -> acual no lower bound -> edge cases, e.g. pikachu
-    private int emptyTiles(){
-        return 0; //TODO
-    }
-
-    private boolean bombingInNextMoves(int depth){
-
-        
-
-        return false; //TODO
-    }
-
 
 }
