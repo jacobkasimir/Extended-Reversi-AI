@@ -313,12 +313,15 @@ public class Heuristics {
             double walls = res[2];
 
             //weights of heuristics (we can modify them)
-            double weightCorners = 0.5;
-            double weightOwnToOverall = 0.6;
-            double weightOwnToOpponents = 0.2;
-            double weightWalls = 0.2;
-            double weightBombs = 0.2;
-            double weightOverrides = 0.2;
+            double weightCorners = 600;
+            double weightOwnToOverall = 700;
+            double weightOwnToOpponents = 700;
+            double weightWalls = 400;
+
+            double bombradiusRatio = (state.mapController().getBombRadius() * 2 +1)^2 / (state.mapController().getWidth() * state.mapController().getHeight());
+            
+            double weightBombs = 200;
+            double weightOverrides = 200;
 
             double score = 0;
 
@@ -340,11 +343,11 @@ public class Heuristics {
             double ratioPlayersInGame = res[4];
 
             //weights of heuristics (we can modify them)
-            double weightOwnToOverall = 0.6;
-            double weightOwnToOpponents = 0.2;
-            double weightdistStrongest1 = 0.2;
-            double weightdistStrongest2 = 0.2;
-            double weightPlayersInGame = 0.2;
+            double weightOwnToOverall = 500;
+            double weightOwnToOpponents = 500;
+            double weightdistStrongest1 = 700;
+            double weightdistStrongest2 = 700;
+            double weightPlayersInGame = 300;
 
             double score = 0;
 
