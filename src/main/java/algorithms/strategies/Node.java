@@ -1,5 +1,6 @@
 package algorithms.strategies;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import algorithms.datastructures.*;
 import gamestate.GameState;
@@ -9,7 +10,7 @@ import validation.MoveVerifier;
  * Represents a node in a game tree for implementing game AI algorithms like minimax.
  * Each node contains game state information and methods for tree traversal.
  */
-public class Node {
+public class Node implements Comparable<Node>{
     /**
      * The heuristic value of this node
      */
@@ -35,6 +36,18 @@ public class Node {
      */
     private Node parent;
 
+    private Integer score;
+
+    public int getScore() {
+        return score;
+    }
+
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+
     /**
      * Creates a new Node with the specified parameters.
      *
@@ -49,6 +62,7 @@ public class Node {
         this.gameState = gameState;
         this.heuristics = heuristics;
         this.nextMoves = new ArrayList<Node>();
+        this.score = heuristics.evaluate(gameState, move);
     }
 
 
@@ -205,6 +219,7 @@ public class Node {
                 this.nextMoves.add(new Node(m.getValue(), this, gameState.clone(), this.heuristics));
                 m = m.getNext();
             }
+            Collections.sort(nextMoves);
             info.addNewBranchingFactor(possibleMoves.getSize(), searchDepth);
             int result;
 
@@ -240,4 +255,9 @@ public class Node {
             return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
         }
     }
+
+        @Override
+        public int compareTo(Node node) {
+        return this.score.compareTo(node.getScore());
+        }
 }

@@ -1,5 +1,8 @@
 package algorithms.strategies;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import algorithms.datastructures.IntLinkedList;
 import algorithms.datastructures.ListNode;
@@ -64,6 +67,8 @@ public class AlphaBeta {
             children.add(new Node(m.getValue(), root, newGameState, heuristics));
             m = m.getNext();
         }
+
+        Collections.sort(children);
         // add all nodes (possible states) to the root node
         root.setNextMoves(children);
         info.addNewBranchingFactor(children.size(), searchdepth);
