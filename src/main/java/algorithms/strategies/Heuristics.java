@@ -273,7 +273,7 @@ public class Heuristics {
         }
         else{
             res[2] = 1;
-            res[3] = strongestOpponent / Math.max(ownTiles,1);
+            res[3] = 1.0 - strongestOpponent / Math.max(ownTiles,1);
             res[4] = ratioPlayersInGame(state.attributes());
         }
         

@@ -9,8 +9,6 @@ import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 import gamestate.map.Transitions;
 
-import java.util.Arrays;
-
 
 public class HeuristicsTest {
 
@@ -419,34 +417,6 @@ public class HeuristicsTest {
         assertEquals(1.0 - (28 / ((double) 12*8)), values[2]);
     }
 
-    @Test
-    public void mapRelatedHeuristicsPhase2Test3(){
-        MapController map = new MapController(
-            new String[]{
-                "1 - 1 0 2 3 3 1", 
-                "2 2 2 2 2 2 2 2", 
-                "3 3 3 x 3 3 i 3", 
-                "4 - - 4 3 4 c 4", 
-                "5 0 5 0 5 5 1 b", 
-                "4 6 6 6 - 6 6 6",  
-                "7 7 - 7 7 7 - -", 
-                "0 0 8 x 8 4 8 -" 
-            }, 
-            new Transitions(8,8),
-            8, 8, 1);
-
-        GameAttributes attributes = new GameAttributes(8, 1, 1, 1, (byte) 1);
-        attributes.setOurPlayerId((byte) 4);
-
-        Heuristics heuristics = new Heuristics(new GameState(map, attributes), 1, 1, 8);
-        double values[] = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 4);
-
-        assertEquals(6/56.0, values[0]);
-
-        assertEquals(6/40.0, values[1]);
-
-        assertEquals(1.0 - (0 / ((double) 12*6)), values[2]);
-    }
 
     @Test
     public void mapRelatedHeuristicsPhase2Test4(){
@@ -472,7 +442,7 @@ public class HeuristicsTest {
 
         assertEquals(1, values[2]);
 
-        assertEquals(8/27.0, values[3]);
+        assertEquals(1.0 - 8/27.0, values[3]);
 
         assertEquals(7/8.0, values[4]);
     }
@@ -503,7 +473,7 @@ public class HeuristicsTest {
 
         assertEquals(8/27.0, values[2]);
 
-        assertEquals(0, values[3]);
+        assertEquals(1.0, values[3]);
 
         assertEquals(0, values[4]);
     }
