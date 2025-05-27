@@ -1,12 +1,17 @@
+package algorithms.strategies;
+
 import java.util.ArrayList;
+import gamestate.GameState;
+import algorithms.datastructures.*;
+import validation.MoveVerifier;
 /**
  * Implementation of the MiniMax algorithm.
  * This class enables the calculation of optimal game moves based on a given game state
  * using the MiniMax algorithm with a specified search depth.
  *
- * <p>The MiniMax algorithm works by building a tree of possible game states and evaluating them
- * using a heuristic function. It then selects the move that maximizes the player's advantage
- * while assuming the opponent will make optimal moves.</p>
+ * <p>The MiniMax algorithm works by building a tree of possible game states.
+ * It then selects the move that maximizes the player's advantage
+ * while assuming the opponents will make optimal moves.</p>
  */
 public class MiniMax {
     /** The root node of the game tree */
@@ -39,19 +44,26 @@ public class MiniMax {
         this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId());
         this.current_GameState = gameState;
         this.heuristics = heuristics;
+        //create the root node for the branched tree of possible moves (or game states)
         this.root = new Node(0, null, gameState.clone(), heuristics);
         this.searchdepth = searchdepth;
         this.searchTime = searchTime;
 
+        //should store all children (possible game states) of the root node
         ArrayList<Node> children = new ArrayList<>();
 
+        //iterate over all possible moves
         ListNode m = moves.getHead();
         while (m != null){
+            //clone game state
             GameState newGameState = gameState.clone();
-            //newGameState.updateGameState(m);
+
+            //add node for the game state when performing move m
             children.add(new Node(m.getValue(), root, newGameState, heuristics));
             m = m.getNext();
         }
+
+        //add all nodes to the root node
         root.setNextMoves(children);
 
     }
@@ -59,10 +71,18 @@ public class MiniMax {
 
 
     public int chooseMove(){
+
+        //initialize maxValue and move (result)
         double maxValue = Integer.MIN_VALUE;
         int result = 0;
+
+        //iterate over all children of the root
         for (Node child : root.getNextMoves()) {
+
+            //calculate score of current node, by using the DFS-algorithm in class "Node"
             double childScore = child.dfs(searchdepth-1, current_GameState.attributes().getOurPlayerId());
+
+            //update the move and maxValue if the score is higher than the current maxValue
             if(maxValue < childScore){
                 result = child.getMove();
                 maxValue = childScore;

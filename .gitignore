@@ -1,5 +1,6 @@
 # Gradle
 .gradle/
+out/
 build/
 bin/
 !bin/*.jar

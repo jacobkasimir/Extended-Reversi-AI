@@ -1,31 +1,42 @@
+package algorithms.strategies;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import algorithms.datastructures.IntLinkedList;
+import algorithms.datastructures.ListNode;
+import gamestate.GameState;
+import validation.MoveVerifier;
 
 /**
  * Implementation of the Alpha-Beta pruning algorithm.
  * This class performs minimax search with alpha-beta pruning to determine 
  * the optimal move in a game state.
- *
- * <p>The algorithm evaluates possible moves up to a specified depth, using
- * heuristic evaluation to estimate positions beyond the search depth.</p>
+ * <p>
+ * The algorithm evaluates possible moves up to a specified depth, using
+ * heuristic evaluation to estimate positions beyond the search depth.
  */
 public class AlphaBeta {
     /** Root node of the game tree */
-    private Node root;
+    private final Node root;
     
     /** List of possible moves from the current position */
     private IntLinkedList moves;
     
     /** Current state of the game */
-    private GameState current_GameState;
+    private final GameState current_GameState;
     
     /** Heuristic evaluator used to assess game positions */
-    private Heuristics heuristics;
+    private final Heuristics heuristics;
     
     /** Maximum depth of search in the game tree */
-    private int searchdepth;
+    private final int searchdepth;
     
     /** Maximum time allowed for search in milliseconds */
-    private int searchTime;
+    private final int searchTime;
+
+    private final SearchInfo info;
 
     /**
      * Constructs a new Alpha-Beta search instance.
@@ -35,23 +46,32 @@ public class AlphaBeta {
      * @param searchTime Maximum time allowed for search in milliseconds
      * @param searchdepth Maximum depth to search in the game tree
      */
-    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchTime, int searchdepth){
+    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchTime, int searchdepth, SearchInfo searchInfo){
         this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId());
         this.current_GameState = gameState;
         this.heuristics = heuristics;
         this.root = new Node(0, null, gameState.clone(), heuristics);
         this.searchdepth = searchdepth;
         this.searchTime = searchTime;
+        this.info = searchInfo;
 
         ArrayList<Node> children = new ArrayList<>();
 
         ListNode m = moves.getHead();
+        //for each of our moves, do:
         while (m != null){
+            //clone game state
             GameState newGameState = gameState.clone();
+
+            //create nodes for each possible move, with the cloned game state
             children.add(new Node(m.getValue(), root, newGameState, heuristics));
             m = m.getNext();
         }
+
+        Collections.sort(children);
+        // add all nodes (possible states) to the root node
         root.setNextMoves(children);
+        info.addNewBranchingFactor(children.size(), searchdepth);
     }
 
     
@@ -70,14 +90,19 @@ public class AlphaBeta {
         int result = 0;
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
+        // Iterate over all possible child nodes (moves) of the root node
         for (Node child : root.getNextMoves()) {
-            int childScore = child.pruning(searchdepth-1, current_GameState.attributes().getOurPlayerId(), alpha, beta);
-            if(maxValue < childScore){
+            // Perform alpha-beta pruning on this node and retrieve its score
+            int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha, beta, info);
+
+            // Update the result if the score is higher than the current maxValue
+            if(maxValue < childScore) {
                 result = child.getMove();
                 maxValue = childScore;
             }
+            // Update alpha and exit early if alpha is greater than or equal to beta
             alpha = Math.max(alpha, maxValue);
-            if(beta <= alpha){
+            if(beta <= alpha) {
                 break;
             }
         }

@@ -1,17 +1,22 @@
+package gamestate.attributes;
+import gamestate.map.MapController;
+import validation.*;
+import control.Coder;
+
 /**
- * Represents the current state of the game.
+ * Represents the current attributes of a game state.
  * Tracks the number of players, their individual states, the current game phase,
  * and the ID of the player using this client.
  */
 public class GameAttributes {
 
-    private final Player[] players;
+    private final int[] players;
     private int numberPlayers;
     private boolean phase1; // true: Phase 1; false: Phase 2
     private int ourPlayerId;
 
     /**
-     * Constructs a new GameAttributes instance with the specified initial game setup.
+     * Constructs a new GameAttributes instance with the specified parameters.
      *
      * @param numberPlayers the number of players participating in the game
      * @param overwrites the initial number of Overwrites per player
@@ -19,13 +24,13 @@ public class GameAttributes {
      * @param bombRadius the bomb radius (currently unused)
      * @param gamePhase 1 for phase 1, 2 for phase 2
      */
-    public GameAttributes(int numberPlayers, int overwrites, int bombs, int bombRadius, byte gamePhase) {
+    public GameAttributes(int numberPlayers, int overwrites, int bombs, int bombRadius, int gamePhase) {
         this.numberPlayers = numberPlayers;
         this.setGamePhase(gamePhase);
-        this.players = new Player[numberPlayers];
+        this.players = new int[numberPlayers];
 
         for (int i = 1; i <= numberPlayers; i++) {
-            Player p = new Player(bombs, overwrites, i, true);
+            int p = Coder.encodePlayer(bombs, overwrites, i, 1);
             this.setPlayer(p, i);
         }
     }
@@ -39,10 +44,10 @@ public class GameAttributes {
         this.numberPlayers = obj.getNumberPlayers();
         this.phase1 = obj.isPhase1();
         this.ourPlayerId = obj.getOurPlayerId();
-        this.players = new Player[obj.getNumberPlayers()];
+        this.players = new int[obj.getNumberPlayers()];
 
         for (int i = 0; i < numberPlayers; i++) {
-            players[i] = new Player(obj.getPlayer(i + 1));
+            players[i] = (obj.getPlayer(i + 1));
         }
     }
 
@@ -52,8 +57,8 @@ public class GameAttributes {
      * @param p the Player object to assign
      * @param number the 1-based player number
      */
-    private void setPlayer(Player p, int number) {
-        players[number - 1] = p;
+    public void setPlayer(int p, int number) {
+        this.players[number - 1] = p;
     }
 
     /**
@@ -66,7 +71,7 @@ public class GameAttributes {
     }
 
     /**
-     * Sets the number of players (adjusting internal tracking, but not player data).
+     * Sets the number of players.
      *
      * @param numberPlayers the number of players to set
      */
@@ -75,7 +80,7 @@ public class GameAttributes {
     }
 
     /**
-     * Enables or disables phase 1.
+     * Set boolean value for phase 1.
      *
      * @param phase1 true to enable phase 1, false for phase 2
      */
@@ -93,26 +98,26 @@ public class GameAttributes {
     }
 
     /**
-     * Gets the Player instance for the given 1-based player number.
+     * Gets the Player for the playerId (from 1...).
      *
-     * @param number the 1-based player number
+     * @param id the 1-based playerId
      * @return the Player object
      */
-    public Player getPlayer(int number) {
-        return players[number - 1];
+    public int getPlayer(int id) {
+        return players[id - 1];
     }
 
     /**
-     * Gets the ID of the current player using this client.
+     * Gets the ID of the current player which represents our Group.
      *
-     * @return the player ID
+     * @return our player ID
      */
     public int getOurPlayerId() {
         return ourPlayerId;
     }
 
     /**
-     * Sets the ID of the player using this client.
+     * Sets the ID of the current player which represent our Group.
      *
      * @param id the player ID
      */
@@ -126,7 +131,11 @@ public class GameAttributes {
      * @param id the player ID to disqualify
      */
     public void playerDisqualified(int id) {
-        getPlayer(id).setInGame(false);
+        int player = getPlayer(id);
+        if(Coder.decodeplayerInGame(player) == 1){
+            player--;
+            setPlayer(player, id);
+        }
     }
 
     /**
@@ -134,7 +143,7 @@ public class GameAttributes {
      *
      * @param phase 1 for phase 1, 2 for phase 2
      */
-    public void setGamePhase(byte phase) {
+    public void setGamePhase(int phase) {
         this.phase1 = (phase == 1);
     }
 
@@ -143,32 +152,41 @@ public class GameAttributes {
      *
      * @return 1 for phase 1, 2 for phase 2
      */
-    public byte getGamePhase() {
-        return (byte) (phase1 ? 1 : 2);
+    public int getGamePhase() {
+        return (phase1 ? 1 : 2);
     }
 
     /**
-     * Updates the game state according to the given move.
+     * Updates the game attributes according to the given move.
      * Handles Overwrites and bomb gains/losses according to current phase and rules.
      *
      * @param move the encoded move
      * @param map the current map state
      */
     public void updateState(int move, MapController map) {
-        int playerId = MoveVerifier.decodePlayerId(move);
-        Player player = getPlayer(playerId);
-        int special = MoveVerifier.decodeSpecial(move);
+        int playerId = Coder.decodePlayerId(move);
+        int player = getPlayer(playerId);
+        int special = Coder.decodeSpecial(move);
+        int inGame = Coder.decodeplayerInGame(player);
+        int id = Coder.decodePlayerPlayerId(player);
+        int overrides = Coder.decodeplayerOverrides(player);
+        int bombs = Coder.decodeplayerBombs(player);
+
 
         if (phase1) {
             if (GameRules.occupied(move, map) || GameRules.isExpansion(map, move)) {
-                player.setNumberOverwrites(player.getNumberOverwrites() - 1);
+                //Placing a stone on an occupied field or an expnsion tile requires an override
+                setPlayer(Coder.encodePlayer(bombs, overrides - 1, id, inGame), playerId);
             } else if (special == 20) {
-                player.setNumberBombs(player.getNumberBombs() + 1);
+                //getting an extra bomb through a bonus field
+                setPlayer(Coder.encodePlayer(bombs+1, overrides, id, inGame), playerId);
             } else if (special == 21) {
-                player.setNumberOverwrites(player.getNumberOverwrites() + 1);
+                //getting an extra override stone through a bonus field
+                setPlayer(Coder.encodePlayer(bombs, overrides+1, id, inGame), playerId);
             }
         } else {
-            player.setNumberBombs(player.getNumberBombs() - 1);
+            //Moves in phase 2 are always bomb throws -> bombCount must be decremented by 1
+            setPlayer(Coder.encodePlayer(bombs- 1, overrides, id, inGame), playerId);
         }
     }
 }

@@ -1,8 +1,18 @@
-import java.util.Random;
+package control;
+
+import algorithms.strategies.AlphaBeta;
+import algorithms.strategies.Heuristics;
+import algorithms.strategies.IterativeDeepening;
+import algorithms.strategies.MiniMax;
+import algorithms.strategies.SearchInfo;
+import gamestate.GameState;
+import gamestate.attributes.GameAttributes;
+import gamestate.map.MapController;
+import gamestate.map.Transitions;
 
 /**
  * GameClient manages the overall game logic on the client side, including the game state,
- * player attributes, map controller, transitions, and move calculations.
+ * with player attributes, map controller, transitions, and move calculations.
  */
 public class GameClient {
     private GameState current_gameState;
@@ -49,7 +59,7 @@ public class GameClient {
     }
 
     /**
-     * Initializes the game state based on the given map input lines.
+     * Initializes the game state and attributes/objects held by the GameClient based on the given map input lines.
      * Extracts player, bomb, map, and transition information.
      *
      * @param lines the input map file content as an array of lines
@@ -69,7 +79,7 @@ public class GameClient {
         String[] mapLines = extractLines(lines, 4, 4 + height);
         String[] transitionLines = extractLines(lines, 4 + height, lines.length);
 
-        byte gamePhase = 1;
+        int gamePhase = 1;
 
         initTransitions(transitionLines, width, height);
 
@@ -78,7 +88,7 @@ public class GameClient {
                 new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase)
         );
 
-        this.heuristics = new Heuristics(getCurrentMapController());
+        this.heuristics = new Heuristics(this.getCurrentGameState(), bombCount, overrideCount, playerCount);
 
         this.compareOn = compare;
         
@@ -102,13 +112,13 @@ public class GameClient {
             String[] parts = line.split(" ");
             int fromX = Integer.parseInt(parts[0]);
             int fromY = Integer.parseInt(parts[1]);
-            int fromZ = Integer.parseInt(parts[2]);
+            int fromDirec = Integer.parseInt(parts[2]);
             int toX = Integer.parseInt(parts[4]);
             int toY = Integer.parseInt(parts[5]);
-            int toZ = Integer.parseInt(parts[6]);
+            int toDirec = Integer.parseInt(parts[6]);
 
-            transitions.setTransition(fromX, fromY, fromZ, toX, toY, toZ);
-            transitions.setTransition(toX, toY, toZ, fromX, fromY, fromZ); // Bidirectional
+            transitions.setTransition(fromX, fromY, fromDirec, toX, toY, toDirec);
+            transitions.setTransition(toX, toY, toDirec, fromX, fromY, fromDirec); //Bidirectional
         }
     }
 
@@ -122,9 +132,9 @@ public class GameClient {
     }
 
     /**
-     * Sets the ID of the current player.
+     * Sets our player ID given by the server.
      *
-     * @param id the player's ID
+     * @param id our player ID
      */
     public void setOurPlayerId(int id) {
         current_gameState.attributes().setOurPlayerId(id);
@@ -153,7 +163,7 @@ public class GameClient {
     }
 
     /**
-     * Computes and returns the best move using the Alpha-Beta pruning algorithm.
+     * Computes and returns the best move with Alpha Beta Pruning (compareOn false) or with MiniMax AND Alpha Beta Pruning and compares their result (compareOn true).
      *
      * @return the encoded move
      */
@@ -163,7 +173,9 @@ public class GameClient {
             MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
             int moveMiniMax = miniMax.chooseMove();
 
-            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
+            SearchInfo info = new SearchInfo(depthLimit);
+
+            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit, info);
             int moveAlphaBeta = alphaBeta.chooseMove();
 
             if (moveMiniMax != moveAlphaBeta) {
@@ -171,30 +183,37 @@ public class GameClient {
             }
             return moveAlphaBeta;
 
-        }else{
+        } else {
+            if(timeLimit == 0){
+                SearchInfo info = new SearchInfo(depthLimit);
+                AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit, info);
+                int moveAlphaBeta = alphaBeta.chooseMove();
+                return moveAlphaBeta;
+            }else{
+                return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState);
+            }
 
-            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit);
-            int moveAlphaBeta = alphaBeta.chooseMove();
-            return moveAlphaBeta;
 
         }
     }
 
     /**
-     * Generates a completely random move (mainly for testing or fallback use).
-     *
-     * @return a random valid move
+     * Switches the game to phase 2 when message is received by the server
      */
-    private int generateRandomMove() {
-        Random rand = new Random();
-        int x = rand.nextInt(current_gameState.mapController().getWidth());
-        int y = rand.nextInt(current_gameState.mapController().getHeight());
-        return MoveVerifier.encodeMove(x, y, 0, current_gameState.attributes().getOurPlayerId());
+    public void endPhase() {
+        current_gameState.attributes().setGamePhase(2);
+    }
+
+    /**
+     * Is called when server sends the game ending message
+     */
+    public void endGame() {
+        // Possible additions for game evaluation?
     }
 
     /**
      * Extracts a subarray of lines between the given start (inclusive) and end (exclusive).
-     * Useful for splitting map vs. transition sections.
+     * Helping method for splitting map string.
      *
      * @param lines full array
      * @param start inclusive start index
@@ -207,17 +226,4 @@ public class GameClient {
         return result;
     }
 
-    /**
-     * Switches the game to phase 2 (typically after setup or turn 1).
-     */
-    public void endPhase() {
-        current_gameState.attributes().setGamePhase((byte) 2);
-    }
-
-    /**
-     * Ends the game (future implementation).
-     */
-    public void endGame() {
-        // TODO: Implement end-game logic
-    }
 }

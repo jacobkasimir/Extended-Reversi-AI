@@ -3,6 +3,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import control.GameClient;
+import control.Coder;
+import gamestate.GameState;
+import gamestate.attributes.GameAttributes;
+import gamestate.map.MapController;
+import validation.MoveVerifier;
+
 public class GameAttributesTests {
 
     private MapController map;
@@ -32,64 +39,60 @@ public class GameAttributesTests {
 
     @Test
     public void decrementOverwriteStones(){
+        GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 1, 1));
+        int move = Coder.encodeMove(5, 6, 0, 1);
 
-        GameAttributes state = new GameAttributes(2, 3, 1, 1, (byte) 1);
-        int move = MoveVerifier.encodeMove(5, 6, 0, 1);
+        gameState.attributes().updateState(move, map);
 
-        state.updateState(move, map);
-
-        if (!MoveVerifier.isValid(move, map, state)) {
+        if (!MoveVerifier.isValid(move, gameState)) {
             throw new Error("Test not valid.");
         }
 
-        assertEquals(3-1, state.getPlayer(1).getNumberOverwrites());
+        assertEquals(3-1, Coder.decodeplayerOverrides(gameState.attributes().getPlayer(1)));
     }
 
     @Test
     public void decrementBombs(){
+        GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2, 2));
+        int move = Coder.encodeMove(4, 4, 0, 2);
 
-        GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 2);
-        int move = MoveVerifier.encodeMove(4, 4, 0, 2);
+        assertFalse(gameState.attributes().isPhase1());
 
-        assertFalse(state.isPhase1());
-
-        if (!MoveVerifier.isValid(move, map, state)) {
+        if (!MoveVerifier.isValid(move, gameState)) {
             throw new Error("Test not valid.");
         }
 
-        state.updateState(move, map);
+        gameState.attributes().updateState(move, map);
 
-        assertEquals(1-1, state.getPlayer(2).getNumberBombs());
+        assertEquals(1-1, Coder.decodeplayerBombs(gameState.attributes().getPlayer(2)));
     }
 
     @Test
     public void bonusIncrementBombs(){
+        GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2, 1));
+        int move = Coder.encodeMove(2, 5, 20, 1);
 
-        GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 1);
-        int move = MoveVerifier.encodeMove(2, 5, 20, 1);
-
-        if (!MoveVerifier.isValid(move, map, state)) {
+        if (!MoveVerifier.isValid(move, gameState)) {
             throw new Error("Test not valid.");
         }
 
-        state.updateState(move, map);
+        gameState.attributes().updateState(move, map);
 
-        assertEquals(1+1, state.getPlayer(1).getNumberBombs());
+        assertEquals(1+1, Coder.decodeplayerBombs(gameState.attributes().getPlayer(1)));
     }
 
     @Test
     public void bonusIncrementOverwrites(){
+        GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2,  1));
+        int move = Coder.encodeMove(2, 5, 21, 1);
 
-        GameAttributes state = new GameAttributes(2, 3, 1, 2, (byte) 1);
-        int move = MoveVerifier.encodeMove(2, 5, 21, 1);
-
-        if (!MoveVerifier.isValid(move, map, state)) {
+        if (!MoveVerifier.isValid(move, gameState)) {
             throw new Error("Test not valid.");
         }
 
-        state.updateState(move, map);
+        gameState.attributes().updateState(move, map);
 
-        assertEquals(3+1, state.getPlayer(1).getNumberOverwrites());
+        assertEquals(3+1, Coder.decodeplayerOverrides(gameState.attributes().getPlayer(1)));
     }
 
 }

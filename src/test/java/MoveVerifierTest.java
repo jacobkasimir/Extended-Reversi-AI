@@ -3,6 +3,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import control.GameClient;
+import control.Coder;
+import gamestate.GameState;
+import gamestate.attributes.GameAttributes;
+import gamestate.map.MapController;
+import validation.MoveVerifier;
+
 public class MoveVerifierTest {
 
     private MapController map;
@@ -11,6 +18,10 @@ public class MoveVerifierTest {
     private GameAttributes gameAttributes1NoOverwrites;
     private GameAttributes gameAttributes2;
     private GameAttributes gameAttributes2NoBombs;
+    private GameState gameState1;
+    private GameState gameState2;
+    private GameState gameStateNoBombs;
+    private GameState gameStateNoOverrides;
 
     @BeforeEach
     public void setUpGame(){
@@ -33,37 +44,41 @@ public class MoveVerifierTest {
             8, 
             0);
 
-        gameAttributes1 = new GameAttributes(2, 1, 1, 3, (byte) 1);
-        gameAttributes1NoOverwrites = new GameAttributes(2, 0, 1, 3, (byte) 1);
-        gameAttributes2 = new GameAttributes(2, 1, 1, 3, (byte) 2);
-        gameAttributes2NoBombs = new GameAttributes(2, 0, 0, 3, (byte) 2);
+        gameAttributes1 = new GameAttributes(2, 1, 1, 3, 1);
+        gameAttributes1NoOverwrites = new GameAttributes(2, 0, 1, 3, 1);
+        gameAttributes2 = new GameAttributes(2, 1, 1, 3, 2);
+        gameAttributes2NoBombs = new GameAttributes(2, 0, 0, 3, 2);
+        gameState1 = new GameState(map,gameAttributes1);
+        gameState2 = new GameState(map,gameAttributes2);
+        gameStateNoBombs = new GameState(map, gameAttributes2NoBombs);
+        gameStateNoOverrides = new GameState(map, gameAttributes1NoOverwrites);
     }
 
     @Test
     public void stoneOnOccupiedField(){
-        int move = MoveVerifier.encodeMove(3, 3, 0, 1);
+        int move = Coder.encodeMove(3, 3, 0, 1);
 
-        boolean result = MoveVerifier.isValid(move, map, gameAttributes1);
+        boolean result = MoveVerifier.isValid(move, gameState1);
 
         assertFalse(result);
     }
 
     @Test
     public void stoneHole(){
-        int move = MoveVerifier.encodeMove(3, 0, 0, 1);
+        int move = Coder.encodeMove(3, 0, 0, 1);
 
-        boolean result = MoveVerifier.isValid(move, map, gameAttributes1);
+        boolean result = MoveVerifier.isValid(move, gameState1);
 
         assertFalse(result);
     }
 
     @Test
     public void simpleCapturing(){
-        int moveTrue = MoveVerifier.encodeMove(2, 5, 0, 1);
-        int moveFalse = MoveVerifier.encodeMove(2, 2, 0, 1);
+        int moveTrue = Coder.encodeMove(2, 5, 0, 1);
+        int moveFalse = Coder.encodeMove(2, 2, 0, 1);
 
-        boolean resultTrue = MoveVerifier.isValid(moveTrue, map, gameAttributes1);
-        boolean resultFalse = MoveVerifier.isValid(moveFalse, map, gameAttributes1);
+        boolean resultTrue = MoveVerifier.isValid(moveTrue, gameState1);
+        boolean resultFalse = MoveVerifier.isValid(moveFalse, gameState1);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse);
@@ -92,9 +107,9 @@ public class MoveVerifierTest {
             8, 
             0);
 
-        int move = MoveVerifier.encodeMove(1, 3, 0, 1);
-
-        boolean result = MoveVerifier.isValid(move, map2, gameAttributes1);
+        int move = Coder.encodeMove(1, 3, 0, 1);
+        GameState gameState = new GameState(map2,gameAttributes1);
+        boolean result = MoveVerifier.isValid(move, gameState);
 
         assertTrue(result);
     }
@@ -124,9 +139,9 @@ public class MoveVerifierTest {
             8, 
             0);
 
-        int move = MoveVerifier.encodeMove(4, 0, 0, 1);
-
-        boolean result = MoveVerifier.isValid(move, map2, gameAttributes1);
+        int move = Coder.encodeMove(4, 0, 0, 1);
+        GameState gameState = new GameState(map2,gameAttributes1);
+        boolean result = MoveVerifier.isValid(move, gameState);
 
         assertFalse(result);
     }
@@ -157,12 +172,14 @@ public class MoveVerifierTest {
             0
         );
 
-        int moveTrue = MoveVerifier.encodeMove(6, 3, 0, 1);
-        int moveFalse = MoveVerifier.encodeMove(3, 4, 0, 1);
+        int moveTrue = Coder.encodeMove(6, 3, 0, 1);
+        int moveFalse = Coder.encodeMove(3, 4, 0, 1);
+        GameState gameState3 =  new GameState(map2, gameAttributes1);
+        GameState gameState4 = new GameState(map2, gameAttributes1NoOverwrites);
 
-        boolean resultTrue = MoveVerifier.isValid(moveTrue, map2, gameAttributes1);
-        boolean resultFalse1 = MoveVerifier.isValid(moveFalse, map2, gameAttributes1);
-        boolean resultFalse2 = MoveVerifier.isValid(moveTrue, map2, gameAttributes1NoOverwrites);
+        boolean resultTrue = MoveVerifier.isValid(moveTrue, gameState3);
+        boolean resultFalse1 = MoveVerifier.isValid(moveFalse, gameState3);
+        boolean resultFalse2 = MoveVerifier.isValid(moveTrue, gameState4);
         
         assertTrue(resultTrue);
         assertFalse(resultFalse1);
@@ -171,11 +188,11 @@ public class MoveVerifierTest {
 
     @Test
     public void expansionRule(){
-        int moveTrue = MoveVerifier.encodeMove(7, 6, 0, 1);
-        int moveFalse = MoveVerifier.encodeMove(7, 6, 0, 1);
-
-        boolean resultTrue = MoveVerifier.isValid(moveTrue, map, gameAttributes1);
-        boolean resultFalse = MoveVerifier.isValid(moveFalse, map, gameAttributes1NoOverwrites);
+        int moveTrue = Coder.encodeMove(7, 6, 0, 1);
+        int moveFalse = Coder.encodeMove(7, 6, 0, 1);
+        gameState1 = new GameState(map,gameAttributes1);
+        boolean resultTrue = MoveVerifier.isValid(moveTrue, gameState1);
+        boolean resultFalse = MoveVerifier.isValid(moveFalse, gameStateNoOverrides);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse);
@@ -183,12 +200,12 @@ public class MoveVerifierTest {
 
     @Test
     public void bombPhase(){
-        int move = MoveVerifier.encodeMove(3, 6, 0, 1);
-        int moveFalse = MoveVerifier.encodeMove(0, 0, 0, 1);
+        int move = Coder.encodeMove(3, 6, 0, 1);
+        int moveFalse = Coder.encodeMove(0, 0, 0, 1);
 
-        boolean resultTrue = MoveVerifier.isValid(move, map, gameAttributes2);
-        boolean resultFalse1 = MoveVerifier.isValid(move, map, gameAttributes2NoBombs);
-        boolean resultFalse2 = MoveVerifier.isValid(moveFalse, map, gameAttributes2);
+        boolean resultTrue = MoveVerifier.isValid(move, gameState2);
+        boolean resultFalse1 = MoveVerifier.isValid(move, gameStateNoBombs);
+        boolean resultFalse2 = MoveVerifier.isValid(moveFalse, gameState2);
 
         assertTrue(resultTrue);
         assertFalse(resultFalse1);
