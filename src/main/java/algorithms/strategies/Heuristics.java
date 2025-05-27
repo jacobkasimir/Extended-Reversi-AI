@@ -239,12 +239,13 @@ public class Heuristics {
                 //for ratioOfOwnTilesOverall() (index = 0)
                 if (tile != '-') reachableTiles++;  // count valid tiles only
 
-                //for ratioOfOwnTilesToOthers() (index = 1)
-                else if (GameRules.isPlayer(tile)) opponentTiles++;
 
                 //for distanceToStrongestOpponent()
                 if (GameRules.isPlayer(tile)){
                     tilesPerPlayer[(int) tile - 49 ]++;
+                    
+                    //for ratioOfOwnTilesToOthers() (index = 1)
+                    if (((int) tile - 49 ) != playerId) opponentTiles++;
                 }
                 
             }
