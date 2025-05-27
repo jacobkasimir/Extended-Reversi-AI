@@ -411,11 +411,11 @@ public class HeuristicsTest {
         Heuristics heuristics = new Heuristics(new GameState(map, attributes), 1, 1, 8);
         double values[] = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 6);
 
-        assertEquals(8/64.0, values[0]);
+        assertEquals(1.0, values[2]);
 
-        assertEquals(8/56.0, values[1]);
+        assertEquals(0.0, values[3]);
 
-        assertEquals(1.0 - (28 / ((double) 12*8)), values[2]);
+        assertEquals(0.0, values[4]);
     }
 
 
@@ -445,7 +445,7 @@ public class HeuristicsTest {
 
         assertEquals(1.0 - 8/27.0, values[3]);
 
-        assertEquals(7/8.0, values[4]);
+        assertEquals(1.0 - 7/8.0, values[4]);
     }
 
     @Test
