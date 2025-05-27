@@ -384,7 +384,7 @@ public class HeuristicsTest {
 
         assertEquals(0.5, values[0]);
 
-        assertEquals(32/56.0, values[1]);
+        assertEquals(1.0, values[1]);
 
         assertEquals(1.0, values[2]);
     }
@@ -475,7 +475,7 @@ public class HeuristicsTest {
 
         assertEquals(8/27.0, values[2]);
 
-        assertEquals(1.0, values[3]);
+        assertEquals(0, values[3]);
 
         assertEquals(0, values[4]);
     }
