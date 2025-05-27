@@ -377,15 +377,16 @@ public class HeuristicsTest {
 
         GameAttributes attributes = new GameAttributes( 2, 1, 1, 1, (byte) 1);
         attributes.setOurPlayerId((1));
+        GameState state = new  GameState(map, attributes);
 
-        Heuristics heuristics = new Heuristics(new GameState(map, attributes), 1, 1, 2);
-        double values[] = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 1);
+        Heuristics heuristics = new Heuristics(state, 1, 1, 2);
+        double[] values = heuristics.mapRelatedHeuristicsPhase2(state, (byte) 1);
 
         assertEquals(0.5, values[0]);
 
-        assertEquals(1.0, values[1]);
+        assertEquals(32/56.0, values[1]);
 
-        assertEquals(1.0 - (112 / ((double) 12*32)), values[2]);
+        assertEquals(1.0, values[2]);
     }
 
     @Test

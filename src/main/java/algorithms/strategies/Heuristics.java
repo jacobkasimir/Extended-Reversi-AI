@@ -253,7 +253,7 @@ public class Heuristics {
 
 
         //ratioOfOwnTilesOverall()
-        res[0] = ownTiles / reachableTiles;
+        res[0] = ownTiles / Math.max(1, reachableTiles);
 
         //ratioOfOwnTilesToOthers()
         res[1] = ownTiles / opponentTiles;
@@ -284,11 +284,10 @@ public class Heuristics {
     /**
      * Returns the ratio of players in the game to the number of players that started the game.
      * @param attributes The game attributes.
-     * @param playerId The player ID.
      * @return The number of available overwrites.
      */
     private double ratioPlayersInGame(GameAttributes attributes) {
-        return attributes.getNumberPlayers() / ((double) initalNumberPlayers);
+        return 1.0 - attributes.getNumberPlayers() / ((double) initalNumberPlayers);
     }
 
 
