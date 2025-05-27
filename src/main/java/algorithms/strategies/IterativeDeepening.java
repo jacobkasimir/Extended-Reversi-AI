@@ -15,10 +15,6 @@ public class IterativeDeepening {
      */
     public static int findMove(int timeLimit, Heuristics heuristics, GameState state){
 
-
-        System.out.println("Erhaltenens timelimit: " + timeLimit + "ms."); //#TODO remove before uploading to matchpoint
-
-
         long startTime = System.nanoTime();
 
         System.gc();
@@ -29,8 +25,6 @@ public class IterativeDeepening {
 
         while (true) {
 
-
-            //System.out.println("Aktuelle Tiefe: " + currentDepth); //#TODO remove before uploading to matchpoint
 
             System.gc();
 
@@ -63,21 +57,12 @@ public class IterativeDeepening {
 
             long timeLeft = timeLimit - timeSinceStart/1000000;
 
-            //System.out.println("time left: " + timeLeft); //#TODO Remove before uploading to Matchpoint
-
             
             if (duration * estimatedBranchingFactor + Constants.TIMELIMIT_SAFETY_OFFSET >= timeLeft) {
                 break;
             }
 
         }
-
-        long timeSinceStart = System.nanoTime() - startTime;
-
-        long timeLeft = timeLimit - timeSinceStart/1000000;
-
-        System.out.println("Vermutlich noch " + timeLeft + "ms übrig.");
-        System.out.println("Nächstes Mal vermutliches timelimit: " + (timeLeft + 2000) + "ms.");
 
         return resultMove;
 
