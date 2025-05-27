@@ -2,10 +2,11 @@ package algorithms.strategies;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import algorithms.datastructures.*;
+import algorithms.datastructures.IntLinkedList;
+import algorithms.datastructures.ListNode;
+import control.Coder;
 import gamestate.GameState;
 import validation.MoveVerifier;
-import control.Coder;
 
 /**
  * Represents a node in a game tree for implementing game AI algorithms like minimax.
@@ -63,7 +64,7 @@ public class Node implements Comparable<Node>{
         this.gameState = gameState;
         this.heuristics = heuristics;
         this.nextMoves = new ArrayList<Node>();
-        this.score = heuristics.evaluate(gameState, move);
+        this.score = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
     }
 
 
@@ -149,14 +150,13 @@ public class Node implements Comparable<Node>{
 
             //use the heuristics if no moves available
             if (possibleMoves.isEmpty()) {
-                return heuristics.evaluate(gameState, lastPlayerId);
+                return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
             }
 
             ListNode node = possibleMoves.getHead();
 
             //iterate over all possible moves in the current game state
             while (node != null) {
-
                 //create the next layer of the "mini-max"-tree
                 this.nextMoves.add(new Node(node.getValue(), this, gameState.clone(), this.heuristics));
                 node = node.getNext();
@@ -187,7 +187,7 @@ public class Node implements Comparable<Node>{
         } else {
 
             //use heursitics if searchDepth is 0
-            return heuristics.evaluate(gameState, lastPlayerId);
+            return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
         }
     }
 
@@ -211,7 +211,7 @@ public class Node implements Comparable<Node>{
             //calculate all possible moves
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
             if (possibleMoves.isEmpty()) {
-                return heuristics.evaluate(gameState, lastPlayerId);
+                return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
             }
 
             ListNode m = possibleMoves.getHead();
@@ -253,12 +253,12 @@ public class Node implements Comparable<Node>{
             return result;
         } else {
             //use heursitics if searchDepth is 0
-            return heuristics.evaluate(gameState, lastPlayerId);
+            return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
         }
     }
 
-        @Override
-        public int compareTo(Node node) {
+    @Override
+    public int compareTo(Node node) {
         return this.score.compareTo(node.getScore());
-        }
+    }
 }
