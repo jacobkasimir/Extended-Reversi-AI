@@ -2,7 +2,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import control.GameClient;
-import validation.MoveVerifier;
+import control.Coder;
 
 public class GameClientTest {
 
@@ -12,14 +12,14 @@ public class GameClientTest {
         String[] lines = input.split("\\R");
 
         GameClient game = new GameClient();
-        int startPosition = MoveVerifier.encodePosition(1, 1, 5);
-        int endPosition =  MoveVerifier.encodePosition(4, 0, 1+4);
+        int startPosition = Coder.encodePosition(1, 1, 5);
+        int endPosition =  Coder.encodePosition(4, 0, 1+4);
 
         game.init(lines,false,1);
 
         assertEquals(game.getCurrentGameAttributes().getNumberPlayers(), 2);
-        assertEquals(game.getCurrentGameAttributes().getPlayer(1).getNumberOverrides(), 0);
-        assertEquals(game.getCurrentGameAttributes().getPlayer(1).getNumberBombs(), 1);
+        assertEquals(Coder.decodeplayerOverrides(game.getCurrentGameAttributes().getPlayer(1)), 0);
+        assertEquals(Coder.decodeplayerBombs(game.getCurrentGameAttributes().getPlayer(1)), 1);
         assertEquals(game.getCurrentMapController().getBombRadius(), 1);
         assertEquals(game.getCurrentMapController().getHeight(), 2);
         assertEquals(game.getCurrentMapController().getWidth(), 6);

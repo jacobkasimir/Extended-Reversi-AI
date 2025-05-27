@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import gamestate.map.MapController;
 import gamestate.attributes.GameAttributes;
 import control.GameClient;
+import control.Coder;
 import validation.MoveVerifier;
 import validation.GameRules;
 
@@ -45,8 +46,8 @@ public class SingleRulesTest {
 
     @Test
     public void isNotHoleTest(){
-        int moveFalse = MoveVerifier.encodeMove(0, 0, 0, 0);
-        int moveTrue = MoveVerifier.encodeMove(1, 1, 0, 0);
+        int moveFalse = Coder.encodeMove(0, 0, 0, 0);
+        int moveTrue = Coder.encodeMove(1, 1, 0, 0);
 
         boolean resultFalse = GameRules.isNotHole(moveFalse, map);
         boolean resultTrue = GameRules.isNotHole(moveTrue, map);
@@ -57,11 +58,11 @@ public class SingleRulesTest {
 
     @Test
     public void insideMapTest(){
-        int moveFalse1 = MoveVerifier.encodeMove(9, 0, 0, 0);
-        int moveFalse2 = MoveVerifier.encodeMove(-1, 0, 0, 0);
-        int moveFalse3 = MoveVerifier.encodeMove(0, 9, 0, 0);
-        int moveFalse4 = MoveVerifier.encodeMove(0, -1, 0, 0);
-        int moveTrue = MoveVerifier.encodeMove(1, 1, 0, 0);
+        int moveFalse1 = Coder.encodeMove(9, 0, 0, 0);
+        int moveFalse2 = Coder.encodeMove(-1, 0, 0, 0);
+        int moveFalse3 = Coder.encodeMove(0, 9, 0, 0);
+        int moveFalse4 = Coder.encodeMove(0, -1, 0, 0);
+        int moveTrue = Coder.encodeMove(1, 1, 0, 0);
 
         boolean resultFalse1 = GameRules.insideMap(moveFalse1, map);
         boolean resultFalse2 = GameRules.insideMap(moveFalse2, map);
@@ -78,9 +79,9 @@ public class SingleRulesTest {
 
     @Test
     public void occupiedTest(){
-        int moveFalse1 = MoveVerifier.encodeMove(2, 3, 0, 0);
-        int moveFalse2 = MoveVerifier.encodeMove(5, 3, 0, 0);
-        int moveTrue = MoveVerifier.encodeMove(3, 3, 0, 0);
+        int moveFalse1 = Coder.encodeMove(2, 3, 0, 0);
+        int moveFalse2 = Coder.encodeMove(5, 3, 0, 0);
+        int moveTrue = Coder.encodeMove(3, 3, 0, 0);
 
         boolean resultFalse1 = GameRules.occupied(moveFalse1, map);
         boolean resultFalse2 = GameRules.occupied(moveFalse2, map);
@@ -93,7 +94,7 @@ public class SingleRulesTest {
 
     @Test
     public void hasBombTest(){
-        int move = MoveVerifier.encodeMove(4, 4, 0, 1);
+        int move = Coder.encodeMove(4, 4, 0, 1);
 
         boolean resultTrue = GameRules.hasBomb(gameAttributes1, move);
         boolean resultFalse = GameRules.hasBomb(gameAttributes2, move);
@@ -104,7 +105,7 @@ public class SingleRulesTest {
 
     @Test
     public void hasOverrideTest(){
-        int move = MoveVerifier.encodeMove(4, 4, 0, 1);
+        int move = Coder.encodeMove(4, 4, 0, 1);
 
         boolean resultTrue = GameRules.hasOverride(gameAttributes1, move);
         boolean resultFalse = GameRules.hasOverride(gameAttributes2, move);
@@ -115,11 +116,11 @@ public class SingleRulesTest {
 
     @Test
     public void validMoveTest(){
-        int moveTrue = MoveVerifier.encodeMove(1, 1, 0, 1);
-        int moveFalse1 = MoveVerifier.encodeMove(1, 1, 0, 2);
-        int moveFalse2 = MoveVerifier.encodeMove(1, 1, 0, 3);
-        int moveFalse3 = MoveVerifier.encodeMove(1, 1, 0, 0);
-        int moveFalse4 = MoveVerifier.encodeMove(1, 1, 0, 10);
+        int moveTrue = Coder.encodeMove(1, 1, 0, 1);
+        int moveFalse1 = Coder.encodeMove(1, 1, 0, 2);
+        int moveFalse2 = Coder.encodeMove(1, 1, 0, 3);
+        int moveFalse3 = Coder.encodeMove(1, 1, 0, 0);
+        int moveFalse4 = Coder.encodeMove(1, 1, 0, 10);
 
         boolean resultTrue = GameRules.validPlayer(moveTrue, gameAttributes2);
         boolean resultFalse1 = GameRules.validPlayer(moveFalse1, gameAttributes2);
@@ -136,10 +137,10 @@ public class SingleRulesTest {
 
     @Test
     public void isExpansionTest(){
-        int moveTrue1 = MoveVerifier.encodeMove(5, 6, 0, 1);
-        int moveTrue2 = MoveVerifier.encodeMove(7, 6, 0, 1);
-        int moveFalse1 = MoveVerifier.encodeMove(6, 6, 0, 1);
-        int moveFalse2 = MoveVerifier.encodeMove(7, 5, 0, 1);
+        int moveTrue1 = Coder.encodeMove(5, 6, 0, 1);
+        int moveTrue2 = Coder.encodeMove(7, 6, 0, 1);
+        int moveFalse1 = Coder.encodeMove(6, 6, 0, 1);
+        int moveFalse2 = Coder.encodeMove(7, 5, 0, 1);
 
         boolean resultTrue1 = GameRules.isExpansion(map, moveTrue1);
         boolean resultTrue2 = GameRules.isExpansion(map, moveTrue2);
@@ -154,10 +155,10 @@ public class SingleRulesTest {
 
     @Test
     public void checkSpecialTestBombs(){
-        int moveTrue1 = MoveVerifier.encodeMove(3, 7, 20, 1);
-        int moveTrue2 = MoveVerifier.encodeMove(3, 7, 21, 1);
-        int moveFalse1 = MoveVerifier.encodeMove(3, 7, 0, 1);
-        int moveFalse2 = MoveVerifier.encodeMove(4, 5, 20, 1);
+        int moveTrue1 = Coder.encodeMove(3, 7, 20, 1);
+        int moveTrue2 = Coder.encodeMove(3, 7, 21, 1);
+        int moveFalse1 = Coder.encodeMove(3, 7, 0, 1);
+        int moveFalse2 = Coder.encodeMove(4, 5, 20, 1);
 
         boolean resultTrue1 = GameRules.checkSpecial(gameAttributes1, moveTrue1, map);
         boolean resultTrue2 = GameRules.checkSpecial(gameAttributes1, moveTrue2, map);
@@ -172,10 +173,10 @@ public class SingleRulesTest {
 
     @Test
     public void checkSpecialTestChoose(){
-        int moveTrue1 = MoveVerifier.encodeMove(3, 6, 2, 1);
-        int moveTrue2 = MoveVerifier.encodeMove(3, 6, 1, 1);
-        int moveFalse1 = MoveVerifier.encodeMove(3, 6, 0, 1);
-        int moveFalse2 = MoveVerifier.encodeMove(2, 3, 1, 1);
+        int moveTrue1 = Coder.encodeMove(3, 6, 2, 1);
+        int moveTrue2 = Coder.encodeMove(3, 6, 1, 1);
+        int moveFalse1 = Coder.encodeMove(3, 6, 0, 1);
+        int moveFalse2 = Coder.encodeMove(2, 3, 1, 1);
 
         boolean resultTrue1 = GameRules.checkSpecial(gameAttributes1, moveTrue1, map);
         boolean resultTrue2 = GameRules.checkSpecial(gameAttributes1, moveTrue2, map);
@@ -190,10 +191,10 @@ public class SingleRulesTest {
 
     @Test
     public void capturingTest(){
-        int moveTrue1 = MoveVerifier.encodeMove(2, 4, 0, 1);
-        int moveTrue2 = MoveVerifier.encodeMove(2, 3, 0, 2);
-        int moveFalse1 = MoveVerifier.encodeMove(1, 1, 0, 1);
-        int moveFalse2 = MoveVerifier.encodeMove(4, 5, 1, 1);
+        int moveTrue1 = Coder.encodeMove(2, 4, 0, 1);
+        int moveTrue2 = Coder.encodeMove(2, 3, 0, 2);
+        int moveFalse1 = Coder.encodeMove(1, 1, 0, 1);
+        int moveFalse2 = Coder.encodeMove(4, 5, 1, 1);
 
         boolean resultTrue1 = GameRules.capturing(moveTrue1, map);
         boolean resultTrue2 = GameRules.capturing(moveTrue2, map);

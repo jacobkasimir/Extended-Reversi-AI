@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import control.GameClient;
+import control.Coder;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
@@ -41,9 +42,9 @@ public class MapTests {
 
     @Test 
     public void nextTileTest(){
-        assertEquals(mapController.getNextTile(MoveVerifier.encodePosition(7, 7, 2)), MoveVerifier.encodePosition(0, 0, 2));
-        assertEquals(mapController.getNextTile(MoveVerifier.encodePosition(0, 7, 5)), MoveVerifier.encodePosition(7, 0, 5));
-        assertEquals(mapController.getNextTile(MoveVerifier.encodePosition(0, 0, 3)), MoveVerifier.encodePosition(1, 1, 3));
+        assertEquals(mapController.getNextTile(Coder.encodePosition(7, 7, 2)), Coder.encodePosition(0, 0, 2));
+        assertEquals(mapController.getNextTile(Coder.encodePosition(0, 7, 5)), Coder.encodePosition(7, 0, 5));
+        assertEquals(mapController.getNextTile(Coder.encodePosition(0, 0, 3)), Coder.encodePosition(1, 1, 3));
     }
     
 
@@ -65,7 +66,7 @@ public class MapTests {
             new Transitions(8,8), 
             8, 8, 0);
 
-        basicTestController.updateMap(MoveVerifier.encodeMove(2, 4, 0, 1), 
+        basicTestController.updateMap(Coder.encodeMove(2, 4, 0, 1),
         new GameAttributes(2,0,0,0,(byte)1));
 
         assertEquals(basicTestController, new MapController(
@@ -103,7 +104,7 @@ public class MapTests {
             client.getTransitions(), 
             8, 8, 0);
 
-            transitionTestController.updateMap(MoveVerifier.encodeMove(6, 0, 0, 1), 
+            transitionTestController.updateMap(Coder.encodeMove(6, 0, 0, 1),
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(transitionTestController, new MapController(
@@ -139,9 +140,9 @@ public class MapTests {
             8, 8, 0);
 
             GameState gameState = new GameState(choiceTestController,new GameAttributes(2,2,0,0,1));
-            assertTrue(MoveVerifier.isValid(MoveVerifier.encodeMove(5, 3, 2, 1), gameState));
+            assertTrue(MoveVerifier.isValid(Coder.encodeMove(5, 3, 2, 1), gameState));
 
-            choiceTestController.updateMap(MoveVerifier.encodeMove(5, 3, 2, 1),
+            choiceTestController.updateMap(Coder.encodeMove(5, 3, 2, 1),
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(choiceTestController, new MapController(
@@ -177,7 +178,7 @@ public class MapTests {
             8, 8, 0);
 
             
-            choiceTestController.choiceHandling(MoveVerifier.encodeMove(5, 3,2,1));
+            choiceTestController.choiceHandling(Coder.encodeMove(5, 3,2,1));
 
             assertEquals(choiceTestController, new MapController(
                 new String[]{
@@ -211,7 +212,7 @@ public class MapTests {
             new Transitions(8,8), 
             8, 8, 0);
 
-            inversionTestController.updateMap(MoveVerifier.encodeMove(5, 3, 0, 1), 
+            inversionTestController.updateMap(Coder.encodeMove(5, 3, 0, 1),
             new GameAttributes(3,0,0,0,(byte)1));
 
             assertEquals(inversionTestController, new MapController(
@@ -247,7 +248,7 @@ public class MapTests {
             new Transitions(8,8),
             8, 8, 0);
 
-            overrideTileController.updateMap(MoveVerifier.encodeMove(3, 3, 0, 2), 
+            overrideTileController.updateMap(Coder.encodeMove(3, 3, 0, 2),
             new GameAttributes(2,1,0,0,(byte)1));
 
             assertEquals(overrideTileController, new MapController(
@@ -283,7 +284,7 @@ public class MapTests {
             new Transitions(8,8), 
             8, 8, 0);                                                                                                                                               
 
-            expansionTileController.updateMap(MoveVerifier.encodeMove(6, 3, 0, 1), 
+            expansionTileController.updateMap(Coder.encodeMove(6, 3, 0, 1),
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(expansionTileController, new MapController(
@@ -318,7 +319,7 @@ public class MapTests {
             new Transitions(8,8),
             8, 8, 1);
 
-            bombController.updateMap(MoveVerifier.encodeMove(3, 4, 0, 1), 
+            bombController.updateMap(Coder.encodeMove(3, 4, 0, 1),
             new GameAttributes(2,0,2,1,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -353,7 +354,7 @@ public class MapTests {
             new Transitions(8,8),
             8, 8, 3);
 
-            bombController.updateMap(MoveVerifier.encodeMove(2, 5, 0, 1), 
+            bombController.updateMap(Coder.encodeMove(2, 5, 0, 1),
             new GameAttributes(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -392,7 +393,7 @@ public class MapTests {
             client.getTransitions(),
             8, 8, 3);
 
-            bombController.updateMap(MoveVerifier.encodeMove(2, 5, 0, 1), 
+            bombController.updateMap(Coder.encodeMove(2, 5, 0, 1),
             new GameAttributes(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -428,7 +429,7 @@ public class MapTests {
             }, client.getTransitions(),
             8, 8, 3);
 
-            bombController.updateMap(MoveVerifier.encodeMove(4, 4, 0, 1), 
+            bombController.updateMap(Coder.encodeMove(4, 4, 0, 1),
             new GameAttributes(2,0,2,3,(byte)2));
 
             assertEquals(bombController, new MapController(
@@ -466,7 +467,7 @@ public class MapTests {
             client.getTransitions(), 
             8, 8, 0);
 
-            overlappingController.updateMap(MoveVerifier.encodeMove(6, 7, 0, 2), 
+            overlappingController.updateMap(Coder.encodeMove(6, 7, 0, 2),
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(overlappingController, new MapController(
@@ -507,7 +508,7 @@ public class MapTests {
             client.getTransitions(), 
             8, 8, 0);
 
-            allDirectionsController.updateMap(MoveVerifier.encodeMove(4, 3, 0, 2), 
+            allDirectionsController.updateMap(Coder.encodeMove(4, 3, 0, 2),
             new GameAttributes(2,0,0,0,(byte)1));
 
             assertEquals(allDirectionsController, new MapController(

@@ -2,6 +2,7 @@ package gamestate.map;
 import java.util.Arrays;
 
 import control.Constants;
+import control.Coder;
 import validation.MoveVerifier;
 
 /**
@@ -69,10 +70,10 @@ public class Transitions {
                     }
                 }
                 if(x < 0 || x > width-1 || y < 0 || y > height-1) return -1; //case that new position is outside the map
-                else return MoveVerifier.encodePosition(x, y, direc);
+                else return Coder.encodePosition(x, y, direc);
             } else {
                 int res = getTransition(x, y, direc);   
-                return MoveVerifier.encodePosition(MoveVerifier.decodePosX(res), MoveVerifier.decodePosY(res), (MoveVerifier.decodePosDirec(res)+4) % Constants.NUMBER_OF_DIRECTIONS);
+                return Coder.encodePosition(Coder.decodePosX(res), Coder.decodePosY(res), (Coder.decodePosDirec(res)+4) % Constants.NUMBER_OF_DIRECTIONS);
             }
         }
         else return -1; //Error case
@@ -90,8 +91,8 @@ public class Transitions {
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
         if(direcTile < Constants.NUMBER_OF_DIRECTIONS && direcTile >= 0 && direcNextTile < Constants.NUMBER_OF_DIRECTIONS && direcNextTile >= 0){ 
-            transitionsArray[(width*Constants.NUMBER_OF_DIRECTIONS*yTile)+(xTile*Constants.NUMBER_OF_DIRECTIONS)+direcTile] = MoveVerifier.encodePosition(xNextTile, yNextTile, direcNextTile);
-            transitionsArray[(width*Constants.NUMBER_OF_DIRECTIONS*yNextTile)+(xNextTile*Constants.NUMBER_OF_DIRECTIONS)+direcNextTile] = MoveVerifier.encodePosition(xTile, yTile, direcTile);
+            transitionsArray[(width*Constants.NUMBER_OF_DIRECTIONS*yTile)+(xTile*Constants.NUMBER_OF_DIRECTIONS)+direcTile] = Coder.encodePosition(xNextTile, yNextTile, direcNextTile);
+            transitionsArray[(width*Constants.NUMBER_OF_DIRECTIONS*yNextTile)+(xNextTile*Constants.NUMBER_OF_DIRECTIONS)+direcNextTile] = Coder.encodePosition(xTile, yTile, direcTile);
         }
     }
 
