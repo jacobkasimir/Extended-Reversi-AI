@@ -70,10 +70,10 @@ public class TCPClient {
 
                         out.writeByte(5);
                         out.writeInt(5);
-                        out.writeShort(MoveVerifier.decodeX(move));
-                        out.writeShort(MoveVerifier.decodeY(move));
-                        out.writeByte(MoveVerifier.decodeSpecial(move));
-                        System.out.println("Zug gesendet: (" + MoveVerifier.decodeX(move) + "," + MoveVerifier.decodeY(move) + "), Spezial: " + MoveVerifier.decodeSpecial(move));
+                        out.writeShort(Coder.decodeX(move));
+                        out.writeShort(Coder.decodeY(move));
+                        out.writeByte(Coder.decodeSpecial(move));
+                        System.out.println("Zug gesendet: (" + Coder.decodeX(move) + "," + Coder.decodeY(move) + "), Spezial: " + Coder.decodeSpecial(move));
                     }
 
                     case 6 -> {
@@ -81,7 +81,7 @@ public class TCPClient {
                         short my = in.readShort();
                         byte mspecial = in.readByte();
                         byte mplayerId = in.readByte();
-                        int MadeMove = MoveVerifier.encodeMove(mx, my, mspecial, mplayerId);
+                        int MadeMove = Coder.encodeMove(mx, my, mspecial, mplayerId);
                         game.updateGame(MadeMove);
                         System.out.println("Spieler " + mplayerId + " zog auf (" + mx + "," + my + ") mit Spezialwert " + mspecial);
                     }

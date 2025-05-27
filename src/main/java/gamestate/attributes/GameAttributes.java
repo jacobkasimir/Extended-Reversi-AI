@@ -1,6 +1,7 @@
 package gamestate.attributes;
 import gamestate.map.MapController;
 import validation.*;
+import control.Coder;
 
 /**
  * Represents the current attributes of a game state.
@@ -9,7 +10,7 @@ import validation.*;
  */
 public class GameAttributes {
 
-    private final Player[] players;
+    private final int[] players;
     private int numberPlayers;
     private boolean phase1; // true: Phase 1; false: Phase 2
     private int ourPlayerId;
@@ -26,10 +27,10 @@ public class GameAttributes {
     public GameAttributes(int numberPlayers, int overwrites, int bombs, int bombRadius, int gamePhase) {
         this.numberPlayers = numberPlayers;
         this.setGamePhase(gamePhase);
-        this.players = new Player[numberPlayers];
+        this.players = new int[numberPlayers];
 
         for (int i = 1; i <= numberPlayers; i++) {
-            Player p = new Player(bombs, overwrites, i, true);
+            int p = Coder.encodePlayer(bombs, overwrites, i, 1);
             this.setPlayer(p, i);
         }
     }
@@ -43,10 +44,10 @@ public class GameAttributes {
         this.numberPlayers = obj.getNumberPlayers();
         this.phase1 = obj.isPhase1();
         this.ourPlayerId = obj.getOurPlayerId();
-        this.players = new Player[obj.getNumberPlayers()];
+        this.players = new int[obj.getNumberPlayers()];
 
         for (int i = 0; i < numberPlayers; i++) {
-            players[i] = new Player(obj.getPlayer(i + 1));
+            players[i] = (obj.getPlayer(i + 1));
         }
     }
 
@@ -56,7 +57,7 @@ public class GameAttributes {
      * @param p the Player object to assign
      * @param number the 1-based player number
      */
-    private void setPlayer(Player p, int number) {
+    public void setPlayer(int p, int number) {
         this.players[number - 1] = p;
     }
 
@@ -102,7 +103,7 @@ public class GameAttributes {
      * @param id the 1-based playerId
      * @return the Player object
      */
-    public Player getPlayer(int id) {
+    public int getPlayer(int id) {
         return players[id - 1];
     }
 
@@ -130,7 +131,11 @@ public class GameAttributes {
      * @param id the player ID to disqualify
      */
     public void playerDisqualified(int id) {
-        getPlayer(id).setInGame(false);
+        int player = getPlayer(id);
+        if(Coder.decodeplayerInGame(player) == 1){
+            player--;
+            setPlayer(player, id);
+        }
     }
 
     /**
@@ -159,24 +164,29 @@ public class GameAttributes {
      * @param map the current map state
      */
     public void updateState(int move, MapController map) {
-        int playerId = MoveVerifier.decodePlayerId(move);
-        Player player = getPlayer(playerId);
-        int special = MoveVerifier.decodeSpecial(move);
+        int playerId = Coder.decodePlayerId(move);
+        int player = getPlayer(playerId);
+        int special = Coder.decodeSpecial(move);
+        int inGame = Coder.decodeplayerInGame(player);
+        int id = Coder.decodePlayerPlayerId(player);
+        int overrides = Coder.decodeplayerOverrides(player);
+        int bombs = Coder.decodeplayerBombs(player);
+
 
         if (phase1) {
             if (GameRules.occupied(move, map) || GameRules.isExpansion(map, move)) {
                 //Placing a stone on an occupied field or an expnsion tile requires an override
-                player.setNumberOverrides(player.getNumberOverrides() - 1);
+                setPlayer(Coder.encodePlayer(bombs, overrides - 1, id, inGame), playerId);
             } else if (special == 20) {
                 //getting an extra bomb through a bonus field
-                player.setNumberBombs(player.getNumberBombs() + 1);
+                setPlayer(Coder.encodePlayer(bombs+1, overrides, id, inGame), playerId);
             } else if (special == 21) {
                 //getting an extra override stone through a bonus field
-                player.setNumberOverrides(player.getNumberOverrides() + 1);
+                setPlayer(Coder.encodePlayer(bombs, overrides+1, id, inGame), playerId);
             }
         } else {
             //Moves in phase 2 are always bomb throws -> bombCount must be decremented by 1
-            player.setNumberBombs(player.getNumberBombs() - 1);
+            setPlayer(Coder.encodePlayer(bombs- 1, overrides, id, inGame), playerId);
         }
     }
 }

@@ -88,7 +88,7 @@ public class GameClient {
                 new GameAttributes(playerCount, overrideCount, bombCount, bombRadius, gamePhase)
         );
 
-        this.heuristics = new Heuristics(getCurrentMapController());
+        this.heuristics = new Heuristics(this.getCurrentGameState(), bombCount, overrideCount, playerCount);
 
         this.compareOn = compare;
         

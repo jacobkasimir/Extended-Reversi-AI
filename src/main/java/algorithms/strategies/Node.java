@@ -5,6 +5,7 @@ import java.util.Collections;
 import algorithms.datastructures.*;
 import gamestate.GameState;
 import validation.MoveVerifier;
+import control.Coder;
 
 /**
  * Represents a node in a game tree for implementing game AI algorithms like minimax.
@@ -148,7 +149,7 @@ public class Node implements Comparable<Node>{
 
             //use the heuristics if no moves available
             if (possibleMoves.isEmpty()) {
-                return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
+                return heuristics.evaluate(gameState, lastPlayerId);
             }
 
             ListNode node = possibleMoves.getHead();
@@ -162,7 +163,7 @@ public class Node implements Comparable<Node>{
             }
             int result;
 
-            int playerIdUpcomingMove = MoveVerifier.decodePlayerId(possibleMoves.getHead().getValue());
+            int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getHead().getValue());
             
             //decide if we perform the next move or one of our opponents:
             if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move
@@ -170,14 +171,14 @@ public class Node implements Comparable<Node>{
                 //iterate over all moves in the next layer
                 for (Node child : nextMoves) {
                     //recursive call of depth-first search algorithm (with lower depth) and update result
-                    result = Math.max(result, child.dfs(searchDepth - 1, MoveVerifier.decodePlayerId(this.move)));
+                    result = Math.max(result, child.dfs(searchDepth - 1, Coder.decodePlayerId(this.move)));
                 }
             } else {  //opponents move
                 result = Integer.MAX_VALUE;
                 //iterate over all moves in the deeper layer
                 for (Node child : nextMoves) {
                     //recursive call of depth-first search algorithm (with lower depth) and update result
-                    result = Math.min(result, child.dfs(searchDepth - 1, MoveVerifier.decodePlayerId(this.move)));
+                    result = Math.min(result, child.dfs(searchDepth - 1, Coder.decodePlayerId(this.move)));
                 }
             }
             this.nextMoves = null;
@@ -186,7 +187,7 @@ public class Node implements Comparable<Node>{
         } else {
 
             //use heursitics if searchDepth is 0
-            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
+            return heuristics.evaluate(gameState, lastPlayerId);
         }
     }
 
@@ -210,7 +211,7 @@ public class Node implements Comparable<Node>{
             //calculate all possible moves
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
             if (possibleMoves.isEmpty()) {
-                return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
+                return heuristics.evaluate(gameState, lastPlayerId);
             }
 
             ListNode m = possibleMoves.getHead();
@@ -223,7 +224,7 @@ public class Node implements Comparable<Node>{
             info.addNewBranchingFactor(possibleMoves.getSize(), searchDepth);
             int result;
 
-            int playerIdUpcomingMove = MoveVerifier.decodePlayerId(possibleMoves.getHead().getValue());
+            int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getHead().getValue());
             
             //decide if we perform the next move or one of our opponents:
             if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move
@@ -252,7 +253,7 @@ public class Node implements Comparable<Node>{
             return result;
         } else {
             //use heursitics if searchDepth is 0
-            return heuristics.evaluate(gameState.mapController(), gameState.attributes(), lastPlayerId);
+            return heuristics.evaluate(gameState, lastPlayerId);
         }
     }
 
