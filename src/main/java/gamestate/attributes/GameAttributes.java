@@ -1,7 +1,8 @@
 package gamestate.attributes;
-import gamestate.map.MapController;
-import validation.*;
+
 import control.Coder;
+import gamestate.map.MapController;
+import validation.GameRules;
 
 /**
  * Represents the current attributes of a game state.
@@ -19,10 +20,10 @@ public class GameAttributes {
      * Constructs a new GameAttributes instance with the specified parameters.
      *
      * @param numberPlayers the number of players participating in the game
-     * @param overwrites the initial number of Overwrites per player
-     * @param bombs the initial number of bombs per player
-     * @param bombRadius the bomb radius (currently unused)
-     * @param gamePhase 1 for phase 1, 2 for phase 2
+     * @param overwrites    the initial number of Overwrites per player
+     * @param bombs         the initial number of bombs per player
+     * @param bombRadius    the bomb radius (currently unused)
+     * @param gamePhase     1 for phase 1, 2 for phase 2
      */
     public GameAttributes(int numberPlayers, int overwrites, int bombs, int bombRadius, int gamePhase) {
         this.numberPlayers = numberPlayers;
@@ -54,7 +55,7 @@ public class GameAttributes {
     /**
      * Sets a Player instance at the specified player index.
      *
-     * @param p the Player object to assign
+     * @param p      the Player object to assign
      * @param number the 1-based player number
      */
     public void setPlayer(int p, int number) {
@@ -80,21 +81,21 @@ public class GameAttributes {
     }
 
     /**
-     * Set boolean value for phase 1.
-     *
-     * @param phase1 true to enable phase 1, false for phase 2
-     */
-    public void setPhase1(boolean phase1) {
-        this.phase1 = phase1;
-    }
-
-    /**
      * Checks if the game is currently in phase 1.
      *
      * @return true if in phase 1, false if in phase 2
      */
     public boolean isPhase1() {
         return phase1;
+    }
+
+    /**
+     * Set boolean value for phase 1.
+     *
+     * @param phase1 true to enable phase 1, false for phase 2
+     */
+    public void setPhase1(boolean phase1) {
+        this.phase1 = phase1;
     }
 
     /**
@@ -132,19 +133,10 @@ public class GameAttributes {
      */
     public void playerDisqualified(int id) {
         int player = getPlayer(id);
-        if(Coder.decodeplayerInGame(player) == 1){
+        if (Coder.decodeplayerInGame(player) == 1) {
             player--;
             setPlayer(player, id);
         }
-    }
-
-    /**
-     * Sets the current game phase.
-     *
-     * @param phase 1 for phase 1, 2 for phase 2
-     */
-    public void setGamePhase(int phase) {
-        this.phase1 = (phase == 1);
     }
 
     /**
@@ -157,11 +149,20 @@ public class GameAttributes {
     }
 
     /**
+     * Sets the current game phase.
+     *
+     * @param phase 1 for phase 1, 2 for phase 2
+     */
+    public void setGamePhase(int phase) {
+        this.phase1 = (phase == 1);
+    }
+
+    /**
      * Updates the game attributes according to the given move.
      * Handles Overwrites and bomb gains/losses according to current phase and rules.
      *
      * @param move the encoded move
-     * @param map the current map state
+     * @param map  the current map state
      */
     public void updateState(int move, MapController map) {
         int playerId = Coder.decodePlayerId(move);
@@ -179,14 +180,14 @@ public class GameAttributes {
                 setPlayer(Coder.encodePlayer(bombs, overrides - 1, id, inGame), playerId);
             } else if (special == 20) {
                 //getting an extra bomb through a bonus field
-                setPlayer(Coder.encodePlayer(bombs+1, overrides, id, inGame), playerId);
+                setPlayer(Coder.encodePlayer(bombs + 1, overrides, id, inGame), playerId);
             } else if (special == 21) {
                 //getting an extra override stone through a bonus field
-                setPlayer(Coder.encodePlayer(bombs, overrides+1, id, inGame), playerId);
+                setPlayer(Coder.encodePlayer(bombs, overrides + 1, id, inGame), playerId);
             }
         } else {
             //Moves in phase 2 are always bomb throws -> bombCount must be decremented by 1
-            setPlayer(Coder.encodePlayer(bombs- 1, overrides, id, inGame), playerId);
+            setPlayer(Coder.encodePlayer(bombs - 1, overrides, id, inGame), playerId);
         }
     }
 }

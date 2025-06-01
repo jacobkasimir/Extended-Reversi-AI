@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import validation.MoveVerifier;
-
 /**
  * TCPClient establishes a TCP connection to the game server and handles the network protocol.
  * It interprets incoming messages and delegates game logic to GameClient.
@@ -18,8 +16,9 @@ public class TCPClient {
 
     /**
      * Connects to the game server and processes the message protocol.
+     *
      * @param server The server's IP address.
-     * @param port The port number.
+     * @param port   The port number.
      * @throws IOException In case of connection or stream errors.
      */
     public static void connect(InetAddress server, int port, boolean compare, int depthLimit) throws IOException {
@@ -31,9 +30,11 @@ public class TCPClient {
 
             GameClient game = new GameClient();
 
-            out.writeByte(1); out.writeInt(1); out.writeByte(Constants.GROUP_NUMBER);
+            out.writeByte(1);
+            out.writeInt(1);
+            out.writeByte(Constants.GROUP_NUMBER);
             System.out.println("Gruppe gesendet: " + Constants.GROUP_NUMBER);
-            
+
             while (true) {
                 byte type;
                 try {
@@ -65,7 +66,7 @@ public class TCPClient {
                         System.out.println("Move Request erhalten - Zeit: " + timeLimit + ", Tiefe: " + maxDepth);
 
                         game.setCalculateParameters(timeLimit, maxDepth);
-                        
+
                         int move = game.calculateMove();
 
                         out.writeByte(5);

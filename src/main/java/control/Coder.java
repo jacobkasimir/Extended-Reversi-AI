@@ -138,6 +138,7 @@ public class Coder {
 
     /**
      * Decodes a value to get the number of bombs of one player.
+     *
      * @param value containing all the information of a single player.
      * @return number of bombs.
      */
@@ -148,6 +149,7 @@ public class Coder {
 
     /**
      * Decodes a value to get the number of override stones of one player.
+     *
      * @param value containing all the information of a single player.
      * @return number of override stones.
      */
@@ -158,16 +160,18 @@ public class Coder {
 
     /**
      * Decodes a value to get the playerId of one player.
+     *
      * @param value containing all the information of a single player.
      * @return playerId.
      */
     public static int decodePlayerPlayerId(int value) {
-        value /=51;
+        value /= 51;
         return value % 51;
     }
 
     /**
      * Decodes an int-value to get 1 for in game and 0 for disqualified.
+     *
      * @param value containing all the information of a single player.
      * @return 1 (in game) or 0 (disqualified)
      */
@@ -177,10 +181,11 @@ public class Coder {
 
     /**
      * Encodes all information of one player to a single int-value.
-     * @param bombs number of bombs of the player.
+     *
+     * @param bombs     number of bombs of the player.
      * @param overrides number of override stones.
-     * @param id is the playerId.
-     * @param inGame 1 if the player is still in the game, 0 if the player is disqualified.
+     * @param id        is the playerId.
+     * @param inGame    1 if the player is still in the game, 0 if the player is disqualified.
      * @return The int-value containing all the information of a player.
      */
     public static int encodePlayer(int bombs, int overrides, int id, int inGame) {

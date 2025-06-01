@@ -1,4 +1,5 @@
 package gamestate.map;
+
 /**
  * The Map class provides a two-dimensional grid structure for storing character-based map data.
  * This class is designed for representing game maps or similar grid-based structures
@@ -6,35 +7,35 @@ package gamestate.map;
  */
 public class Map {
 
-    private char[] map; //The underlying one-dimensional array that holds the map data.
     private final int width;
     private final int height;
-    
+    private char[] map; //The underlying one-dimensional array that holds the map data.
+
     /**
      * Constructs a new Map with the specified dimensions.
      * Initializes an empty map where all positions contain the default char value.
      *
-     * @param width The width (x-axis) of the map.
+     * @param width  The width (x-axis) of the map.
      * @param height The height (y-axis) of the map.
      */
-    public Map(int width, int height){
+    public Map(int width, int height) {
         this.width = width;
         this.height = height;
-        this.map = new char[width*height];
+        this.map = new char[width * height];
     }
-    
+
     /**
      * Constructs a deep copy of another Map object.
      *
      * @param other The Map object that is to be copied.
      */
-    public Map(Map other){
+    public Map(Map other) {
         this.width = other.getWidth();
         this.height = other.getHeight();
-        this.map = new char[width*height];
+        this.map = new char[width * height];
         System.arraycopy(other.getMap(), 0, this.map, 0, other.getMap().length);
     }
-    
+
     /**
      * Retrieves the character at the specified position in the map.
      *
@@ -43,10 +44,10 @@ public class Map {
      * @return The character at the specified position.
      */
     public char getTile(int x, int y) {
-        return map[(x*height) +y];
+        return map[(x * height) + y];
     }
 
-        /**
+    /**
      * Returns the internal array representing the map.
      * Note: This provides direct access to the map data.
      *
@@ -61,7 +62,7 @@ public class Map {
      *
      * @return The number of rows in the map (y-axis size).
      */
-    public int getHeight(){
+    public int getHeight() {
         return this.height;
     }
 
@@ -70,7 +71,7 @@ public class Map {
      *
      * @return The number of columns in the map (x-axis size).
      */
-    public int getWidth(){
+    public int getWidth() {
         return this.width;
     }
 
@@ -82,7 +83,7 @@ public class Map {
      * @param c The character to place at the specified position.
      */
     public void setTile(int x, int y, char c) {
-        map[(x*height) +y] = c;
+        map[(x * height) + y] = c;
     }
 
     /**
@@ -93,13 +94,13 @@ public class Map {
      * @return true if the objects are equal, false otherwise.
      */
     @Override
-    public boolean equals(Object obj){
-        if(!(obj instanceof Map)) return false;
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Map)) return false;
         Map other = (Map) obj;
 
-        if(this.map.length == other.map.length){
+        if (this.map.length == other.map.length) {
             for (int i = 0; i < this.map.length; i++) {
-                if(this.map[i] != other.getMap()[i]) return false;
+                if (this.map[i] != other.getMap()[i]) return false;
             }
             return true;
         }

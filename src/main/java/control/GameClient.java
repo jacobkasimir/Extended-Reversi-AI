@@ -1,10 +1,6 @@
 package control;
 
-import algorithms.strategies.AlphaBeta;
-import algorithms.strategies.Heuristics;
-import algorithms.strategies.IterativeDeepening;
-import algorithms.strategies.MiniMax;
-import algorithms.strategies.SearchInfo;
+import algorithms.strategies.*;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
@@ -21,6 +17,21 @@ public class GameClient {
     private int depthLimit;
     private int timeLimit;
     private boolean compareOn;
+
+    /**
+     * Extracts a subarray of lines between the given start (inclusive) and end (exclusive).
+     * Helping method for splitting map string.
+     *
+     * @param lines full array
+     * @param start inclusive start index
+     * @param end   exclusive end index
+     * @return subarray of lines
+     */
+    private static String[] extractLines(String[] lines, int start, int end) {
+        String[] result = new String[end - start];
+        System.arraycopy(lines, start, result, 0, result.length);
+        return result;
+    }
 
     /**
      * Returns the map controller for the current game.
@@ -91,7 +102,7 @@ public class GameClient {
         this.heuristics = new Heuristics(this.getCurrentGameState(), bombCount, overrideCount, playerCount);
 
         this.compareOn = compare;
-        
+
         this.depthLimit = depthLimit;
 
         System.out.println("Initialization completed.");
@@ -102,8 +113,8 @@ public class GameClient {
      * Each line contains symmetric transitions that must be applied in both directions.
      *
      * @param transitionLines the array of transition string lines
-     * @param width map width
-     * @param height map height
+     * @param width           map width
+     * @param height          map height
      */
     public void initTransitions(String[] transitionLines, int width, int height) {
         this.transitions = new Transitions(width, height);
@@ -155,7 +166,7 @@ public class GameClient {
      * Configures the time and depth limits for move calculations.
      *
      * @param timeLimit the time limit in milliseconds
-     * @param maxDepth the maximum depth of search
+     * @param maxDepth  the maximum depth of search
      */
     public void setCalculateParameters(int timeLimit, byte maxDepth) {
         this.timeLimit = timeLimit;
@@ -168,7 +179,7 @@ public class GameClient {
      * @return the encoded move
      */
     public int calculateMove() {
-        if(compareOn){
+        if (compareOn) {
 
             MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, depthLimit);
             int moveMiniMax = miniMax.chooseMove();
@@ -179,17 +190,17 @@ public class GameClient {
             int moveAlphaBeta = alphaBeta.chooseMove();
 
             if (moveMiniMax != moveAlphaBeta) {
-            System.err.println("Unterschiedliches Ergebnis! MiniMax: " + moveMiniMax + " | AlphaBeta: " + moveAlphaBeta);
+                System.err.println("Unterschiedliches Ergebnis! MiniMax: " + moveMiniMax + " | AlphaBeta: " + moveAlphaBeta);
             }
             return moveAlphaBeta;
 
         } else {
-            if(timeLimit == 0){ //case for only depth limit
+            if (timeLimit == 0) { //case for only depth limit
                 SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
                 AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info);
                 int moveAlphaBeta = alphaBeta.chooseMove();
                 return moveAlphaBeta;
-            }else{  //case for only time limit
+            } else {  //case for only time limit
                 return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState);
             }
 
@@ -209,21 +220,6 @@ public class GameClient {
      */
     public void endGame() {
         // Possible additions for game evaluation?
-    }
-
-    /**
-     * Extracts a subarray of lines between the given start (inclusive) and end (exclusive).
-     * Helping method for splitting map string.
-     *
-     * @param lines full array
-     * @param start inclusive start index
-     * @param end exclusive end index
-     * @return subarray of lines
-     */
-    private static String[] extractLines(String[] lines, int start, int end) {
-        String[] result = new String[end - start];
-        System.arraycopy(lines, start, result, 0, result.length);
-        return result;
     }
 
 }

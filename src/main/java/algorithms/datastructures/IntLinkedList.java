@@ -1,4 +1,5 @@
 package algorithms.datastructures;
+
 /**
  * A singly linked list optimized for primitive int values.
  * Provides basic operations such as add, remove, contains.
@@ -43,7 +44,7 @@ public class IntLinkedList {
      * @param value the int value to add.
      */
     public void addIfNotContains(int value) {
-        if (!this.contains(value)){                           
+        if (!this.contains(value)) {
             ListNode newNode = new ListNode(value);
             newNode.setNext(head);
             head = newNode;
@@ -153,15 +154,15 @@ public class IntLinkedList {
      * @return true if the objects are equal, false otherwise.
      */
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(Object obj) {
         if (!(obj instanceof IntLinkedList)) return false;
         IntLinkedList list = (IntLinkedList) obj;
 
-        if(list.size != this.size) return false;
+        if (list.size != this.size) return false;
         ListNode temp = this.head;
 
-        while(temp != null){
-            if(!list.contains(temp.getValue())) return false;
+        while (temp != null) {
+            if (!list.contains(temp.getValue())) return false;
             temp = temp.getNext();
         }
         return true;

@@ -1,4 +1,5 @@
 package gamestate.map;
+
 import control.Coder;
 import control.Constants;
 import gamestate.attributes.GameAttributes;
@@ -8,7 +9,7 @@ import validation.GameRules;
  * The MapController class manages the game map and its transitions.
  * It serves as the central interface for map operations, tile management and game mechanics.
  */
-public class MapController{
+public class MapController {
     private final Map map;
     private final Transitions transitions;
     private final int bombRadius;
@@ -18,13 +19,13 @@ public class MapController{
     /**
      * Creates a new MapController with the specified parameters.
      *
-     * @param mapString The initial map data as string array.
+     * @param mapString   The initial map data as string array.
      * @param transitions The transitions object for managing tile movements.
-     * @param width The width of the map.
-     * @param height The height of the map.
-     * @param bombRadius The explosion radius for bombs.
+     * @param width       The width of the map.
+     * @param height      The height of the map.
+     * @param bombRadius  The explosion radius for bombs.
      */
-    public MapController(String[] mapString, Transitions transitions, int width, int height, int bombRadius){
+    public MapController(String[] mapString, Transitions transitions, int width, int height, int bombRadius) {
         this.height = height;
         this.width = width;
         this.bombRadius = bombRadius;
@@ -39,7 +40,7 @@ public class MapController{
      *
      * @param obj The MapController to copy.
      */
-    public MapController(MapController obj){
+    public MapController(MapController obj) {
         this.bombRadius = obj.getBombRadius();
         this.width = obj.getWidth();
         this.height = obj.getHeight();
@@ -47,7 +48,6 @@ public class MapController{
         this.map = new Map(obj.getMap());
         this.transitions = obj.getTransitions();
     }
-    
 
 
     /**
@@ -94,7 +94,7 @@ public class MapController{
     public int getBombRadius() {
         return bombRadius;
     }
-    
+
     /**
      * Returns the tile value at the specified coordinates.
      *
@@ -103,7 +103,7 @@ public class MapController{
      * @return The character representing the tile type.
      */
     public char getTile(int x, int y) {
-       return this.map.getTile(x, y);
+        return this.map.getTile(x, y);
     }
 
     /**
@@ -130,11 +130,11 @@ public class MapController{
     /**
      * Sets up a transition between two tile positions.
      *
-     * @param xTile The x-coordinate of the start position.
-     * @param yTile The y-coordinate of the start position.
-     * @param direcTile The direction from the start position.
-     * @param xNextTile The x-coordinate of the destination.
-     * @param yNextTile The y-coordinate of the destination.
+     * @param xTile         The x-coordinate of the start position.
+     * @param yTile         The y-coordinate of the start position.
+     * @param direcTile     The direction from the start position.
+     * @param xNextTile     The x-coordinate of the destination.
+     * @param yNextTile     The y-coordinate of the destination.
      * @param direcNextTile The direction at the destination.
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
@@ -147,26 +147,25 @@ public class MapController{
      *
      * @param mapString Array of strings containing the map data.
      */
-    private void initMap(String[] mapString){
+    private void initMap(String[] mapString) {
         for (int i = 0; i < height; i++) {
             String[] temp = mapString[i].split(" ");
-            for(int j = 0; j < width; j++){
+            for (int j = 0; j < width; j++) {
                 setTile(j, i, temp[j].charAt(0));
             }
         }
     }
 
 
-
     /**
      * Updates the map state based on a player's move.
      * Handles both phases.
      *
-     * @param move The encoded move to process.
+     * @param move       The encoded move to process.
      * @param attributes The associated game attributes.
      */
-    public void updateMap(int move, GameAttributes attributes){
-        if(attributes.isPhase1()){
+    public void updateMap(int move, GameAttributes attributes) {
+        if (attributes.isPhase1()) {
 
             int[] directionCounts = new int[Constants.NUMBER_OF_DIRECTIONS]; //holds the number of tiles for every direction that are captured by the move
             boolean search; //boolean that decides whether to search further in a direction or not
@@ -180,26 +179,27 @@ public class MapController{
                 search = true;
                 tilesPassed = 0;
 
-                while(search){  //counting the number of captured tiles in a specific direction
+                while (search) {  //counting the number of captured tiles in a specific direction
                     currentPosition = getNextTile(currentPosition); //updates the currentPosition for direction i
-                    if(currentPosition < 0) break;  //checks if nextTile is out of map
-                    if(String.valueOf(Coder.decodePlayerId(move)).equals(String.valueOf(this.getTile(Coder.decodePosX(currentPosition), Coder.decodePosY(currentPosition))))){
+                    if (currentPosition < 0) break;  //checks if nextTile is out of map
+                    if (String.valueOf(Coder.decodePlayerId(move)).equals(String.valueOf(this.getTile(Coder.decodePosX(currentPosition), Coder.decodePosY(currentPosition))))) {
                         //case that the currentPosition is occupied by a tile owned by the player
-                        if(tilesPassed > 0) {
-                            if (Coder.decodePosX(currentPosition) != Coder.decodeX(move) || Coder.decodePosY(currentPosition) != Coder.decodeY(move)){
+                        if (tilesPassed > 0) {
+                            if (Coder.decodePosX(currentPosition) != Coder.decodeX(move) || Coder.decodePosY(currentPosition) != Coder.decodeY(move)) {
                                 //check that found tile is not the starting tile
                                 directionCounts[i] = tilesPassed;
                             }
                         }
                         search = false;
-                    } 
+                    }
                     //termination conditions for a direction
                     else if (helpCompare('0', currentPosition)) search = false;
                     else if (helpCompare('c', currentPosition)) search = false;
                     else if (helpCompare('i', currentPosition)) search = false;
                     else if (helpCompare('b', currentPosition)) search = false;
                     else if (helpCompare('-', currentPosition)) search = false;
-                    else if (Coder.decodePosX(currentPosition) == Coder.decodeX(move) && Coder.decodePosY(currentPosition) == Coder.decodeY(move)) search = false;
+                    else if (Coder.decodePosX(currentPosition) == Coder.decodeX(move) && Coder.decodePosY(currentPosition) == Coder.decodeY(move))
+                        search = false;
                     else {
                         tilesPassed++;
                     }
@@ -210,19 +210,18 @@ public class MapController{
             for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) {
                 currentPosition = Coder.encodePosition(Coder.decodeX(move), Coder.decodeY(move), i);
 
-                for (int j = 0; j < directionCounts[i]+1; j++) { //update the map
-                    setTile(Coder.decodePosX(currentPosition), Coder.decodePosY(currentPosition), (char)(Coder.decodePlayerId(move) + '0'));
+                for (int j = 0; j < directionCounts[i] + 1; j++) { //update the map
+                    setTile(Coder.decodePosX(currentPosition), Coder.decodePosY(currentPosition), (char) (Coder.decodePlayerId(move) + '0'));
                     currentPosition = getNextTile(currentPosition);
                 }
             }
-            
-            if(isChoice) {
+
+            if (isChoice) {
                 choiceHandling(move); //update if choice tile
-            } else if(isInversion) {
+            } else if (isInversion) {
                 inversionHandling(attributes); //update if inversion tile
-            } 
-        }
-        else {
+            }
+        } else {
             //handles bombing (phase 2)
             bombing(Coder.decodeX(move), Coder.decodeY(move), bombRadius);
             resolveBombing(Coder.decodeX(move), Coder.decodeY(move), bombRadius);
@@ -236,34 +235,34 @@ public class MapController{
      * @return true if the objects are equal, false otherwise.
      */
     @Override
-    public boolean equals(Object obj){
-        if(!(obj instanceof MapController)) return false;
+    public boolean equals(Object obj) {
+        if (!(obj instanceof MapController)) return false;
         MapController other = (MapController) obj;
 
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
-            this.map.equals(other.map) && transitions.equals(transitions);
-    } 
+                this.map.equals(other.map) && transitions.equals(transitions);
+    }
 
 
     /**
      * Processes bomb explosion at specified coordinates.
      * Marks affected tiles with '#' within the bomb radius.
      *
-     * @param x The x-coordinate of the bomb.
-     * @param y The y-coordinate of the bomb.
+     * @param x      The x-coordinate of the bomb.
+     * @param y      The y-coordinate of the bomb.
      * @param radius The remaining explosion radius.
      */
-    private void bombing(int x, int y, int radius){
-        if(GameRules.insideMap(Coder.encodeMove(x, y, 0, 0), this) &&
-        GameRules.isNotHole(Coder.encodeMove(x, y, 0, 0), this)){
+    private void bombing(int x, int y, int radius) {
+        if (GameRules.insideMap(Coder.encodeMove(x, y, 0, 0), this) &&
+                GameRules.isNotHole(Coder.encodeMove(x, y, 0, 0), this)) {
             setTile(x, y, '#');
 
-            if(radius > 0){ 
+            if (radius > 0) {
                 int newPosition;
                 for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) {
                     newPosition = getNextTile(Coder.encodePosition(x, y, i));
-                    if(newPosition >= 0) {
-                        bombing(Coder.decodePosX(newPosition), Coder.decodePosY(newPosition), radius-1);
+                    if (newPosition >= 0) {
+                        bombing(Coder.decodePosX(newPosition), Coder.decodePosY(newPosition), radius - 1);
                     }
                 }
             }
@@ -273,18 +272,19 @@ public class MapController{
     /**
      * Resolves bomb explosions by converting marked tiles to empty tiles.
      *
-     * @param x The x-coordinate of the bomb.
-     * @param y The y-coordinate of the bomb.
+     * @param x      The x-coordinate of the bomb.
+     * @param y      The y-coordinate of the bomb.
      * @param radius The remaining explosion radius.
      */
-    private void resolveBombing(int x, int y, int radius){
-        if(GameRules.insideMap(Coder.encodeMove(x, y, 0, 0), this)){
-            if(getTile(x, y) == '#') setTile(x, y, '-');
+    private void resolveBombing(int x, int y, int radius) {
+        if (GameRules.insideMap(Coder.encodeMove(x, y, 0, 0), this)) {
+            if (getTile(x, y) == '#') setTile(x, y, '-');
 
-            if(radius > 0){ 
+            if (radius > 0) {
                 for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) {
                     int newPosition = getNextTile(Coder.encodePosition(x, y, i));
-                    if(newPosition >= 0) resolveBombing(Coder.decodePosX(newPosition), Coder.decodePosY(newPosition), radius-1);
+                    if (newPosition >= 0)
+                        resolveBombing(Coder.decodePosX(newPosition), Coder.decodePosY(newPosition), radius - 1);
                 }
             }
         }
@@ -295,14 +295,13 @@ public class MapController{
      *
      * @param move The encoded move containing player information.
      */
-    public void choiceHandling(int move){
+    public void choiceHandling(int move) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if(getTile(i, j) == ((char)(Coder.decodePlayerId(move) + '0'))) {
-                    setTile(i, j, ((char)(Coder.decodeSpecial(move) + '0')));
-                }
-                else if(getTile(i, j) == ((char)(Coder.decodeSpecial(move) + '0'))) {
-                    setTile(i, j, ((char)(Coder.decodePlayerId(move) + '0')));
+                if (getTile(i, j) == ((char) (Coder.decodePlayerId(move) + '0'))) {
+                    setTile(i, j, ((char) (Coder.decodeSpecial(move) + '0')));
+                } else if (getTile(i, j) == ((char) (Coder.decodeSpecial(move) + '0'))) {
+                    setTile(i, j, ((char) (Coder.decodePlayerId(move) + '0')));
                 }
             }
         }
@@ -313,27 +312,26 @@ public class MapController{
      *
      * @param attributes The associated game attributes.
      */
-    private void inversionHandling(GameAttributes attributes){
+    private void inversionHandling(GameAttributes attributes) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if(GameRules.isPlayer(getTile(i, j))) {
-                    setTile(i, j, (char)(((getTile(i, j) - '0') % attributes.getNumberPlayers() +1) +'0'));
+                if (GameRules.isPlayer(getTile(i, j))) {
+                    setTile(i, j, (char) (((getTile(i, j) - '0') % attributes.getNumberPlayers() + 1) + '0'));
                 }
             }
         }
     }
 
-    
 
     /**
      * Helper method to compare a tile at a position with a specified character.
      *
-     * @param c The character to compare with.
+     * @param c               The character to compare with.
      * @param currentPosition The encoded position to check.
      * @return true if the tile matches the character, false otherwise.
      */
-    private boolean helpCompare(char c, int currentPosition){
+    private boolean helpCompare(char c, int currentPosition) {
         return (getTile(Coder.decodePosX(currentPosition), Coder.decodePosY(currentPosition)) == c);
-    }  
+    }
 
 }

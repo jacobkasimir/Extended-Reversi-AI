@@ -1,4 +1,5 @@
 package algorithms.datastructures;
+
 /**
  * Represents a node in a IntLinkedList.
  * Each node contains a value and a reference to the next node.
