@@ -56,17 +56,8 @@ public class IterativeDeepening {
             estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; // add a safety factor
 
             if (info.isBombPhaseReached()) {
-                estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth()); // estimate
-                // the
-                // branching
-                // factor
-                // to
-                // the
-                // map
-                // size
-                // for
-                // phase
-                // 2
+                // estimate the branching factor to the map size for phase 2
+                estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth());
             }
 
             long timeSinceStartMS = (System.nanoTime() / 1000000) - startTimeMS;
