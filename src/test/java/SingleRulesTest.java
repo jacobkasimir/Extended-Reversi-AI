@@ -6,7 +6,6 @@ import gamestate.map.MapController;
 import gamestate.attributes.GameAttributes;
 import control.GameClient;
 import control.Coder;
-import validation.MoveVerifier;
 import validation.GameRules;
 
 public class SingleRulesTest {

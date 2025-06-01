@@ -313,7 +313,6 @@ public class HeuristicsTest {
         int inGame = Coder.decodeplayerInGame(value);
         int id = Coder.decodePlayerPlayerId(value);
         int overrides = Coder.decodeplayerOverrides(value);
-        int bombs = Coder.decodeplayerBombs(value);
         attributes.setPlayer(Coder.encodePlayer(1, overrides, id, inGame), id);
 
         Heuristics heuristics = new Heuristics(new GameState(map, attributes), 2, 1, 4);
@@ -342,7 +341,6 @@ public class HeuristicsTest {
         int value = attributes.getPlayer(1);
         int inGame = Coder.decodeplayerInGame(value);
         int id = Coder.decodePlayerPlayerId(value);
-        int overrides = Coder.decodeplayerOverrides(value);
         int bombs = Coder.decodeplayerBombs(value);
         attributes.setPlayer(Coder.encodePlayer(bombs, 1, id, inGame), id);
 
