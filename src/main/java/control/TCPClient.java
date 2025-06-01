@@ -74,7 +74,7 @@ public class TCPClient {
                         out.writeShort(Coder.decodeX(move));
                         out.writeShort(Coder.decodeY(move));
                         out.writeByte(Coder.decodeSpecial(move));
-                        System.out.println("Move was send: (" + Coder.decodeX(move) + "," + Coder.decodeY(move) + "), special: " + Coder.decodeSpecial(move));
+                        System.out.println("Move sent: (" + Coder.decodeX(move) + "," + Coder.decodeY(move) + "), special: " + Coder.decodeSpecial(move));
                     }
 
                     case 6 -> {
@@ -84,7 +84,7 @@ public class TCPClient {
                         byte mplayerId = in.readByte();
                         int MadeMove = Coder.encodeMove(mx, my, mspecial, mplayerId);
                         game.updateGame(MadeMove);
-                        System.out.println("PLayer " + mplayerId + " moved to (" + mx + "," + my + ") with special value " + mspecial);
+                        System.out.println("Player " + mplayerId + " moved to (" + mx + "," + my + ") with special value " + mspecial);
                     }
 
                     case 7 -> {
