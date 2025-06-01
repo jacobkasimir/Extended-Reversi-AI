@@ -15,10 +15,6 @@ import validation.MoveVerifier;
  */
 public class Node implements Comparable<Node>{
     /**
-     * The heuristic value of this node
-     */
-    private int heuristicValue;
-    /**
      * The move associated with this node
      */
     private int move;
@@ -38,18 +34,10 @@ public class Node implements Comparable<Node>{
      * Reference to the parent node
      */
     private Node parent;
-
+    /**
+     * Heuristic score for this game state
+     */
     private Integer score;
-
-    public int getScore() {
-        return score;
-    }
-
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
 
     /**
      * Creates a new Node with the specified parameters.
@@ -70,20 +58,13 @@ public class Node implements Comparable<Node>{
 
 
     /**
-     * Getter function for the value of our heuristics.
-     * @return heuristic value
+     * Getter function for the heuristic score of the game state.
+     * @return score
      */
-    public int getHeuristicValue() {
-        return heuristicValue;
+    public int getScore() {
+        return score;
     }
 
-    /**
-     * Set the heuristicValue.
-     * @param heuristicValue
-     */
-    public void setHeuristicValue(int heuristicValue) {
-        this.heuristicValue = heuristicValue;
-    }
 
     /**
      * Get the move contained by this node.
@@ -199,9 +180,11 @@ public class Node implements Comparable<Node>{
      * @param lastPlayerId The ID of the player who made the last move
      * @param alpha        The alpha value for pruning
      * @param beta         The beta value for pruning
+     * @param info         The SearchInfo-object
      * @return The heuristic value of the best move found
      */
     public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info) {
+        //in case of a time out
         if(info.isTimeout()){
             return -1;
         }
@@ -221,7 +204,7 @@ public class Node implements Comparable<Node>{
             //calculate all possible moves
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
             if (possibleMoves.isEmpty()) {
-                return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
+                return this.score;
             }
 
             ListNode m = possibleMoves.getHead();
@@ -230,6 +213,7 @@ public class Node implements Comparable<Node>{
                 this.nextMoves.add(new Node(m.getValue(), this, gameState.clone(), this.heuristics));
                 m = m.getNext();
             }
+            //sort the moves based on their heuristic values
             Collections.sort(nextMoves);
             info.addNewBranchingFactor(possibleMoves.getSize(), searchDepth);
             int result;
@@ -261,12 +245,13 @@ public class Node implements Comparable<Node>{
             this.nextMoves = null;
             //return result that is used in "AlphaBeta"-class
             return result;
-        } else {
-            //use heursitics if searchDepth is 0
-            return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
+
+        } else { //return heuristic value if searchDepth is 0
+            return this.score;
         }
     }
 
+  
     @Override
     public int compareTo(Node node) {
         return this.score.compareTo(node.getScore());
