@@ -65,7 +65,7 @@ public class IterativeDeepening {
             long timeLeft = timeLimit - timeSinceStartMS; // used for estimation below
 
             if (duration * estimatedBranchingFactor + Constants.TIMELIMIT_SAFETY_OFFSET >= timeLeft) {
-                break; // The estimated calculation time for finding the next move is to high
+                break; // The estimated calculation time for finding the next move is too high
             }
 
         }
