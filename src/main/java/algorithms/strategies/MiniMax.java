@@ -37,7 +37,6 @@ public class MiniMax {
      *
      * @param gameState    The current state of the game
      * @param heuristics   The heuristic used to evaluate game states
-     * @param searchTime   The maximum time allowed for search in milliseconds
      * @param searchdepth  The maximum depth to search in the game tree
      */
     public MiniMax(GameState gameState, Heuristics heuristics, int searchdepth){

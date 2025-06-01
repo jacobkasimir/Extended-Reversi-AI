@@ -40,7 +40,6 @@ public class AlphaBeta {
      *
      * @param gameState The current state of the game
      * @param heuristics The heuristic evaluation function to use
-     * @param searchTime Maximum time allowed for search in milliseconds
      * @param searchdepth Maximum depth to search in the game tree
      */
     public AlphaBeta(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo){
