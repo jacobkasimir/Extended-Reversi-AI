@@ -5,6 +5,7 @@ import java.util.Collections;
 import algorithms.datastructures.IntLinkedList;
 import algorithms.datastructures.ListNode;
 import control.Coder;
+import control.Constants;
 import gamestate.GameState;
 import validation.MoveVerifier;
 
@@ -201,6 +202,15 @@ public class Node implements Comparable<Node>{
      * @return The heuristic value of the best move found
      */
     public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info) {
+        if(info.isTimeout()){
+            return -1;
+        }
+        long currentTime = System.nanoTime()/1000000;
+        if(currentTime - info.getStartTime() + Constants.TIMELIMIT_TIMEOUT >= info.getTimeLimit()){
+            info.setTimeout(true);
+            return -1;
+        }
+
         if (searchDepth > 0) {
             
             //update gameState by performing the move of this node

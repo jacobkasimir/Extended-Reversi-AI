@@ -173,7 +173,7 @@ public class GameClient {
             MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
             int moveMiniMax = miniMax.chooseMove();
 
-            SearchInfo info = new SearchInfo(depthLimit);
+            SearchInfo info = new SearchInfo(depthLimit, Integer.MAX_VALUE, 0);
 
             AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit, info);
             int moveAlphaBeta = alphaBeta.chooseMove();
@@ -185,7 +185,7 @@ public class GameClient {
 
         } else {
             if(timeLimit == 0){
-                SearchInfo info = new SearchInfo(depthLimit);
+                SearchInfo info = new SearchInfo(depthLimit, Integer.MAX_VALUE, 0);
                 AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit, info);
                 int moveAlphaBeta = alphaBeta.chooseMove();
                 return moveAlphaBeta;

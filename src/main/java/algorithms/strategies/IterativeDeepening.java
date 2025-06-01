@@ -1,7 +1,6 @@
 package algorithms.strategies;
 import control.Constants;
 import gamestate.GameState;
-import validation.MoveVerifier;
 
 public class IterativeDeepening {
 
@@ -21,6 +20,7 @@ public class IterativeDeepening {
 
         int currentDepth = 1;
         int resultMove = 0; 
+        int posResultMove;
 
 
         while (true) {
@@ -31,9 +31,16 @@ public class IterativeDeepening {
 
             long startTimeAlphaBeta = System.nanoTime(); //start Timer for one iteration
 
-            SearchInfo info = new SearchInfo(currentDepth);
+            SearchInfo info = new SearchInfo(currentDepth, timeLimit, startTime/1000000);
             AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, timeLimit, currentDepth, info);
-            resultMove = alphaBeta.chooseMove();
+            posResultMove = alphaBeta.chooseMove();
+
+            if(info.isTimeout()){   //check if timeout flag is set
+                return resultMove;
+            }else{
+                resultMove = posResultMove;
+            }
+
             currentDepth++;
 
 
@@ -57,7 +64,8 @@ public class IterativeDeepening {
 
             long timeLeft = timeLimit - timeSinceStart/1000000;
 
-            
+            System.out.println("We believe to have: " + timeLeft);  //for testing
+
             if (duration * estimatedBranchingFactor + Constants.TIMELIMIT_SAFETY_OFFSET >= timeLeft) {
                 break;
             }

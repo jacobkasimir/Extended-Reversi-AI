@@ -6,6 +6,16 @@ public class SearchInfo {
     
     private int maxDepth;
     private boolean reachedBombPhase;
+    private final long startTime;
+    private final int timeLimit;
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public int getTimeLimit() {
+        return timeLimit;
+    }
 
     private ArrayList<Integer> averageBranchingAtDepth; //? [1,2,3,4,5,5]
     private ArrayList<Integer> numberOfValuesAverageBranchingFactorAtDepth; //? 
@@ -14,9 +24,20 @@ public class SearchInfo {
     private int minBranchingFactor;
     private int overallAverageBranchingFactor;
     private int numberOfValuesAverageBranchingFactor;
+    private boolean timeout = false;
 
 
-    public SearchInfo(int targetDepth){
+    public boolean isTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(boolean timeout) {
+        this.timeout = timeout;
+    }
+
+    public SearchInfo(int targetDepth, int timeLimit, long startTime){
+        this.timeLimit = timeLimit;
+        this.startTime = startTime;
         maxDepth = targetDepth;
         reachedBombPhase = false;
         maxBranchingFactor = 0;
