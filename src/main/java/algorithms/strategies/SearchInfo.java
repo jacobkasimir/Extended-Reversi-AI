@@ -1,114 +1,107 @@
 package algorithms.strategies;
-
-import java.util.ArrayList;
-
+/**
+ * Stores the necessary information required during the iterative deepening search process.
+ */
 public class SearchInfo {
     
-    private int maxDepth;
-    private boolean reachedBombPhase;
     private final long startTime;
     private final int timeLimit;
 
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public int getTimeLimit() {
-        return timeLimit;
-    }
-
-    private ArrayList<Integer> averageBranchingAtDepth; //? [1,2,3,4,5,5]
-    private ArrayList<Integer> numberOfValuesAverageBranchingFactorAtDepth; //? 
-
+    private boolean reachedBombPhase;
     private int maxBranchingFactor;
-    private int minBranchingFactor;
-    private int overallAverageBranchingFactor;
-    private int numberOfValuesAverageBranchingFactor;
     private boolean timeout = false;
 
-
-    public boolean isTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(boolean timeout) {
-        this.timeout = timeout;
-    }
-
-    public SearchInfo(int targetDepth, int timeLimit, long startTime){
+    /**
+     * Creates a new SearchInfo Instance with the specified parameters.
+     * 
+     * @param timeLimit     the time limit given by the server
+     * @param startTime     the timestamp when iterative deepening begins
+     */
+    public SearchInfo(int timeLimit, long startTime){
         this.timeLimit = timeLimit;
         this.startTime = startTime;
-        maxDepth = targetDepth;
         reachedBombPhase = false;
         maxBranchingFactor = 0;
-        minBranchingFactor = Integer.MAX_VALUE;
-        overallAverageBranchingFactor = 0;
-        numberOfValuesAverageBranchingFactor = 0;
-        averageBranchingAtDepth = new ArrayList<>(targetDepth); //muss evtl. angepasst werden, wenn man nicht für jede iteration ein neues objekt erstellen will
-        numberOfValuesAverageBranchingFactorAtDepth = new ArrayList<>(targetDepth);
-        for (int i = 0; i < targetDepth; i++) {
-            averageBranchingAtDepth.add(0);
-            numberOfValuesAverageBranchingFactorAtDepth.add(0);
-        }
     }
 
-    public void addNewBranchingFactor(int branching, int currentDepth){
+    /**
+     * Adds a new branching factor to the current instance.
+     * Calls all further methods to update the different attributes.
+     * 
+     * @param branching     the branching factor that should be stored in the SearchInfo instance
+     */
+    public void addNewBranchingFactor(int branching){
         updateMaxBranchingFactor(branching);
-        updateMinBranchingFactor(branching);
-        updateOverallBranchingFactor(branching);
-        updateAverageBranchingAtDepth(branching, currentDepth);
     }
 
-    public int getAverageBranchingAtDepth(int depth){ //evtl. +1 für die depth, je nachdem wie bei uns definert
-        if (depth != 0) {
-            depth--;
-        }
-        return averageBranchingAtDepth.get(depth);
-    }
-
-    private void updateAverageBranchingAtDepth(int branching, int depth){
-        if (depth != 0) {
-            depth--;
-        }
-        int tmp = averageBranchingAtDepth.get(depth) * numberOfValuesAverageBranchingFactorAtDepth.get(depth);
-        numberOfValuesAverageBranchingFactorAtDepth.set(depth, numberOfValuesAverageBranchingFactorAtDepth.get(depth) + 1);
-        tmp += branching;
-        averageBranchingAtDepth.set(depth, tmp / numberOfValuesAverageBranchingFactorAtDepth.get(depth));
-    }
-    
+    /**
+     * Returns the maximum branching factor.
+     * 
+     * @return      the maximum branching factor in the search tree.
+     */
     public int getMaxBranchingFactor(){
         return maxBranchingFactor;
     }
 
-    private void updateMaxBranchingFactor(int branching){ //evtl. wieder public machen,auch unten, aber klüger alles über eine methode -> addNew...()
+    /**
+     * Updates the maximum branching factor by comparing it to the new one.
+     * 
+     * @param branching     the new braching factor to add
+     */
+    private void updateMaxBranchingFactor(int branching){ 
         maxBranchingFactor = Math.max(maxBranchingFactor, branching);
     }
 
-    public int getMinBranchingFactor(){
-        return minBranchingFactor;
-    }
-
-    private void updateMinBranchingFactor(int branching){
-        minBranchingFactor = Math.min(minBranchingFactor, branching);
-    }
-
-    public int getOverallBranchingFactor(){
-        return overallAverageBranchingFactor;
-    }
-
-    private void updateOverallBranchingFactor(int branching){
-        int tmp = overallAverageBranchingFactor * numberOfValuesAverageBranchingFactor;
-        numberOfValuesAverageBranchingFactor++;
-        tmp += branching;
-        overallAverageBranchingFactor = tmp / numberOfValuesAverageBranchingFactor;
-    }
-
+    /**
+     * Returns if we reached the bombing phase (phase 2) with one branch in the search tree. 
+     * 
+     * @return      True if we reached phase 2 with at least one branch in the search tree
+     */
     public boolean isBombPhaseReached(){
         return reachedBombPhase;
     }
 
+    /**
+     * Marks that the bomb phase has been reached during the search process.
+     */
     public void setReachedBombPhase(){
         reachedBombPhase = true;
+    }
+
+    /**
+     * Returns whether the time limit has been exceeded and the recursive call should be aborted.
+     * 
+     * @return      True if the recursive call should be aborted.
+     */
+    public boolean isTimeout() {
+        return timeout;
+    }
+
+    /**
+     * Sets the timeout flag indicating whether the time limit has been exceeded.
+     * 
+     * @param timeout   True if a timeout will be reached
+     */
+    public void setTimeout(boolean timeout) {
+        this.timeout = timeout;
+    }
+
+    /**
+     * Returns the the timestamp when iterative deepening begins.
+     * 
+     * @return      the timestamp when iterative deepening begins
+     */
+    public long getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Returns the time limit given by the server.
+     * 
+     * @return      the time limit given by the server
+     */
+    public int getTimeLimit() {
+        return timeLimit;
     }
 
 }
