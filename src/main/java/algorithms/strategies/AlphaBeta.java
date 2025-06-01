@@ -61,12 +61,12 @@ public class AlphaBeta {
         ArrayList<Node> children = new ArrayList<>();
         ListNode m = moves.getHead();
 
-        //for each of our moves, do:
+        // for each of our moves, do:
         while (m != null) {
-            //clone game state
+            // clone game state
             GameState newGameState = gameState.clone();
 
-            //create nodes for each possible move, with the cloned game state
+            // create nodes for each possible move, with the cloned game state
             children.add(new Node(m.getValue(), root, newGameState, heuristics));
             m = m.getNext();
         }
@@ -77,13 +77,14 @@ public class AlphaBeta {
         info.addNewBranchingFactor(children.size());
     }
 
-
     /**
      * Performs the alpha-beta search and returns the best move found.
      *
-     * <p>This method initiates the alpha-beta pruning algorithm from the root node,
+     * <p>
+     * This method initiates the alpha-beta pruning algorithm from the root node,
      * evaluating all possible moves to the specified depth. It uses the minimax
-     * principle with pruning to efficiently search the game tree.</p>
+     * principle with pruning to efficiently search the game tree.
+     * </p>
      *
      * @return The encoded move value representing the best move found
      */
@@ -95,9 +96,10 @@ public class AlphaBeta {
         // Iterate over all possible child nodes (moves) of the root node
         for (Node child : root.getNextMoves()) {
             // Perform alpha-beta pruning on this node and retrieve its score
-            int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha, beta, info);
+            int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha,
+                    beta, info);
 
-            //case of a timeout
+            // case of a timeout
             if (info.isTimeout()) {
                 return -1;
             }
@@ -106,7 +108,6 @@ public class AlphaBeta {
                 info.setTimeout(true);
                 return -1;
             }
-
 
             // Update the result if the score is higher than the current maxValue
             if (maxValue < childScore) {

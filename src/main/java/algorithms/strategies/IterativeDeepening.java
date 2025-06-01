@@ -4,12 +4,14 @@ import control.Constants;
 import gamestate.GameState;
 
 /**
- * This class handles the iterative deepening strategie in order to calculate a move under a given time limit
+ * This class handles the iterative deepening strategie in order to calculate a
+ * move under a given time limit
  */
 public class IterativeDeepening {
 
     /**
-     * This method does an iterative search depth deepening in order to find a move and be abe to return it in time
+     * This method does an iterative search depth deepening in order to find a move
+     * and be abe to return it in time
      *
      * @param timeLimit  The given time limit for this move request
      * @param heuristics The heuristics instance
@@ -18,24 +20,25 @@ public class IterativeDeepening {
      */
     public static int findMove(int timeLimit, Heuristics heuristics, GameState state) {
 
-        long startTimeMS = System.nanoTime() / 1000000; //start time for estimation of left time
+        long startTimeMS = System.nanoTime() / 1000000; // start time for estimation of left time
 
-        int currentDepth = 1; //starting depth
+        int currentDepth = 1; // starting depth
         int resultMove = 0;
         int posResultMove = 0;
 
         while (true) {
 
-            System.gc(); // trigger the garbage collector manually so that we wont be interrupted during ourcomputations
+            System.gc(); // trigger the garbage collector manually so that we wont be interrupted during
+                         // ourcomputations
 
-            long startTimeAlphaBetaMS = System.nanoTime() / 1000000; //start Timer for one iteration
+            long startTimeAlphaBetaMS = System.nanoTime() / 1000000; // start Timer for one iteration
 
-            //calculate a move with a certain depth via Alpha Beta Pruning
+            // calculate a move with a certain depth via Alpha Beta Pruning
             SearchInfo info = new SearchInfo(timeLimit, startTimeMS);
             AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info);
             posResultMove = alphaBeta.chooseMove();
 
-            if (info.isTimeout()) {   //check if timeout flag is set
+            if (info.isTimeout()) { // check if timeout flag is set
                 return resultMove;
             } else {
                 resultMove = posResultMove;
@@ -43,24 +46,35 @@ public class IterativeDeepening {
 
             currentDepth++;
 
-            long endTimeAlphaBetaMS = System.nanoTime() / 1000000; //end timer for this iteration
+            long endTimeAlphaBetaMS = System.nanoTime() / 1000000; // end timer for this iteration
 
             long duration = endTimeAlphaBetaMS - startTimeAlphaBetaMS;
 
-            int estimatedBranchingFactor = info.getMaxBranchingFactor(); //current estimation is the maximum in the entire tree
+            int estimatedBranchingFactor = info.getMaxBranchingFactor(); // current estimation is the maximum in the
+                                                                         // entire tree
 
-            estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; //add a safety factor
+            estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; // add a safety factor
 
             if (info.isBombPhaseReached()) {
-                estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth()); //estimate the branching factor to the map size for phase 2
+                estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth()); // estimate
+                                                                                                                   // the
+                                                                                                                   // branching
+                                                                                                                   // factor
+                                                                                                                   // to
+                                                                                                                   // the
+                                                                                                                   // map
+                                                                                                                   // size
+                                                                                                                   // for
+                                                                                                                   // phase
+                                                                                                                   // 2
             }
 
             long timeSinceStartMS = (System.nanoTime() / 1000000) - startTimeMS;
 
-            long timeLeft = timeLimit - timeSinceStartMS; //used for estimation below
+            long timeLeft = timeLimit - timeSinceStartMS; // used for estimation below
 
             if (duration * estimatedBranchingFactor + Constants.TIMELIMIT_SAFETY_OFFSET >= timeLeft) {
-                break; //The estimated calculation time for finding the next move is to high
+                break; // The estimated calculation time for finding the next move is to high
             }
 
         }
