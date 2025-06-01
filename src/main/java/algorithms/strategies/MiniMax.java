@@ -1,8 +1,10 @@
 package algorithms.strategies;
 
 import java.util.ArrayList;
+
+import algorithms.datastructures.IntLinkedList;
+import algorithms.datastructures.ListNode;
 import gamestate.GameState;
-import algorithms.datastructures.*;
 import validation.MoveVerifier;
 /**
  * Implementation of the MiniMax algorithm.
@@ -29,25 +31,21 @@ public class MiniMax {
     /** Maximum search depth for the MiniMax algorithm */
     private final int searchdepth;
 
-    /** Maximum search time in milliseconds */
-    private int searchTime;
 
     /**
      * Constructs a new MiniMax decision tree with the given game state and parameters.
      *
      * @param gameState    The current state of the game
      * @param heuristics   The heuristic used to evaluate game states
-     * @param searchTime   The maximum time allowed for search in milliseconds
      * @param searchdepth  The maximum depth to search in the game tree
      */
-    public MiniMax(GameState gameState, Heuristics heuristics, int searchTime, int searchdepth){
+    public MiniMax(GameState gameState, Heuristics heuristics, int searchdepth){
         this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId());
         this.current_GameState = gameState;
         this.heuristics = heuristics;
         //create the root node for the branched tree of possible moves (or game states)
         this.root = new Node(0, null, gameState.clone(), heuristics);
         this.searchdepth = searchdepth;
-        this.searchTime = searchTime;
 
         //should store all children (possible game states) of the root node
         ArrayList<Node> children = new ArrayList<>();

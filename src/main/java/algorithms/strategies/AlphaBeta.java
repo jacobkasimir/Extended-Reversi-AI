@@ -32,9 +32,7 @@ public class AlphaBeta {
     /** Maximum depth of search in the game tree */
     private final int searchdepth;
     
-    /** Maximum time allowed for search in milliseconds */
-    private final int searchTime;
-
+    /** An object that holds all information for the optimal search time */
     private final SearchInfo info;
 
     /**
@@ -42,21 +40,19 @@ public class AlphaBeta {
      *
      * @param gameState The current state of the game
      * @param heuristics The heuristic evaluation function to use
-     * @param searchTime Maximum time allowed for search in milliseconds
      * @param searchdepth Maximum depth to search in the game tree
      */
-    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchTime, int searchdepth, SearchInfo searchInfo){
+    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo){
         this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId());
         this.current_GameState = gameState;
         this.heuristics = heuristics;
         this.root = new Node(0, null, gameState.clone(), heuristics);
         this.searchdepth = searchdepth;
-        this.searchTime = searchTime;
         this.info = searchInfo;
 
         ArrayList<Node> children = new ArrayList<>();
-
         ListNode m = moves.getHead();
+
         //for each of our moves, do:
         while (m != null){
             //clone game state
@@ -67,10 +63,10 @@ public class AlphaBeta {
             m = m.getNext();
         }
 
-        Collections.sort(children);
+        Collections.sort(children, Collections.reverseOrder());
         // add all nodes (possible states) to the root node
         root.setNextMoves(children);
-        info.addNewBranchingFactor(children.size(), searchdepth);
+        info.addNewBranchingFactor(children.size());
     }
 
     
@@ -94,15 +90,17 @@ public class AlphaBeta {
             // Perform alpha-beta pruning on this node and retrieve its score
             int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha, beta, info);
 
+            //case of a timeout
             if(info.isTimeout()){
                 return -1;
             }
             long currentTime = System.nanoTime()/1000000;
-            if(currentTime-info.getStartTime() + Constants.TIMELIMIT_TIMEOUT >= info.getTimeLimit()){
+            if(currentTime-info.getStartTime() + Constants.TIMELIMIT_TIMEOUT_OFFSET >= info.getTimeLimit()){
                 info.setTimeout(true);
                 return -1;
             }
-
+           
+            
             // Update the result if the score is higher than the current maxValue
             if(maxValue < childScore) {
                 result = child.getMove();

@@ -170,12 +170,12 @@ public class GameClient {
     public int calculateMove() {
         if(compareOn){
 
-            MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, timeLimit, depthLimit);
+            MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, depthLimit);
             int moveMiniMax = miniMax.chooseMove();
 
-            SearchInfo info = new SearchInfo(depthLimit, Integer.MAX_VALUE, 0);
+            SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
 
-            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit, info);
+            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info);
             int moveAlphaBeta = alphaBeta.chooseMove();
 
             if (moveMiniMax != moveAlphaBeta) {
@@ -184,12 +184,12 @@ public class GameClient {
             return moveAlphaBeta;
 
         } else {
-            if(timeLimit == 0){
-                SearchInfo info = new SearchInfo(depthLimit, Integer.MAX_VALUE, 0);
-                AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, timeLimit, depthLimit, info);
+            if(timeLimit == 0){ //case for only depth limit
+                SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
+                AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info);
                 int moveAlphaBeta = alphaBeta.chooseMove();
                 return moveAlphaBeta;
-            }else{
+            }else{  //case for only time limit
                 return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState);
             }
 

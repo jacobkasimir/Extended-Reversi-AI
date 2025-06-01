@@ -1,7 +1,5 @@
 package algorithms.strategies;
 
-
-
 import algorithms.datastructures.IntLinkedList;
 import algorithms.datastructures.ListNode;
 import control.Coder;
@@ -21,7 +19,7 @@ public class Heuristics {
     private final int initialBombs; //initial number of bombs
     private final int initialOverrides; //initial number of override stones
     private final int initalNumberPlayers; //initial numbers of players
-    private int numberBonusTiles;
+    private int numberBonusTiles;   //initial number of bonus tiles on the map
 
     /**
      * Constructs a new Heuristics object and detects the corner positions on the map.
@@ -310,7 +308,7 @@ public class Heuristics {
      * @return A combined heuristic score.
      */
     public int evaluate(GameState state, int playerId) {
-        if(state.attributes().isPhase1()){
+        if(state.attributes().isPhase1()){ //evaluation for Phase 1
             //scores of heuristics
             double[] res = mapRelatedHeuristicsPhase1(state.mapController(), playerId);
             double ownToOverall = res[0];
@@ -325,8 +323,6 @@ public class Heuristics {
             double weightBombs = 400;
             double weightOverrides = 200;
 
-            double bombradiusRatio = (state.mapController().getBombRadius() * 2 +1)^2 / (state.mapController().getWidth() * state.mapController().getHeight());
-            
             double score = 0;
 
             score += weightCorners * ratioOfCornersCaptured(state.mapController(), playerId);
@@ -338,7 +334,7 @@ public class Heuristics {
 
             return (int) Math.round(score * 1000); // 0-1000 points
         }
-        else{
+        else{ //evaluation for Phase 2
             double[] res = mapRelatedHeuristicsPhase2(state, playerId);
             double ownToOverall = res[0];
             double ownToOpponents = res[1];
@@ -367,16 +363,14 @@ public class Heuristics {
 
 
 
-    private boolean insideMap(int x, int y, MapController map) {
-        return x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight();
-    }
+    
 
 
 
 
 
-    ///////////////////////////////////////////////////// OLD CODE ///////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////// OLD CODE ///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     
 

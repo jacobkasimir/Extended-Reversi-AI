@@ -2,72 +2,64 @@ package algorithms.strategies;
 import control.Constants;
 import gamestate.GameState;
 
+/**
+ * This class handles the iterative deepening strategie in order to calculate a move under a given time limit
+ */
 public class IterativeDeepening {
 
     /**
-     * //TODO
+     * This method does an iterative search depth deepening in order to find a move and be abe to return it in time
      * 
-     * @param timeLimit     the give time limit for this move request
-     * @param heuristics    the heuristics instance
-     * @param state         the current game state
-     * @return              the computed move
+     * @param timeLimit     The given time limit for this move request
+     * @param heuristics    The heuristics instance
+     * @param state         The current game state
+     * @return              The computed move
      */
     public static int findMove(int timeLimit, Heuristics heuristics, GameState state){
 
-        long startTime = System.nanoTime();
+        long startTimeMS = System.nanoTime()/1000000; //start time for estimation of left time 
 
-        System.gc();
-
-        int currentDepth = 1;
+        int currentDepth = 1; //starting depth
         int resultMove = 0; 
-        int posResultMove;
-
+        int posResultMove = 0;
 
         while (true) {
 
+            System.gc(); // trigger the garbage collector manually so that we wont be interrupted during ourcomputations
 
-            System.gc();
+            long startTimeAlphaBetaMS = System.nanoTime()/1000000; //start Timer for one iteration
 
-
-            long startTimeAlphaBeta = System.nanoTime(); //start Timer for one iteration
-
-            SearchInfo info = new SearchInfo(currentDepth, timeLimit, startTime/1000000);
-            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, timeLimit, currentDepth, info);
+            //calculate a move with a certain depth via Alpha Beta Pruning
+            SearchInfo info = new SearchInfo(timeLimit, startTimeMS);
+            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info);
             posResultMove = alphaBeta.chooseMove();
 
-            if(info.isTimeout()){   //check if timeout flag is set
+            if(info.isTimeout()) {   //check if timeout flag is set
                 return resultMove;
-            }else{
+            } else {
                 resultMove = posResultMove;
             }
 
             currentDepth++;
 
+            long endTimeAlphaBetaMS = System.nanoTime()/1000000; //end timer for this iteration
 
-            long endTimeAlphaBeta = System.nanoTime(); //end timer for this iteration
-
-            long duration = endTimeAlphaBeta - startTimeAlphaBeta;
-
-
-            duration /= 1000000;
+            long duration = endTimeAlphaBetaMS - startTimeAlphaBetaMS;
 
             int estimatedBranchingFactor = info.getMaxBranchingFactor(); //current estimation is the maximum in the entire tree
 
             estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; //add a safety factor
 
-            if(info.isBombPhaseReached()){
-                estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth());
+            if(info.isBombPhaseReached()) {
+                estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth()); //estimate the branching factor to the map size for phase 2
             } 
 
-           
-            long timeSinceStart = System.nanoTime() - startTime;
+            long timeSinceStartMS = (System.nanoTime()/1000000) - startTimeMS;
 
-            long timeLeft = timeLimit - timeSinceStart/1000000;
-
-            System.out.println("We believe to have: " + timeLeft);  //for testing
+            long timeLeft = timeLimit - timeSinceStartMS; //used for estimation below
 
             if (duration * estimatedBranchingFactor + Constants.TIMELIMIT_SAFETY_OFFSET >= timeLeft) {
-                break;
+                break; //The estimated calculation time for finding the next move is to high
             }
 
         }
