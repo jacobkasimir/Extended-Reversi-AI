@@ -1,11 +1,10 @@
 package algorithms.strategies;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import algorithms.datastructures.IntLinkedList;
 import algorithms.datastructures.ListNode;
+import control.Constants;
 import gamestate.GameState;
 import validation.MoveVerifier;
 
@@ -94,6 +93,15 @@ public class AlphaBeta {
         for (Node child : root.getNextMoves()) {
             // Perform alpha-beta pruning on this node and retrieve its score
             int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha, beta, info);
+
+            if(info.isTimeout()){
+                return -1;
+            }
+            long currentTime = System.nanoTime()/1000000;
+            if(currentTime-info.getStartTime() + Constants.TIMELIMIT_TIMEOUT >= info.getTimeLimit()){
+                info.setTimeout(true);
+                return -1;
+            }
 
             // Update the result if the score is higher than the current maxValue
             if(maxValue < childScore) {
