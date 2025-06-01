@@ -189,7 +189,7 @@ public class Node implements Comparable<Node>{
             return -1;
         }
         long currentTime = System.nanoTime()/1000000;
-        if(currentTime - info.getStartTime() + Constants.TIMELIMIT_TIMEOUT >= info.getTimeLimit()){
+        if(currentTime - info.getStartTime() + Constants.TIMELIMIT_TIMEOUT_OFFSET >= info.getTimeLimit()){
             info.setTimeout(true);
             return -1;
         }
