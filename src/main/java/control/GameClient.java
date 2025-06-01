@@ -190,7 +190,7 @@ public class GameClient {
             int moveAlphaBeta = alphaBeta.chooseMove();
 
             if (moveMiniMax != moveAlphaBeta) {
-                System.err.println("Unterschiedliches Ergebnis! MiniMax: " + moveMiniMax + " | AlphaBeta: " + moveAlphaBeta);
+                System.err.println("Different Results! MiniMax: " + moveMiniMax + " | AlphaBeta: " + moveAlphaBeta);
             }
             return moveAlphaBeta;
 
@@ -198,8 +198,7 @@ public class GameClient {
             if (timeLimit == 0) { //case for only depth limit
                 SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
                 AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info);
-                int moveAlphaBeta = alphaBeta.chooseMove();
-                return moveAlphaBeta;
+                return alphaBeta.chooseMove();
             } else {  //case for only time limit
                 return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState);
             }
@@ -209,14 +208,14 @@ public class GameClient {
     }
 
     /**
-     * Switches the game to phase 2 when message is received by the server
+     * Switches the game to phase 2 when the server receives a message
      */
     public void endPhase() {
         current_gameState.attributes().setGamePhase(2);
     }
 
     /**
-     * Is called when server sends the game ending message
+     * Is called when the server sends the game ending message
      */
     public void endGame() {
         // Possible additions for game evaluation?

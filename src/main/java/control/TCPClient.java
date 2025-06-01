@@ -23,7 +23,7 @@ public class TCPClient {
      */
     public static void connect(InetAddress server, int port, boolean compare, int depthLimit) throws IOException {
         try (Socket socket = new Socket(server, port)) {
-            System.out.println("Verbunden mit Server " + server + ":" + port);
+            System.out.println("Connected to server " + server + ":" + port);
 
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
@@ -33,14 +33,14 @@ public class TCPClient {
             out.writeByte(1);
             out.writeInt(1);
             out.writeByte(Constants.GROUP_NUMBER);
-            System.out.println("Gruppe gesendet: " + Constants.GROUP_NUMBER);
+            System.out.println("Group number was send: " + Constants.GROUP_NUMBER);
 
             while (true) {
                 byte type;
                 try {
                     type = in.readByte();
                 } catch (IOException e) {
-                    System.out.println("Verbindung beendet.");
+                    System.out.println("Connection terminated.");
                     break;
                 }
 
@@ -63,7 +63,7 @@ public class TCPClient {
                     case 4 -> {
                         int timeLimit = in.readInt();
                         byte maxDepth = in.readByte();
-                        System.out.println("Move Request erhalten - Zeit: " + timeLimit + ", Tiefe: " + maxDepth);
+                        System.out.println("Move Request received - Time: " + timeLimit + ", Depth: " + maxDepth);
 
                         game.setCalculateParameters(timeLimit, maxDepth);
 
@@ -74,7 +74,7 @@ public class TCPClient {
                         out.writeShort(Coder.decodeX(move));
                         out.writeShort(Coder.decodeY(move));
                         out.writeByte(Coder.decodeSpecial(move));
-                        System.out.println("Zug gesendet: (" + Coder.decodeX(move) + "," + Coder.decodeY(move) + "), Spezial: " + Coder.decodeSpecial(move));
+                        System.out.println("Move was send: (" + Coder.decodeX(move) + "," + Coder.decodeY(move) + "), special: " + Coder.decodeSpecial(move));
                     }
 
                     case 6 -> {
@@ -84,29 +84,29 @@ public class TCPClient {
                         byte mplayerId = in.readByte();
                         int MadeMove = Coder.encodeMove(mx, my, mspecial, mplayerId);
                         game.updateGame(MadeMove);
-                        System.out.println("Spieler " + mplayerId + " zog auf (" + mx + "," + my + ") mit Spezialwert " + mspecial);
+                        System.out.println("PLayer " + mplayerId + " moved to (" + mx + "," + my + ") with special value " + mspecial);
                     }
 
                     case 7 -> {
                         byte disqualifiedId = in.readByte();
                         game.playerDisqualified(disqualifiedId);
-                        System.out.println("Spieler " + disqualifiedId + " wurde disqualifiziert.");
+                        System.out.println("Player " + disqualifiedId + " was disqualified.");
                     }
 
                     case 8 -> {
                         game.endPhase();
-                        System.out.println(">>> Phase 1 beendet");
+                        System.out.println(">>> Phase 1 finished");
                     }
 
                     case 9 -> {
                         game.endGame();
-                        System.out.println(">>> Spiel beendet");
+                        System.out.println(">>> Game finished");
                         socket.close();
                         return;
                     }
 
                     default -> {
-                        System.out.println("Unbekannter Typ: " + type + ", " + length + " Bytes übersprungen.");
+                        System.out.println("Unknown Type: " + type + ", " + length + " bytes skipped.");
                         in.skipBytes(length);
                     }
                 }

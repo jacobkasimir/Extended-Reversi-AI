@@ -84,10 +84,10 @@ public class Transitions {
      *
      * @param xTile         First tile X-coordinate.
      * @param yTile         First tile Y-coordinate.
-     * @param direcTile     Direction from first tile (0-7).
+     * @param direcTile     Direction from the first tile (0-7).
      * @param xNextTile     Second tile X-coordinate.
      * @param yNextTile     Second tile Y-coordinate.
-     * @param direcNextTile Direction from second tile (0-7).
+     * @param direcNextTile Direction from the second tile (0-7).
      */
     public void setTransition(int xTile, int yTile, int direcTile, int xNextTile, int yNextTile, int direcNextTile) {
         if (direcTile < Constants.NUMBER_OF_DIRECTIONS && direcTile >= 0 && direcNextTile < Constants.NUMBER_OF_DIRECTIONS && direcNextTile >= 0) {
@@ -124,7 +124,7 @@ public class Transitions {
 
     /**
      * Checks equality with another object.
-     * Note: Current implementation always returns true (because only one transitions object is instantiiated).
+     * Note: The Current implementation always returns true (because only one transition object is instantiated).
      *
      * @param obj Object to compare with.
      * @return true if equal, false otherwise.

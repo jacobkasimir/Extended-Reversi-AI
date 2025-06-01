@@ -1,6 +1,3 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
-
 import algorithms.datastructures.IntLinkedList;
 import algorithms.strategies.Heuristics;
 import control.Coder;
@@ -8,6 +5,9 @@ import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 import gamestate.map.Transitions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HeuristicsTest {
 
@@ -15,7 +15,7 @@ public class HeuristicsTest {
     public void mapRelatedHeuristicsPhase1Test1() {
 
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "1 1 1 1 1 1 1 1",
                         "2 2 2 2 2 2 2 2",
                         "1 1 1 1 1 1 1 1",
@@ -32,7 +32,7 @@ public class HeuristicsTest {
         attributes.setOurPlayerId((1));
 
         Heuristics heuristics = new Heuristics(new GameState(map, attributes), 1, 1, 2);
-        double values[] = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 1);
+        double[] values = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 1);
 
         assertEquals(0.5, values[0]);
 
@@ -44,7 +44,7 @@ public class HeuristicsTest {
     @Test
     public void mapRelatedHeuristicsPhase1Test2() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "1 1 1 1 1 1 1 1",
                         "2 2 2 2 2 2 2 2",
                         "3 3 3 3 3 3 3 3",
@@ -61,7 +61,7 @@ public class HeuristicsTest {
         attributes.setOurPlayerId((byte) 6);
 
         Heuristics heuristics = new Heuristics(new GameState(map, attributes), 1, 1, 8);
-        double values[] = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 6);
+        double[] values = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 6);
 
         assertEquals(8 / 64.0, values[0]);
 
@@ -73,7 +73,7 @@ public class HeuristicsTest {
     @Test
     public void mapRelatedHeuristicsPhase1Test3() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "1 - 1 0 2 3 3 1",
                         "2 2 2 2 2 2 2 2",
                         "3 3 3 x 3 3 i 3",
@@ -90,7 +90,7 @@ public class HeuristicsTest {
         attributes.setOurPlayerId((byte) 4);
 
         Heuristics heuristics = new Heuristics(new GameState(map, attributes), 1, 1, 8);
-        double values[] = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 4);
+        double[] values = heuristics.mapRelatedHeuristicsPhase1(map, (byte) 4);
 
         assertEquals(6 / 56.0, values[0]);
 
@@ -102,7 +102,7 @@ public class HeuristicsTest {
     @Test
     public void amountOfCornersCapturedTest1() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -116,7 +116,7 @@ public class HeuristicsTest {
                 8, 8, 1);
 
         MapController mapOccupied = new MapController(
-                new String[] {
+                new String[]{
                         "1 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -143,7 +143,7 @@ public class HeuristicsTest {
     @Test
     public void amountOfCornersCapturedTest2() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -157,7 +157,7 @@ public class HeuristicsTest {
                 8, 8, 1);
 
         MapController mapOccupied = new MapController(
-                new String[] {
+                new String[]{
                         "1 0 0 1 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -183,7 +183,7 @@ public class HeuristicsTest {
     @Test
     public void amountOfCornersCapturedTest3() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "2 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 4 0",
@@ -197,7 +197,7 @@ public class HeuristicsTest {
                 8, 8, 1);
 
         MapController mapOccupied = new MapController(
-                new String[] {
+                new String[]{
                         "1 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -224,7 +224,7 @@ public class HeuristicsTest {
     @Test
     public void amountOfCornersCapturedTest4() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "1 0 0 0 0 0 0 4",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -238,7 +238,7 @@ public class HeuristicsTest {
                 8, 8, 1);
 
         MapController mapOccupied = new MapController(
-                new String[] {
+                new String[]{
                         "0 0 0 0 0 0 0 4",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -270,7 +270,7 @@ public class HeuristicsTest {
         result.add(Coder.encodeCoordinate(7, 7));
 
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -295,7 +295,7 @@ public class HeuristicsTest {
     @Test
     public void numberOfBombsTest() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -324,7 +324,7 @@ public class HeuristicsTest {
     @Test
     public void numberOfOverridesTest() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -350,14 +350,14 @@ public class HeuristicsTest {
         assertEquals(1 / 3.0, heuristics.ratioOverrides(attributes, 1));
     }
 
-    ///////////////////////////////////////////////// TESTS PHASE 2
-    ///////////////////////////////////////////////// //////////////////////////////////////////////////////////////////
+    /// ////////////////////////////////////////////// TESTS PHASE 2
+    /// ////////////////////////////////////////////// //////////////////////////////////////////////////////////////////
 
     @Test
     public void mapRelatedHeuristicsPhase2Test1() {
 
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "1 1 1 1 1 1 1 1",
                         "2 2 2 2 2 2 2 2",
                         "1 1 1 1 1 1 1 1",
@@ -387,7 +387,7 @@ public class HeuristicsTest {
     @Test
     public void mapRelatedHeuristicsPhase2Test2() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "1 1 1 1 1 1 1 1",
                         "2 2 2 2 2 2 2 2",
                         "3 3 3 3 3 3 3 3",
@@ -405,7 +405,7 @@ public class HeuristicsTest {
 
         GameState state = new GameState(map, attributes);
         Heuristics heuristics = new Heuristics(state, 1, 1, 8);
-        double values[] = heuristics.mapRelatedHeuristicsPhase2(state, (byte) 6);
+        double[] values = heuristics.mapRelatedHeuristicsPhase2(state, (byte) 6);
 
         assertEquals(1.0, values[2]);
 
@@ -417,7 +417,7 @@ public class HeuristicsTest {
     @Test
     public void mapRelatedHeuristicsPhase2Test4() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "1 - 7 0 2 3 3 4",
                         "4 2 4 7 4 4 2 4",
                         "3 4 4 x 4 4 i 3",
@@ -446,7 +446,7 @@ public class HeuristicsTest {
     @Test
     public void mapRelatedHeuristicsPhase2Test5() {
         MapController map = new MapController(
-                new String[] {
+                new String[]{
                         "1 - 7 0 2 3 3 4",
                         "4 2 4 7 4 4 2 4",
                         "3 4 4 x 4 4 i 3",
@@ -464,7 +464,7 @@ public class HeuristicsTest {
         GameState state = new GameState(map, attributes);
 
         Heuristics heuristics = new Heuristics(state, 1, 1, 8);
-        double values[] = heuristics.mapRelatedHeuristicsPhase2(state, (byte) 7);
+        double[] values = heuristics.mapRelatedHeuristicsPhase2(state, (byte) 7);
 
         assertEquals(8 / 27.0, values[2]);
 

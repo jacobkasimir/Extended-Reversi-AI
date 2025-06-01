@@ -1,14 +1,14 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import control.GameClient;
 import control.Coder;
+import control.GameClient;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import validation.MoveVerifier;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class GameAttributesTests {
 
@@ -17,12 +17,12 @@ public class GameAttributesTests {
     @BeforeEach
     public void setup() {
         GameClient gc = new GameClient();
-        gc.initTransitions(new String[] {
+        gc.initTransitions(new String[]{
                 "7 7 2 <-> 0 0 6",
-                "7 0 1 <-> 0 7 5" }, 8, 8);
+                "7 0 1 <-> 0 7 5"}, 8, 8);
 
         map = new MapController(
-                new String[] {
+                new String[]{
                         "- - - - - - - -",
                         "0 0 0 0 0 0 1 0",
                         "0 0 0 0 0 2 0 0",
@@ -30,7 +30,7 @@ public class GameAttributesTests {
                         "0 0 0 2 1 0 0 0",
                         "0 0 b 0 0 0 0 0",
                         "0 0 0 c 0 x 0 x",
-                        "0 0 0 b 0 0 0 0" },
+                        "0 0 0 b 0 0 0 0"},
                 gc.getTransitions(),
                 8,
                 8,
@@ -64,7 +64,7 @@ public class GameAttributesTests {
 
         gameState.attributes().updateState(move, map);
 
-        assertEquals(1 - 1, Coder.decodeplayerBombs(gameState.attributes().getPlayer(2)));
+        assertEquals(0, Coder.decodeplayerBombs(gameState.attributes().getPlayer(2)));
     }
 
     @Test

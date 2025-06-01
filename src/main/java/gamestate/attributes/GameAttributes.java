@@ -90,7 +90,7 @@ public class GameAttributes {
     }
 
     /**
-     * Set boolean value for phase 1.
+     * Set a boolean value for phase 1.
      *
      * @param phase1 true to enable phase 1, false for phase 2
      */
@@ -176,7 +176,7 @@ public class GameAttributes {
 
         if (phase1) {
             if (GameRules.occupied(move, map) || GameRules.isExpansion(map, move)) {
-                //Placing a stone on an occupied field or an expnsion tile requires an override
+                //Placing a stone on an occupied field or an expansion tile requires an override
                 setPlayer(Coder.encodePlayer(bombs, overrides - 1, id, inGame), playerId);
             } else if (special == 20) {
                 //getting an extra bomb through a bonus field

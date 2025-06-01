@@ -155,8 +155,7 @@ public class IntLinkedList {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof IntLinkedList)) return false;
-        IntLinkedList list = (IntLinkedList) obj;
+        if (!(obj instanceof IntLinkedList list)) return false;
 
         if (list.size != this.size) return false;
         ListNode temp = this.head;

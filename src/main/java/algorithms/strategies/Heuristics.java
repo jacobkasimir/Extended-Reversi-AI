@@ -168,14 +168,14 @@ public class Heuristics {
                 if (tile == (char) (playerId + '0'))
                     ownTiles++;
 
-                // for ratioOfOwnTilesToOthers() (index = 1)
+                    // for ratioOfOwnTilesToOthers() (index = 1)
                 else if (GameRules.isPlayer(tile))
                     opponentTiles++;
 
                 // for walls() (index = 2)
                 if (tile == (char) (playerId + '0')) {
                     for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) { // counting neighboring tiles that are
-                                                                               // occupied by the playerId
+                        // occupied by the playerId
 
                         // vertical and horizontal neighbors add value 2, diagonal only 1
                         int nextPosition = map.getNextTile(Coder.encodePosition(x, y, i));
@@ -201,9 +201,9 @@ public class Heuristics {
 
         // walls()
         double maxNeighboring = ownTiles * 12; // times twelve because horizontal and vertical neighbors are valued with
-                                               // 2 and diagonal neighbors with 1
+        // 2 and diagonal neighbors with 1
         res[2] = 1.0 - (countNeighboring / maxNeighboring); // inverted so that the bigger the ratio the better for the
-                                                            // player
+        // player
 
         return res;
     }

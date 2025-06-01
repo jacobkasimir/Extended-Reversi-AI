@@ -1,7 +1,7 @@
 package validation;
 
-import control.Constants;
 import control.Coder;
+import control.Constants;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 
@@ -43,7 +43,7 @@ public class GameRules {
      * @param move The move to check.
      * @param map  The map controller.
      * @return true, if the tile is occupied by another player or an extension
-     *         stone.
+     * stone.
      */
     public static boolean occupied(int move, MapController map) {
         char tile = getTileAtMove(map, move);
@@ -58,7 +58,7 @@ public class GameRules {
      *
      * @param attr The current game attributes.
      * @param move The move.
-     * @return true if player has bombs.
+     * @return true if a player has bombs.
      */
     public static boolean hasBomb(GameAttributes attr, int move) {
         return Coder.decodeplayerBombs(attr.getPlayer(Coder.decodePlayerId(move))) > 0;
@@ -80,7 +80,7 @@ public class GameRules {
      *
      * @param move The move.
      * @param attr Game attributes.
-     * @return true if move is from a valid player in-game.
+     * @return true if the move is from a valid player in-game.
      */
     public static boolean validPlayer(int move, GameAttributes attr) {
         int playerId = Coder.decodePlayerId(move);
@@ -93,7 +93,7 @@ public class GameRules {
      *
      * @param map  Map controller.
      * @param move The move.
-     * @return true if tile is an expansion tile.
+     * @return true if a tile is an expansion tile.
      */
     public static boolean isExpansion(MapController map, int move) {
         return getTileAtMove(map, move) == 'x';
@@ -142,7 +142,7 @@ public class GameRules {
             while (true) {
                 current = map.getNextTile(current); // one step forwards
                 if (current < 0)
-                    break; // outside of the map
+                    break; // outside the map
 
                 // decode the new position
                 int currentX = Coder.decodePosX(current);
@@ -152,8 +152,8 @@ public class GameRules {
 
                 // check if we reach a tile of the move's player
                 if (tile == (char) ('0' + playerId)) {
-                    // when at least one stone is captured and we did not reach the start tile we
-                    // can return true
+                    // when at least one stone is captured, and we did not reach the start tile,
+                    // we can return true
                     if (steps > 0 && (currentX != startX || currentY != startY))
                         return true;
                     break; // false for this direction
@@ -172,7 +172,7 @@ public class GameRules {
     }
 
     /**
-     * Helper method to get tile at the target position of a move.
+     * Helper method to get a tile at the target position of a move.
      *
      * @param map  Map controller.
      * @param move The move.

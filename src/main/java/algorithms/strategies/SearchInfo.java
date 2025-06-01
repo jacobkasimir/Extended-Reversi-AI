@@ -47,7 +47,7 @@ public class SearchInfo {
     /**
      * Updates the maximum branching factor by comparing it to the new one.
      *
-     * @param branching the new braching factor to add
+     * @param branching the new branching factor to add
      */
     private void updateMaxBranchingFactor(int branching) {
         maxBranchingFactor = Math.max(maxBranchingFactor, branching);
@@ -81,14 +81,14 @@ public class SearchInfo {
     /**
      * Sets the timeout flag indicating whether the time limit has been exceeded.
      *
-     * @param timeout True if a timeout will be reached
+     * @param timeout True if a timeout is reached
      */
     public void setTimeout(boolean timeout) {
         this.timeout = timeout;
     }
 
     /**
-     * Returns the the timestamp when iterative deepening begins.
+     * Returns the timestamp when iterative deepening begins.
      *
      * @return the timestamp when iterative deepening begins
      */

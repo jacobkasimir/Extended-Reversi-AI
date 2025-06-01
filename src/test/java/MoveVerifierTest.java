@@ -1,14 +1,14 @@
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import control.GameClient;
 import control.Coder;
+import control.GameClient;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import validation.MoveVerifier;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MoveVerifierTest {
 
@@ -26,11 +26,11 @@ public class MoveVerifierTest {
     @BeforeEach
     public void setUpGame() {
         gameClient = new GameClient();
-        gameClient.initTransitions(new String[] {
+        gameClient.initTransitions(new String[]{
                 "7 7 2 <-> 0 0 6",
-                "7 0 1 <-> 0 7 5" }, 8, 8);
+                "7 0 1 <-> 0 7 5"}, 8, 8);
         map = new MapController(
-                new String[] {
+                new String[]{
                         "- - - - - - - -",
                         "0 0 0 0 0 0 1 0",
                         "0 0 0 0 0 2 0 0",
@@ -38,7 +38,7 @@ public class MoveVerifierTest {
                         "0 0 0 2 1 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 c 0 x 0 x",
-                        "0 0 0 b 0 0 0 0" },
+                        "0 0 0 b 0 0 0 0"},
                 gameClient.getTransitions(),
                 8,
                 8,
@@ -87,12 +87,12 @@ public class MoveVerifierTest {
     @Test
     public void complexCapturing() {
         GameClient gc = new GameClient();
-        gc.initTransitions(new String[] {
+        gc.initTransitions(new String[]{
                 "0 3 6 <-> 5 0 7",
                 "4 7 4 <-> 7 2 3",
         }, 8, 8);
         MapController map2 = new MapController(
-                new String[] {
+                new String[]{
                         "0 0 0 0 0 2 0 0",
                         "0 0 0 0 0 0 2 0",
                         "0 0 0 0 0 0 0 2",
@@ -117,14 +117,14 @@ public class MoveVerifierTest {
     @Test
     public void capturingWithOneStone() {
         GameClient gc = new GameClient();
-        gc.initTransitions(new String[] {
+        gc.initTransitions(new String[]{
                 "7 7 2 <-> 0 0 6",
                 "7 0 1 <-> 0 7 5",
                 "0 0 6 <-> 7 0 2"
         }, 8, 8);
 
         MapController map2 = new MapController(
-                new String[] {
+                new String[]{
                         "2 2 2 2 0 2 2 2",
                         "0 0 0 0 0 0 1 0",
                         "0 0 0 0 0 2 0 0",
@@ -149,14 +149,14 @@ public class MoveVerifierTest {
     @Test
     public void overwriteTest() {
         GameClient gc = new GameClient();
-        gc.initTransitions(new String[] {
+        gc.initTransitions(new String[]{
                 "7 7 2 <-> 0 0 6",
                 "7 0 1 <-> 0 7 5",
                 "0 0 6 <-> 7 0 2"
         }, 8, 8);
 
         MapController map2 = new MapController(
-                new String[] {
+                new String[]{
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",

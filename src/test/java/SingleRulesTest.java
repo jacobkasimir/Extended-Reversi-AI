@@ -1,12 +1,13 @@
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import control.Coder;
+import control.GameClient;
+import gamestate.attributes.GameAttributes;
+import gamestate.map.MapController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import gamestate.map.MapController;
-import gamestate.attributes.GameAttributes;
-import control.GameClient;
-import control.Coder;
 import validation.GameRules;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SingleRulesTest {
 
@@ -18,12 +19,12 @@ public class SingleRulesTest {
     @BeforeEach
     public void setUpMap() {
         gc = new GameClient();
-        gc.initTransitions(new String[] {
+        gc.initTransitions(new String[]{
                 "7 7 2 <-> 0 0 6",
-                "7 0 1 <-> 0 7 5" }, 8, 8);
+                "7 0 1 <-> 0 7 5"}, 8, 8);
 
         map = new MapController(
-                new String[] {
+                new String[]{
                         "- - - - - - - -",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 0 0 0 0 0",
@@ -31,7 +32,7 @@ public class SingleRulesTest {
                         "0 0 0 2 1 0 0 0",
                         "0 0 0 0 0 0 0 0",
                         "0 0 0 c 0 x 0 x",
-                        "0 0 0 b 0 0 0 0" },
+                        "0 0 0 b 0 0 0 0"},
                 gc.getTransitions(),
                 8,
                 8,

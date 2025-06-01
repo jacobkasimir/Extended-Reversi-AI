@@ -29,7 +29,7 @@ public class IterativeDeepening {
         while (true) {
 
             System.gc(); // trigger the garbage collector manually so that we wont be interrupted during
-                         // ourcomputations
+            // ourcomputations
 
             long startTimeAlphaBetaMS = System.nanoTime() / 1000000; // start Timer for one iteration
 
@@ -51,22 +51,22 @@ public class IterativeDeepening {
             long duration = endTimeAlphaBetaMS - startTimeAlphaBetaMS;
 
             int estimatedBranchingFactor = info.getMaxBranchingFactor(); // current estimation is the maximum in the
-                                                                         // entire tree
+            // entire tree
 
             estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; // add a safety factor
 
             if (info.isBombPhaseReached()) {
                 estimatedBranchingFactor = (state.mapController().getHeight() * state.mapController().getWidth()); // estimate
-                                                                                                                   // the
-                                                                                                                   // branching
-                                                                                                                   // factor
-                                                                                                                   // to
-                                                                                                                   // the
-                                                                                                                   // map
-                                                                                                                   // size
-                                                                                                                   // for
-                                                                                                                   // phase
-                                                                                                                   // 2
+                // the
+                // branching
+                // factor
+                // to
+                // the
+                // map
+                // size
+                // for
+                // phase
+                // 2
             }
 
             long timeSinceStartMS = (System.nanoTime() / 1000000) - startTimeMS;

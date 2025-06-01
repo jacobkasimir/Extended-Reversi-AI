@@ -16,7 +16,7 @@ public class Coder {
     }
 
     /**
-     * Encodes the information about x and y dimension, special value and playerId of a certain omve into one value.
+     * Encodes the information about x and y dimension, special value and playerId of a certain move into one value.
      *
      * @param x        The move's x value.
      * @param y        The move's y value.

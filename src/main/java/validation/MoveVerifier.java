@@ -1,10 +1,10 @@
 package validation;
 
+import algorithms.datastructures.IntLinkedList;
+import control.Coder;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
-import algorithms.datastructures.IntLinkedList;
-import control.Coder;
 
 /**
  * Verifies if a move is valid by using the individual rules from the GameRules.
@@ -12,7 +12,7 @@ import control.Coder;
 public class MoveVerifier {
 
     /**
-     * Checks for each individual phase whether all rules regarding a single move
+     * Checks for each phase whether all rules regarding a single move
      * are satisfied.
      *
      * @param gameState GameState object holding a MapController and a
@@ -48,7 +48,7 @@ public class MoveVerifier {
      * @param gameState GameState object holding a MapController and a
      *                  GameAttributes object.
      * @param playerId  The playerId of the player whose moves should be calculated.
-     * @return All possible moves in a IntLinkedList.
+     * @return All possible moves in an IntLinkedList.
      */
     public static IntLinkedList allMovesPhase1(GameState gameState, int playerId) {
         MapController map = gameState.mapController();
@@ -65,7 +65,7 @@ public class MoveVerifier {
                 tile = map.getTile(x, y);
 
                 switch (tile) {
-                    // Bonus for both coices (20: Bomb, 21: Override)
+                    // Bonus for both choices (20: Bomb, 21: Override)
                     case 'b' -> {
                         move = Coder.encodeMove(x, y, 20, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
@@ -103,7 +103,7 @@ public class MoveVerifier {
      *
      * @param gameState GameState object holding a MapController and a
      *                  GameAttributes object.
-     * @return All possible moves in a IntLinkedList.
+     * @return All possible moves in an IntLinkedList.
      */
     public static IntLinkedList allMovesPhase2(GameState gameState) {
         MapController map = gameState.mapController();
@@ -122,13 +122,13 @@ public class MoveVerifier {
     }
 
     /**
-     * Encapsulates the move calculating algorithmus for the different game phases
+     * Encapsulates the move calculating algorithms for the different game phases
      * and is called by other methods to get all possible moves of a player on a
      * certain game state.
      *
      * @param gameState The current gameState.
      * @param playerId  The playerId to evaluate.
-     * @return All possible moves in a IntLinkedList.
+     * @return All possible moves in an IntLinkedList.
      */
     public static IntLinkedList calculateMoves(GameState gameState, int playerId) {
         if (Coder.decodeplayerInGame(gameState.attributes().getPlayer(playerId)) == 0) {
@@ -146,7 +146,7 @@ public class MoveVerifier {
      *
      * @param gameState    The current gameState.
      * @param lastPlayerId The playerId that has done the last move.
-     * @return All possible moves of the next player in a IntLinkedList.
+     * @return All possible moves of the next player in an IntLinkedList.
      */
     public static IntLinkedList calculateNextMoves(GameState gameState, int lastPlayerId) {
         lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers()) + 1;
@@ -161,7 +161,7 @@ public class MoveVerifier {
         }
         // Handles logic if no player has moves left
         if (counter == gameState.attributes().getNumberPlayers()) {
-            // Switch from phase 1 in 2
+            // Switch from phase 1 to 2
             if (gameState.attributes().isPhase1()) {
                 gameState.attributes().setGamePhase(2);
                 int nextPlayerId = lastPlayerId;

@@ -1,8 +1,8 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import control.Coder;
+import control.GameClient;
 import org.junit.jupiter.api.Test;
 
-import control.GameClient;
-import control.Coder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameClientTest {
 

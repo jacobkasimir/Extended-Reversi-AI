@@ -53,7 +53,7 @@ public class Node implements Comparable<Node> {
         this.parent = parent;
         this.gameState = gameState;
         this.heuristics = heuristics;
-        this.nextMoves = new ArrayList<Node>();
+        this.nextMoves = new ArrayList<>();
         this.score = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
     }
 
@@ -80,7 +80,7 @@ public class Node implements Comparable<Node> {
     /**
      * Set move for an object of this class
      *
-     * @param move contained by node object
+     * @param move contained by a node object
      */
     public void setMove(int move) {
         this.move = move;
@@ -192,7 +192,7 @@ public class Node implements Comparable<Node> {
      * @return The heuristic value of the best move found
      */
     public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info) {
-        //in case of a time out
+        //in case of a time-out
         if (info.isTimeout()) {
             return -1;
         }
@@ -234,7 +234,7 @@ public class Node implements Comparable<Node> {
                 //sort the moves based on their heuristic values
                 Collections.sort(nextMoves, Collections.reverseOrder());
 
-                //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
+                //iterate over all moves in a deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
                     result = Math.max(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info));
                     alpha = Math.max(alpha, result);
@@ -248,7 +248,7 @@ public class Node implements Comparable<Node> {
                 //sort the moves based on their heuristic values
                 Collections.sort(nextMoves);
 
-                //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
+                //iterate over all moves in a deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
                     result = Math.min(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info));
                     beta = Math.min(beta, result);

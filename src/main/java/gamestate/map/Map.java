@@ -95,8 +95,7 @@ public class Map {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Map)) return false;
-        Map other = (Map) obj;
+        if (!(obj instanceof Map other)) return false;
 
         if (this.map.length == other.map.length) {
             for (int i = 0; i < this.map.length; i++) {

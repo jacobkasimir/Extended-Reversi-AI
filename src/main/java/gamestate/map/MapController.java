@@ -180,13 +180,13 @@ public class MapController {
                 tilesPassed = 0;
 
                 while (search) {  //counting the number of captured tiles in a specific direction
-                    currentPosition = getNextTile(currentPosition); //updates the currentPosition for direction i
-                    if (currentPosition < 0) break;  //checks if nextTile is out of map
+                    currentPosition = getNextTile(currentPosition); //updates the currentPosition for a direction i
+                    if (currentPosition < 0) break;  //checks if the nextTile is out of a map
                     if (String.valueOf(Coder.decodePlayerId(move)).equals(String.valueOf(this.getTile(Coder.decodePosX(currentPosition), Coder.decodePosY(currentPosition))))) {
                         //case that the currentPosition is occupied by a tile owned by the player
                         if (tilesPassed > 0) {
                             if (Coder.decodePosX(currentPosition) != Coder.decodeX(move) || Coder.decodePosY(currentPosition) != Coder.decodeY(move)) {
-                                //check that found tile is not the starting tile
+                                //check that the found tile is not the starting tile
                                 directionCounts[i] = tilesPassed;
                             }
                         }
@@ -236,8 +236,7 @@ public class MapController {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof MapController)) return false;
-        MapController other = (MapController) obj;
+        if (!(obj instanceof MapController other)) return false;
 
         return this.width == other.width && this.height == other.height && this.bombRadius == other.bombRadius &&
                 this.map.equals(other.map) && transitions.equals(transitions);
