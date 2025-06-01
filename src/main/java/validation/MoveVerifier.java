@@ -12,9 +12,11 @@ import control.Coder;
 public class MoveVerifier {
 
     /**
-     * Checks for each individual phase whether all rules regarding a single move are satisfied.
+     * Checks for each individual phase whether all rules regarding a single move
+     * are satisfied.
      *
-     * @param gameState GameState object holding a MapController and a GameAttributes object.
+     * @param gameState GameState object holding a MapController and a
+     *                  GameAttributes object.
      * @param move      Represents a move made by a player on the board.
      * @return true if the move is valid.
      */
@@ -29,7 +31,8 @@ public class MoveVerifier {
 
         if (attributes.isPhase1()) {
             if (GameRules.occupied(move, map)) {
-                return (GameRules.hasOverride(attributes, move) && (GameRules.capturing(move, map) || GameRules.isExpansion(map, move)));
+                return (GameRules.hasOverride(attributes, move)
+                        && (GameRules.capturing(move, map) || GameRules.isExpansion(map, move)));
             } else {
                 return GameRules.capturing(move, map);
             }
@@ -39,9 +42,11 @@ public class MoveVerifier {
     }
 
     /**
-     * Calculates all possible Moves on a current game state for a certain player in game phase 1.
+     * Calculates all possible Moves on a current game state for a certain player in
+     * game phase 1.
      *
-     * @param gameState GameState object holding a MapController and a GameAttributes object.
+     * @param gameState GameState object holding a MapController and a
+     *                  GameAttributes object.
      * @param playerId  The playerId of the player whose moves should be calculated.
      * @return All possible moves in a IntLinkedList.
      */
@@ -60,7 +65,7 @@ public class MoveVerifier {
                 tile = map.getTile(x, y);
 
                 switch (tile) {
-                    //Bonus for both coices (20: Bomb, 21: Override)
+                    // Bonus for both coices (20: Bomb, 21: Override)
                     case 'b' -> {
                         move = Coder.encodeMove(x, y, 20, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
@@ -71,7 +76,7 @@ public class MoveVerifier {
                             moves.add(move);
                         }
                     }
-                    //Choice for every playerId
+                    // Choice for every playerId
                     case 'c' -> {
                         for (int choice = 1; choice <= numPlayers; choice++) {
                             move = Coder.encodeMove(x, y, choice, playerId);
@@ -80,7 +85,7 @@ public class MoveVerifier {
                             }
                         }
                     }
-                    //expansion stones, inversion tiles, normal tiles
+                    // expansion stones, inversion tiles, normal tiles
                     default -> {
                         move = Coder.encodeMove(x, y, 0, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
@@ -96,7 +101,8 @@ public class MoveVerifier {
     /**
      * Calculates all possible Moves on a current game state in game phase 2.
      *
-     * @param gameState GameState object holding a MapController and a GameAttributes object.
+     * @param gameState GameState object holding a MapController and a
+     *                  GameAttributes object.
      * @return All possible moves in a IntLinkedList.
      */
     public static IntLinkedList allMovesPhase2(GameState gameState) {
@@ -106,7 +112,8 @@ public class MoveVerifier {
         IntLinkedList res = new IntLinkedList();
         for (int i = 0; i < map.getWidth(); i++) {
             for (int j = 0; j < map.getHeight(); j++) {
-                if (map.getTile(i, j) != '-' && Coder.decodeplayerBombs(attributes.getPlayer(attributes.getOurPlayerId())) > 0) {
+                if (map.getTile(i, j) != '-'
+                        && Coder.decodeplayerBombs(attributes.getPlayer(attributes.getOurPlayerId())) > 0) {
                     res.addIfNotContains(Coder.encodeMove(i, j, 0, attributes.getOurPlayerId()));
                 }
             }
@@ -115,7 +122,9 @@ public class MoveVerifier {
     }
 
     /**
-     * Encapsulates the move calculating algorithmus for the different game phases and is called by other methods to get all possible moves of a player on a certain game state.
+     * Encapsulates the move calculating algorithmus for the different game phases
+     * and is called by other methods to get all possible moves of a player on a
+     * certain game state.
      *
      * @param gameState The current gameState.
      * @param playerId  The playerId to evaluate.
@@ -127,11 +136,13 @@ public class MoveVerifier {
         }
         if (gameState.attributes().isPhase1()) {
             return MoveVerifier.allMovesPhase1(gameState, playerId);
-        } else return allMovesPhase2(gameState);
+        } else
+            return allMovesPhase2(gameState);
     }
 
     /**
-     * Encapsulates the move finding logic for the next player given a last playerId considering disqualification, not being able to make a move.
+     * Encapsulates the move finding logic for the next player given a last playerId
+     * considering disqualification, not being able to make a move.
      *
      * @param gameState    The current gameState.
      * @param lastPlayerId The playerId that has done the last move.
@@ -140,17 +151,17 @@ public class MoveVerifier {
     public static IntLinkedList calculateNextMoves(GameState gameState, int lastPlayerId) {
         lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers()) + 1;
         IntLinkedList res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
-        int counter = 1; //counts how many players have been checked
+        int counter = 1; // counts how many players have been checked
 
-        //Iterates over players until someone does have moves left
+        // Iterates over players until someone does have moves left
         while (res.isEmpty() && counter < gameState.attributes().getNumberPlayers() + 1) {
             lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers()) + 1;
             res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
             counter++;
         }
-        //Handles logic if no player has moves left
+        // Handles logic if no player has moves left
         if (counter == gameState.attributes().getNumberPlayers()) {
-            //Switch from phase 1 in 2
+            // Switch from phase 1 in 2
             if (gameState.attributes().isPhase1()) {
                 gameState.attributes().setGamePhase(2);
                 int nextPlayerId = lastPlayerId;
@@ -160,7 +171,7 @@ public class MoveVerifier {
                     nextPlayerId--;
                 }
                 return calculateNextMoves(gameState, nextPlayerId);
-            } else { //End game logic
+            } else { // End game logic
                 return new IntLinkedList();
             }
         } else {

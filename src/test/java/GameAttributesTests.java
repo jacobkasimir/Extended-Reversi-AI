@@ -15,30 +15,30 @@ public class GameAttributesTests {
     private MapController map;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         GameClient gc = new GameClient();
-        gc.initTransitions(new String[]{
-            "7 7 2 <-> 0 0 6", 
-            "7 0 1 <-> 0 7 5"}, 8, 8);
+        gc.initTransitions(new String[] {
+                "7 7 2 <-> 0 0 6",
+                "7 0 1 <-> 0 7 5" }, 8, 8);
 
         map = new MapController(
-            new String[]{
-                "- - - - - - - -", 
-                "0 0 0 0 0 0 1 0", 
-                "0 0 0 0 0 2 0 0", 
-                "0 0 0 1 2 0 0 0",
-                "0 0 0 2 1 0 0 0",
-                "0 0 b 0 0 0 0 0", 
-                "0 0 0 c 0 x 0 x", 
-                "0 0 0 b 0 0 0 0"}, 
-            gc.getTransitions(), 
-            8, 
-            8, 
-            0);
+                new String[] {
+                        "- - - - - - - -",
+                        "0 0 0 0 0 0 1 0",
+                        "0 0 0 0 0 2 0 0",
+                        "0 0 0 1 2 0 0 0",
+                        "0 0 0 2 1 0 0 0",
+                        "0 0 b 0 0 0 0 0",
+                        "0 0 0 c 0 x 0 x",
+                        "0 0 0 b 0 0 0 0" },
+                gc.getTransitions(),
+                8,
+                8,
+                0);
     }
 
     @Test
-    public void decrementOverwriteStones(){
+    public void decrementOverwriteStones() {
         GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 1, 1));
         int move = Coder.encodeMove(5, 6, 0, 1);
 
@@ -48,11 +48,11 @@ public class GameAttributesTests {
             throw new Error("Test not valid.");
         }
 
-        assertEquals(3-1, Coder.decodeplayerOverrides(gameState.attributes().getPlayer(1)));
+        assertEquals(3 - 1, Coder.decodeplayerOverrides(gameState.attributes().getPlayer(1)));
     }
 
     @Test
-    public void decrementBombs(){
+    public void decrementBombs() {
         GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2, 2));
         int move = Coder.encodeMove(4, 4, 0, 2);
 
@@ -64,11 +64,11 @@ public class GameAttributesTests {
 
         gameState.attributes().updateState(move, map);
 
-        assertEquals(1-1, Coder.decodeplayerBombs(gameState.attributes().getPlayer(2)));
+        assertEquals(1 - 1, Coder.decodeplayerBombs(gameState.attributes().getPlayer(2)));
     }
 
     @Test
-    public void bonusIncrementBombs(){
+    public void bonusIncrementBombs() {
         GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2, 1));
         int move = Coder.encodeMove(2, 5, 20, 1);
 
@@ -78,12 +78,12 @@ public class GameAttributesTests {
 
         gameState.attributes().updateState(move, map);
 
-        assertEquals(1+1, Coder.decodeplayerBombs(gameState.attributes().getPlayer(1)));
+        assertEquals(1 + 1, Coder.decodeplayerBombs(gameState.attributes().getPlayer(1)));
     }
 
     @Test
-    public void bonusIncrementOverwrites(){
-        GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2,  1));
+    public void bonusIncrementOverwrites() {
+        GameState gameState = new GameState(map, new GameAttributes(2, 3, 1, 2, 1));
         int move = Coder.encodeMove(2, 5, 21, 1);
 
         if (!MoveVerifier.isValid(move, gameState)) {
@@ -92,7 +92,7 @@ public class GameAttributesTests {
 
         gameState.attributes().updateState(move, map);
 
-        assertEquals(3+1, Coder.decodeplayerOverrides(gameState.attributes().getPlayer(1)));
+        assertEquals(3 + 1, Coder.decodeplayerOverrides(gameState.attributes().getPlayer(1)));
     }
 
 }

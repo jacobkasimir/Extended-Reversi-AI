@@ -80,7 +80,8 @@ public class Main {
             }
 
             InetAddress selectedAddress = addresses[0];
-            System.out.println("Connecting to " + selectedAddress.getHostAddress() + " (" + selectedAddress.getHostName() + ") on port " + port);
+            System.out.println("Connecting to " + selectedAddress.getHostAddress() + " ("
+                    + selectedAddress.getHostName() + ") on port " + port);
             System.out.println("Search depth: " + depthLimit + ", Compare mode: " + (compare ? "enabled" : "disabled"));
 
             TCPClient.connect(selectedAddress, port, compare, depthLimit);

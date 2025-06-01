@@ -5,10 +5,11 @@ import control.Coder;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 
-
 /**
- * Class with different static methods to validate single parts of the game rules.
- * There is no need to create an instance of this class because all methods are static.
+ * Class with different static methods to validate single parts of the game
+ * rules.
+ * There is no need to create an instance of this class because all methods are
+ * static.
  */
 public class GameRules {
 
@@ -41,7 +42,8 @@ public class GameRules {
      *
      * @param move The move to check.
      * @param map  The map controller.
-     * @return true, if the tile is occupied by another player or an extension stone.
+     * @return true, if the tile is occupied by another player or an extension
+     *         stone.
      */
     public static boolean occupied(int move, MapController map) {
         char tile = getTileAtMove(map, move);
@@ -55,7 +57,7 @@ public class GameRules {
      * Checks if a player has any bombs remaining.
      *
      * @param attr The current game attributes.
-     * @param move  The move.
+     * @param move The move.
      * @return true if player has bombs.
      */
     public static boolean hasBomb(GameAttributes attr, int move) {
@@ -66,7 +68,7 @@ public class GameRules {
      * Checks if a player has override stones remaining.
      *
      * @param attr Game attributes.
-     * @param move  The move.
+     * @param move The move.
      * @return true if override stones are available.
      */
     public static boolean hasOverride(GameAttributes attr, int move) {
@@ -76,7 +78,7 @@ public class GameRules {
     /**
      * Validates if a player is in-game and the id is in bounds.
      *
-     * @param move  The move.
+     * @param move The move.
      * @param attr Game attributes.
      * @return true if move is from a valid player in-game.
      */
@@ -101,19 +103,20 @@ public class GameRules {
      * Validates the special field of a move for correctness.
      *
      * @param attr Game attributes.
-     * @param move  The move.
-     * @param map   Map controller.
+     * @param move The move.
+     * @param map  Map controller.
      * @return true if the special field is valid.
      */
     public static boolean checkSpecial(GameAttributes attr, int move, MapController map) {
         int special = Coder.decodeSpecial(move);
-        if (!attr.isPhase1()) return special == 0; //Special must always be 0 in phase 2 (bombing)
+        if (!attr.isPhase1())
+            return special == 0; // Special must always be 0 in phase 2 (bombing)
 
         char tile = getTileAtMove(map, move);
         return switch (tile) {
-            case 'b' -> special == 20 || special == 21; //bonus field (20->bomb) (21->override)
-            case 'c' -> special >= 1 && special <= attr.getNumberPlayers(); //choice -> player to switch with
-            default -> special == 0; //for all other fields, special must be 0
+            case 'b' -> special == 20 || special == 21; // bonus field (20->bomb) (21->override)
+            case 'c' -> special >= 1 && special <= attr.getNumberPlayers(); // choice -> player to switch with
+            default -> special == 0; // for all other fields, special must be 0
         };
     }
 
@@ -125,42 +128,47 @@ public class GameRules {
      * @return true if a capture occurs.
      */
     public static boolean capturing(int move, MapController map) {
-        int playerId =  Coder.decodePlayerId(move);
+        int playerId = Coder.decodePlayerId(move);
 
-        //coordinates of the targeted tile
+        // coordinates of the targeted tile
         int startX = Coder.decodeX(move);
         int startY = Coder.decodeY(move);
 
-        //check for each direction from the targeted field if we capture
+        // check for each direction from the targeted field if we capture
         for (int dir = 0; dir < Constants.NUMBER_OF_DIRECTIONS; dir++) {
-            int current = Coder.encodePosition(startX, startY, dir); //create Position
-            int steps = 0; //count the number of stones that would be captured in this direction
+            int current = Coder.encodePosition(startX, startY, dir); // create Position
+            int steps = 0; // count the number of stones that would be captured in this direction
 
             while (true) {
-                current = map.getNextTile(current); //one step forwards
-                if (current < 0) break; //outside of the map
+                current = map.getNextTile(current); // one step forwards
+                if (current < 0)
+                    break; // outside of the map
 
-                //decode the new position
+                // decode the new position
                 int currentX = Coder.decodePosX(current);
                 int currentY = Coder.decodePosY(current);
 
                 char tile = map.getTile(currentX, currentY);
 
-                //check if we reach a tile of the move's player
+                // check if we reach a tile of the move's player
                 if (tile == (char) ('0' + playerId)) {
-                    //when at least one stone is captured and we did not reach the start tile we can return true
-                    if (steps > 0 && (currentX != startX || currentY != startY)) return true;
-                    break; //false for this direction
+                    // when at least one stone is captured and we did not reach the start tile we
+                    // can return true
+                    if (steps > 0 && (currentX != startX || currentY != startY))
+                        return true;
+                    break; // false for this direction
                 }
 
-                //no capturing when we reach '-', '0', 'i', 'c', 'b' or the starting field
-                if (tile == '-' || tile == '0' || tile == 'i' || tile == 'c' || tile == 'b') break;
-                if (currentX == startX && currentY == startY) break;
+                // no capturing when we reach '-', '0', 'i', 'c', 'b' or the starting field
+                if (tile == '-' || tile == '0' || tile == 'i' || tile == 'c' || tile == 'b')
+                    break;
+                if (currentX == startX && currentY == startY)
+                    break;
 
-                steps++; //count captured stones
+                steps++; // count captured stones
             }
         }
-        return false; //No capture found
+        return false; // No capture found
     }
 
     /**
@@ -180,7 +188,7 @@ public class GameRules {
      * @param c The char to check.
      * @return true if the character represents a player, false otherwise.
      */
-    public static boolean isPlayer(char c){
+    public static boolean isPlayer(char c) {
         return !(c == '0' || c == 'b' || c == '-' || c == 'i' || c == 'c' || c == 'x');
     }
 }
