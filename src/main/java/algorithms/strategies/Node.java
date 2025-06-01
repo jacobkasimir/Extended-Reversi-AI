@@ -213,8 +213,7 @@ public class Node implements Comparable<Node>{
                 this.nextMoves.add(new Node(m.getValue(), this, gameState.clone(), this.heuristics));
                 m = m.getNext();
             }
-            //sort the moves based on their heuristic values
-            Collections.sort(nextMoves);
+            
             info.addNewBranchingFactor(possibleMoves.getSize());
             int result;
 
@@ -223,6 +222,10 @@ public class Node implements Comparable<Node>{
             //decide if we perform the next move or one of our opponents:
             if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move
                 result = Integer.MIN_VALUE;
+
+                //sort the moves based on their heuristic values
+                Collections.sort(nextMoves, Collections.reverseOrder());
+
                 //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
                     result = Math.max(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info));
@@ -233,6 +236,10 @@ public class Node implements Comparable<Node>{
                 }
             } else {  //opponents move
                 result = Integer.MAX_VALUE;
+
+                //sort the moves based on their heuristic values
+                Collections.sort(nextMoves);
+
                 //iterate over all moves in deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
                     result = Math.min(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info));

@@ -64,7 +64,7 @@ public class AlphaBeta {
             m = m.getNext();
         }
 
-        Collections.sort(children);
+        Collections.sort(children, Collections.reverseOrder());
         // add all nodes (possible states) to the root node
         root.setNextMoves(children);
         info.addNewBranchingFactor(children.size());
