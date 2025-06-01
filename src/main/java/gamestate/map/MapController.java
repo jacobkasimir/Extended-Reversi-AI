@@ -1,9 +1,8 @@
 package gamestate.map;
-import control.Constants;
 import control.Coder;
+import control.Constants;
 import gamestate.attributes.GameAttributes;
 import validation.GameRules;
-import validation.MoveVerifier;
 
 /**
  * The MapController class manages the game map and its transitions.
