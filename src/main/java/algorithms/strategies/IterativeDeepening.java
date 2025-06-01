@@ -30,8 +30,8 @@ public class IterativeDeepening {
             long startTimeAlphaBetaMS = System.nanoTime()/1000000; //start Timer for one iteration
 
             //calculate a move with a certain depth via Alpha Beta Pruning
-            SearchInfo info = new SearchInfo(currentDepth, timeLimit, startTimeMS);
-            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, timeLimit, currentDepth, info);
+            SearchInfo info = new SearchInfo(timeLimit, startTimeMS);
+            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info);
             posResultMove = alphaBeta.chooseMove();
 
             if(info.isTimeout()) {   //check if timeout flag is set

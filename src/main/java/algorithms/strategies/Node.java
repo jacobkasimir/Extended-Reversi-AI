@@ -215,7 +215,7 @@ public class Node implements Comparable<Node>{
             }
             //sort the moves based on their heuristic values
             Collections.sort(nextMoves);
-            info.addNewBranchingFactor(possibleMoves.getSize(), searchDepth);
+            info.addNewBranchingFactor(possibleMoves.getSize());
             int result;
 
             int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getHead().getValue());
