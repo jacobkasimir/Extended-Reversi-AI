@@ -4,14 +4,14 @@ import control.Constants;
 import gamestate.GameState;
 
 /**
- * This class handles the iterative deepening strategie in order to calculate a
+ * This class handles the iterative deepening strategies to calculate a
  * move under a given time limit
  */
 public class IterativeDeepening {
 
     /**
-     * This method does an iterative search depth deepening in order to find a move
-     * and be abe to return it in time
+     * This method does an iterative search depth deepening to find a move
+     * and be able to return it in time
      *
      * @param timeLimit  The given time limit for this move request
      * @param heuristics The heuristics instance
@@ -28,8 +28,8 @@ public class IterativeDeepening {
 
         while (true) {
 
-            System.gc(); // trigger the garbage collector manually so that we wont be interrupted during
-            // ourcomputations
+            System.gc(); // trigger the garbage collector manually so that we won't be interrupted during
+            // our computations
 
             long startTimeAlphaBetaMS = System.nanoTime() / 1000000; // start Timer for one iteration
 
@@ -38,7 +38,7 @@ public class IterativeDeepening {
             AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info);
             posResultMove = alphaBeta.chooseMove();
 
-            if (info.isTimeout()) { // check if timeout flag is set
+            if (info.isTimeout()) { // check if a timeout flag is set
                 return resultMove;
             } else {
                 resultMove = posResultMove;
@@ -50,7 +50,7 @@ public class IterativeDeepening {
 
             long duration = endTimeAlphaBetaMS - startTimeAlphaBetaMS;
 
-            int estimatedBranchingFactor = info.getMaxBranchingFactor(); // current estimation is the maximum in the
+            double estimatedBranchingFactor = info.getMaxBranchingFactor(); // the current estimation is the maximum in the
             // entire tree
 
             estimatedBranchingFactor *= Constants.SAFETY_FOR_BRANCHING_FACTOR; // add a safety factor
