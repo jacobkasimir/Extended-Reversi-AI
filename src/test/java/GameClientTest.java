@@ -15,7 +15,7 @@ public class GameClientTest {
         int startPosition = Coder.encodePosition(1, 1, 5);
         int endPosition = Coder.encodePosition(4, 0, 1 + 4);
 
-        game.init(lines, false, 1);
+        game.init(lines, false, 1,true);
 
         assertEquals(game.getCurrentGameAttributes().getNumberPlayers(), 2);
         assertEquals(Coder.decodeplayerOverrides(game.getCurrentGameAttributes().getPlayer(1)), 0);
