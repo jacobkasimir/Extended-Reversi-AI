@@ -1,0 +1,210 @@
+\section*{Exercise 2}
+\textit{Task: Analyzing the efficiency of move sorting}
+
+\noindent We plotted ten games on the maps: standard, twoPlayer, fourPlayer, circles, squares, 1v1, Matrix, snake, four and chess by creating graphs for time per move and total time comparisons. \\
+
+
+% --- Standard ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparison.png} \\
+    \textbf{Time Comparison – Standard}
+    \label{fig:time_standard}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparison.png} \\
+    \textbf{Total Time Comparison – Standard}
+    \label{fig:total_time_standard}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: Standard}
+\end{figure}
+
+% --- TwoPlayer ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparisonTwoPlayer.png} \\
+    \textbf{Time Comparison – TwoPlayer}
+    \label{fig:time_two_player}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparisonTwoPlayer.png} \\
+    \textbf{Total Time Comparison – TwoPlayer}
+    \label{fig:total_time_two_player}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: TwoPlayer}
+\end{figure}
+
+% --- FourPlayer ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparisonFourPlayer.png} \\
+    \textbf{Time Comparison – FourPlayer}
+    \label{fig:time_four_player}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparisonFourPlayer.png} \\
+    \textbf{Total Time Comparison – FourPlayer}
+    \label{fig:total_time_four_player}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: FourPlayer}
+\end{figure}
+
+% --- Snake ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparisonSnake.png} \\
+    \textbf{Time Comparison – Snake}
+    \label{fig:time_snake}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparisonSnake.png} \\
+    \textbf{Total Time Comparison – Snake}
+    \label{fig:total_time_snake}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: Snake}
+\end{figure}
+
+% --- Squares ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparisonSquares.png} \\
+    \textbf{Time Comparison – Squares}
+    \label{fig:time_squares}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparisonSquares.png} \\
+    \textbf{Total Time Comparison – Squares}
+    \label{fig:total_time_squares}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: Squares}
+\end{figure}
+
+% --- Circles ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparisonCircles.png} \\
+    \textbf{Time Comparison – Circles}
+    \label{fig:time_circles}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparisonCircles.png} \\
+    \textbf{Total Time Comparison – Circles}
+    \label{fig:total_time_circles}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: Circles}
+\end{figure}
+
+% --- 1v1 ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparison1v1.png} \\
+    \textbf{Time Comparison – 1v1}
+    \label{fig:time_1v1}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparison1v1.png} \\
+    \textbf{Total Time Comparison – 1v1}
+    \label{fig:total_time_1v1}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: 1v1}
+\end{figure}
+
+% --- Matrix ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparisonMatrix.png} \\
+    \textbf{Time Comparison – Matrix}
+    \label{fig:time_matrix}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparisonMatrix.png} \\
+    \textbf{Total Time Comparison – Matrix}
+    \label{fig:total_time_matrix}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: Matrix}
+\end{figure}
+
+% --- Four ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparisonFour.png} \\
+    \textbf{Time Comparison – Four}
+    \label{fig:time_four}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparisonFour.png} \\
+    \textbf{Total Time Comparison – Four}
+    \label{fig:total_time_four}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: Four}
+\end{figure}
+
+% --- Chess ---
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/time_comparisonChess.png} \\
+    \textbf{Time Comparison – Chess}
+    \label{fig:time_chess}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{assignment4/plots/total_time_comparisonChess.png} \\
+    \textbf{Total Time Comparison – Chess}
+    \label{fig:total_time_chess}
+  \end{minipage}
+  \caption{Comparison of time and total time for map: Chess}
+\end{figure}
+\clearpage
+
+\noindent The 20 graphs and tables show that in every game the move sorting variant was slower than the variant without sorting. This is due to our implementation of \\
+
+\noindent In theory an ideal sorting algorithm for Alpha Beta sorts the children of a node in descending order, if it is our turn or ascending if it is our enemy's turn based on their heuristic value. In practice this does not work because calculating the heuristic value and sorting the children for every node we visit while traversing the tree takes too much time compared to the time gained by pruning. Therefore in practice an ideal sorting algorithm has to minimize the amount of time needed to evaluate the children. \\
+An example for that would be to use iterative deepening. On the first and second depth we would use a simple heuristic value to evaluate the nodes. For the third and following depths we then order the nodes by the paths taken for previous depths. In this way we tend to prefer the more likely paths without having to evaluate nodes beneath depth two. We did not manage to implement this yet but will realize it for the next assignment.\\
+
+
+\noindent Even if we cannot draw definitive conclusions solely based on the raw figures, a performance analysis across different map types allows us to understand why the sorting algorithm performs similarly—or significantly worse—compared to the unsorted variant.
+
+\noindent The most noticeable difference can be observed in Figure \ref{fig:time_matrix}, which represents a map specifically designed for 8 players on a 50x50 grid, with each player starting with four initial tiles. At the beginning of the game, the number of possible moves is quite limited, which is why the computation times for both the sorted and unsorted versions remain comparable. However, as the game progresses and the number of legal moves increases dramatically, the sorted variant begins to perform significantly worse. This decline in performance is primarily due to the overhead of evaluating and sorting every possible move at each step. Even under the assumption of ideal sorting algorithms, the computational cost of sorting outweighs any potential benefit from processing the most promising moves first.
+
+\noindent In contrast, Figure \ref{fig:time_squares} illustrates a scenario using a map designed for 6 players on a 42x42 grid, where more than half of the tiles are inaccessible. On this map, players are presented with a relatively large set of options at the beginning, but the number of available moves gradually decreases as the game progresses. This pattern is reflected in the "Time Comparison – Squares" plot, where we observe that the overall computation times of both the sorted and unsorted approaches remain almost identical. Due to the relatively limited branching factor on this map, sorting the children of each node has minimal impact—neither significantly improving nor degrading performance.
+
+\noindent In summary, the efficiency of sorting is highly dependent on the structure and dynamics of the game map. On maps with a steadily increasing number of options—such as the matrix scenario—the computational cost of sorting each move at every turn becomes prohibitively expensive. In contrast, on more constrained maps with fewer possibilities, sorting has a negligible effect and offers no clear advantage.

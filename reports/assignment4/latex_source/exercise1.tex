@@ -1,0 +1,46 @@
+\section*{Exercise 1}
+
+\textbf{Task:} \textit{Develop a move sorting algorithm to prioritize exploration of “promising” branches in the game tree, enabling faster convergence of the $\alpha$ and $\beta$ bounds and reducing the overall search space.}
+
+\medskip
+
+\noindent In this exercise, we implemented a move sorting strategy aimed at improving the efficiency of the alpha-beta pruning algorithm. The central idea is to evaluate and sort the list of possible moves at each search node such that the most promising ones are examined first. This increases the likelihood of early cutoffs, as the bounds $\alpha$ and $\beta$ converge faster when optimal moves are processed early.
+
+To achieve this, we used the same heuristic evaluation function for sorting as for evaluating the game states. For nodes where it is our player’s turn (the maximizing player), we sort the child moves in \textbf{descending order} to explore high-scoring options first. Conversely, for the opponent's turn (the minimizing player), the moves are sorted in \textbf{ascending order} to prioritize low-scoring options. This ordering ideally leads to earlier pruning and hence a significant reduction in the number of nodes explored.
+
+The sorting was implemented using Java’s \texttt{Collections.sort()} method. Our \texttt{Node} class implements the \texttt{Comparable} interface, and the \texttt{compareTo} method is overridden to compare nodes based on their heuristic scores. These scores are computed in the constructor of the \texttt{Node} class. The sorting is carried out within the \texttt{pruning()} method, where we distinguish between maximizing and minimizing players.
+
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small]
+if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {
+    result = Integer.MIN_VALUE;
+
+    // Sort moves in descending order for maximizing player
+    Collections.sort(nextMoves, Collections.reverseOrder());
+
+    for (Node child : nextMoves) {
+        result = Math.max(result, child.pruning(searchDepth - 1,
+            Coder.decodePlayerId(this.move), alpha, beta, info));
+        alpha = Math.max(alpha, result);
+        if (beta <= alpha) {
+            break; // Beta cut-off
+        }
+    }
+} else {
+    result = Integer.MAX_VALUE;
+
+    // Sort moves in ascending order for minimizing player
+    Collections.sort(nextMoves);
+
+    for (Node child : nextMoves) {
+        result = Math.min(result, child.pruning(searchDepth - 1,
+            Coder.decodePlayerId(this.move), alpha, beta, info));
+        beta = Math.min(beta, result);
+        if (beta <= alpha) {
+            break; // Alpha cut-off
+        }
+    }
+}
+\end{lstlisting}
+
+\noindent While this approach theoretically provides optimal move ordering, we observed a performance decrease in practice, as discussed in \textit{Exercise 2}. This can be attributed to the additional overhead introduced by sorting at every node, especially when the heuristics are quite extensive. After plotting and different approaches, we tend to use a more lightweight mechanism on score evaluating on the one hand and try to establish an ordering through optimal/promising moves of the pre-calculated search depth together with iterative deepening. We aim to find a balance between the advantages of move sorting to enhance performance and a less "optimal" sorting to avoid spending to much effort on sorting and evaluating every single layer, which ultimately ends in a reduce of performance as displayed in \textit{Excercise 2}. 
+

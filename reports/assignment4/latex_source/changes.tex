@@ -1,0 +1,23 @@
+\section*{Changes and Optimization}
+\textit{Implementation Add-ons, Error Corrections, and Optimizations}
+
+\noindent As in the previous assignment, we implemented several improvements to enhance efficiency, structure, and modularity.
+
+\noindent First, we reorganized the project into distinct packages, since the previous structure became increasingly unclear—especially with future extensions in mind. We now use the following four main packages:
+
+\begin{itemize}
+\item \textit{algorithms}: Contains core logic components, split into two sub-packages—\textit{strategies} for algorithms like Minimax and Alpha-Beta pruning, and \textit{datastructures} for the required supporting data.
+\item \textit{control}: Includes clients, constants, and all encoder/decoder logic. A new class called \textit{Coder} was introduced here.
+\item \textit{gamestate}: Groups everything related to the current game state and is further divided into \textit{map} and \textit{attributes}.
+\item \textit{validation}: Contains the game rules and the \textit{MoveVerifier} class, now solely responsible for validation.
+\end{itemize}
+
+\noindent The separation into these packages improves readability and makes the project more maintainable and easier to extend in future assignments.
+
+\noindent In previous assignments, we already switched to storing moves and coordinates as single integer values instead of objects. In this assignment, we applied the same principle to the \textit{Player} representation. For that, new encoders and decoders were implemented, and all existing encoder/decoder logic was moved from the \textit{MoveVerifier} to the new \textit{Coder} class, which is now responsible for all such tasks.
+
+\noindent Furthermore, we optimized the internal representation of the map. Until now, it was stored in a two-dimensional array. In this assignment, we switched to a one-dimensional array, which offers performance benefits in terms of memory access and processing speed.
+
+\noindent We also made several improvements to our heuristics. New attributes were introduced to support consistent evaluation logic, especially where certain values are needed across different heuristic methods or only set during initialization. Moreover, we separated the heuristics into those relevant for the initial phase and those for the bombing phase. Instead of multiple independent loops for each heuristic, we now run a single method that iterates once over all map tiles and collects the necessary information into a shared result array. The heuristics themselves were only slightly adjusted—we now normalize the output values between 0 and 1 to allow better comparability and combination.
+
+\noindent Finally, the \textit{evaluate()} method was improved to distinguish between both game phases. We also introduced weighting of the different heuristics, and the final score is calculated as the sum of these weighted values. This allows better alignment with phase-specific strategies.
