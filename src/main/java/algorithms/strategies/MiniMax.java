@@ -51,7 +51,7 @@ public class MiniMax {
         this.current_GameState = gameState;
         this.heuristics = heuristics;
         //create the root node for the branched tree of possible moves (or game states)
-        this.root = new Node(0, null, gameState.clone(), heuristics);
+        this.root = new Node(0, null, gameState.clone(), heuristics, false);
         this.searchdepth = searchdepth;
 
         //should store all children (possible game states) of the root node
@@ -64,7 +64,7 @@ public class MiniMax {
             GameState newGameState = gameState.clone();
 
             //add node for the game state when performing move m
-            children.add(new Node(m.getValue(), root, newGameState, heuristics));
+            children.add(new Node(m.getValue(), root, newGameState, heuristics, false));
             m = m.getNext();
         }
 

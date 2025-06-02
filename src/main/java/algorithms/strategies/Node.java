@@ -48,13 +48,13 @@ public class Node implements Comparable<Node> {
      * @param gameState  The game state at this node
      * @param heuristics The heuristics calculator to evaluate positions
      */
-    public Node(int move, Node parent, GameState gameState, Heuristics heuristics) {
+    public Node(int move, Node parent, GameState gameState, Heuristics heuristics, boolean moveSorting) {
         this.move = move;
         this.parent = parent;
         this.gameState = gameState;
         this.heuristics = heuristics;
         this.nextMoves = new ArrayList<>();
-        this.score = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
+        if(moveSorting) this.score = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
     }
 
 
@@ -148,7 +148,7 @@ public class Node implements Comparable<Node> {
             //iterate over all possible moves in the current game state
             while (node != null) {
                 //create the next layer of the "mini-max"-tree
-                this.nextMoves.add(new Node(node.getValue(), this, gameState.clone(), this.heuristics));
+                this.nextMoves.add(new Node(node.getValue(), this, gameState.clone(), this.heuristics, false));
                 node = node.getNext();
             }
             int result;
@@ -191,7 +191,7 @@ public class Node implements Comparable<Node> {
      * @param info         The SearchInfo-object
      * @return The heuristic value of the best move found
      */
-    public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info) {
+    public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info, boolean moveSorting) {
         //in case of a time-out
         if (info.isTimeout()) {
             return -1;
@@ -212,13 +212,17 @@ public class Node implements Comparable<Node> {
             //calculate all possible moves
             IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
             if (possibleMoves.isEmpty()) {
-                return this.score;
+                if(moveSorting){
+                    return this.score;
+                } else {
+                    return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
+                }
             }
 
             ListNode m = possibleMoves.getHead();
             //iterate over all possible moves and add them as children of the current node
             while (m != null) {
-                this.nextMoves.add(new Node(m.getValue(), this, gameState.clone(), this.heuristics));
+                this.nextMoves.add(new Node(m.getValue(), this, gameState.clone(), this.heuristics, moveSorting));
                 m = m.getNext();
             }
 
@@ -232,11 +236,11 @@ public class Node implements Comparable<Node> {
                 result = Integer.MIN_VALUE;
 
                 //sort the moves based on their heuristic values
-                Collections.sort(nextMoves, Collections.reverseOrder());
+                if(moveSorting) Collections.sort(nextMoves, Collections.reverseOrder());
 
                 //iterate over all moves in a deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.max(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info));
+                    result = Math.max(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info, moveSorting));
                     alpha = Math.max(alpha, result);
                     if (beta <= alpha) {
                         break;
@@ -246,11 +250,11 @@ public class Node implements Comparable<Node> {
                 result = Integer.MAX_VALUE;
 
                 //sort the moves based on their heuristic values
-                Collections.sort(nextMoves);
+                if(moveSorting) Collections.sort(nextMoves);
 
                 //iterate over all moves in a deeper layer and recursively call pruning algorithm and update the parameters
                 for (Node child : nextMoves) {
-                    result = Math.min(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info));
+                    result = Math.min(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info, moveSorting));
                     beta = Math.min(beta, result);
                     if (beta <= alpha) {
                         break;
@@ -262,7 +266,11 @@ public class Node implements Comparable<Node> {
             return result;
 
         } else { //return heuristic value if searchDepth is 0
-            return this.score;
+            if(moveSorting){
+                return this.score;
+            } else {
+                return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
+            }
         }
     }
 

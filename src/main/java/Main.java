@@ -14,6 +14,7 @@ public class Main {
         String serverInput = "localhost";
         int port = 12345;
         boolean compare = false;
+        boolean moveSorting = false;
         int depthLimit = 1;
 
         try {
@@ -21,11 +22,12 @@ public class Main {
                 switch (args[i]) {
                     case "-h", "--help" -> {
                         System.out.println("Usage:");
-                        System.out.println("  -s, --server <Host/IP>    Server address (IPv4, IPv6 or hostname)");
-                        System.out.println("  -p, --port <Port>         Port number (default: 12345)");
-                        System.out.println("  -d, --depth <SearchDepth> Depth of the search algorithm (default: 5)");
-                        System.out.println("  -c, --compare             Compare MiniMax and Alpha-Beta results");
-                        System.out.println("  -h, --help                Show this help");
+                        System.out.println("  -s, --server <Host/IP>     Server address (IPv4, IPv6 or hostname)");
+                        System.out.println("  -p, --port <Port>          Port number (default: 12345)");
+                        System.out.println("  -d, --depth <SearchDepth>  Depth of the search algorithm (default: 5)");
+                        System.out.println("  -c, --compare              Compare MiniMax and Alpha-Beta results");
+                        System.out.println("  -m, --movesorting          Enable move sorting for Alpha Beta Pruning");
+                        System.out.println("  -h, --help                 Show this help");
                         return;
                     }
                     case "-s", "--server" -> {
@@ -36,7 +38,6 @@ public class Main {
                             return;
                         }
                     }
-
                     case "-p", "--port" -> {
                         if (i + 1 < args.length) {
                             try {
@@ -63,8 +64,8 @@ public class Main {
                             return;
                         }
                     }
-
                     case "-c", "--compare" -> compare = true;
+                    case "-m", "--movesorting" -> moveSorting = true;
                     default -> {
                         System.err.println("Unknown parameter: " + args[i]);
                         return;
@@ -82,9 +83,10 @@ public class Main {
             InetAddress selectedAddress = addresses[0];
             System.out.println("Connecting to " + selectedAddress.getHostAddress() + " ("
                     + selectedAddress.getHostName() + ") on port " + port);
-            System.out.println("Search depth: " + depthLimit + ", Compare mode: " + (compare ? "enabled" : "disabled"));
+            System.out.println("Search depth: " + depthLimit + ", Compare mode: " + (compare ? "enabled" : "disabled")
+                    + ", Move sorting: " + (moveSorting ? "enabled" : "disabled"));
 
-            TCPClient.connect(selectedAddress, port, compare, depthLimit);
+            TCPClient.connect(selectedAddress, port, compare, depthLimit, moveSorting);
 
         } catch (UnknownHostException e) {
             System.err.println("Error: Could not resolve host '" + serverInput + "'.");

@@ -42,6 +42,10 @@ public class AlphaBeta {
      * List of possible moves from the current position
      */
     private IntLinkedList moves;
+    /**
+     * Enables move sorting flag
+     */
+    private boolean moveSorting;
 
     /**
      * Constructs a new Alpha-Beta search instance.
@@ -50,13 +54,14 @@ public class AlphaBeta {
      * @param heuristics  The heuristic evaluation function to use
      * @param searchdepth Maximum depth to search in the game tree
      */
-    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo) {
+    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo, boolean moveSorting) {
         this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId());
         this.current_GameState = gameState;
         this.heuristics = heuristics;
-        this.root = new Node(0, null, gameState.clone(), heuristics);
+        this.root = new Node(0, null, gameState.clone(), heuristics, moveSorting);
         this.searchdepth = searchdepth;
         this.info = searchInfo;
+        this.moveSorting = moveSorting;
 
         ArrayList<Node> children = new ArrayList<>();
         ListNode m = moves.getHead();
@@ -67,11 +72,11 @@ public class AlphaBeta {
             GameState newGameState = gameState.clone();
 
             // create nodes for each possible move, with the cloned game state
-            children.add(new Node(m.getValue(), root, newGameState, heuristics));
+            children.add(new Node(m.getValue(), root, newGameState, heuristics, moveSorting));
             m = m.getNext();
         }
 
-        Collections.sort(children, Collections.reverseOrder());
+        if(moveSorting) Collections.sort(children, Collections.reverseOrder());
         // add all nodes (possible states) to the root node
         root.setNextMoves(children);
         info.addNewBranchingFactor(children.size());
@@ -97,7 +102,7 @@ public class AlphaBeta {
         for (Node child : root.getNextMoves()) {
             // Perform alpha-beta pruning on this node and retrieve its score
             int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha,
-                    beta, info);
+                    beta, info, moveSorting);
 
             // case of a timeout
             if (info.isTimeout()) {

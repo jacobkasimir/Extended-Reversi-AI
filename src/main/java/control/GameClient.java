@@ -17,6 +17,7 @@ public class GameClient {
     private int depthLimit;
     private int timeLimit;
     private boolean compareOn;
+    private boolean moveSorting;
 
     /**
      * Extracts a subarray of lines between the given start (inclusive) and end (exclusive).
@@ -75,7 +76,7 @@ public class GameClient {
      *
      * @param lines the input map file content as an array of lines
      */
-    public void init(String[] lines, boolean compare, int depthLimit) {
+    public void init(String[] lines, boolean compare, int depthLimit, boolean movesorting) {
         int playerCount = Integer.parseInt(lines[0]);
         int overrideCount = Integer.parseInt(lines[1]);
 
@@ -102,6 +103,8 @@ public class GameClient {
         this.heuristics = new Heuristics(this.getCurrentGameState(), bombCount, overrideCount, playerCount);
 
         this.compareOn = compare;
+
+        this.moveSorting = movesorting;
 
         this.depthLimit = depthLimit;
 
@@ -186,7 +189,7 @@ public class GameClient {
 
             SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
 
-            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info);
+            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info, moveSorting);
             int moveAlphaBeta = alphaBeta.chooseMove();
 
             if (moveMiniMax != moveAlphaBeta) {
@@ -197,10 +200,10 @@ public class GameClient {
         } else {
             if (timeLimit == 0) { //case for only depth limit
                 SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
-                AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info);
+                AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info, moveSorting);
                 return alphaBeta.chooseMove();
             } else {  //case for only time limit
-                return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState);
+                return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState, moveSorting);
             }
 
 

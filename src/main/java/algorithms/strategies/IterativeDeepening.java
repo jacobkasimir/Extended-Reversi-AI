@@ -18,7 +18,7 @@ public class IterativeDeepening {
      * @param state      The current game state
      * @return The computed move
      */
-    public static int findMove(int timeLimit, Heuristics heuristics, GameState state) {
+    public static int findMove(int timeLimit, Heuristics heuristics, GameState state, boolean moveSorting) {
 
         long startTimeMS = System.nanoTime() / 1000000; // start time for estimation of left time
 
@@ -33,7 +33,7 @@ public class IterativeDeepening {
 
             // calculate a move with a certain depth via Alpha Beta Pruning
             SearchInfo info = new SearchInfo(timeLimit, startTimeMS);
-            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info);
+            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info, moveSorting);
             posResultMove = alphaBeta.chooseMove();
 
             if (info.isTimeout()) { // check if a timeout flag is set
