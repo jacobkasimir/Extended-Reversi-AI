@@ -34,7 +34,7 @@ public class AlphaBetaNewVersion {
         int player = currentGameState.attributes().getOurPlayerId();
 
         player--;
-        if (player == 0) player = currentGameState.attributes().getNumberPlayers() + 1;
+        if (player == 0) player = currentGameState.attributes().getNumberPlayers();
 
         Result result = maxValue(currentGameState.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, player, searchdepth); 
 
