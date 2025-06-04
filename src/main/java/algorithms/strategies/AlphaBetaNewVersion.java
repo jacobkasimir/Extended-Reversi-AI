@@ -74,7 +74,7 @@ public class AlphaBetaNewVersion {
                 
                 if (result2.value() < v) {
                     v = result2.value();
-                    move = result2.move();
+                    move = a.getValue();
                     
                     beta = Math.min(beta, v);
                 }
@@ -101,7 +101,7 @@ public class AlphaBetaNewVersion {
             
             if (result2.value() > v) {
                 v = result2.value();
-                move = result2.move();
+                move = a.getValue();
                 
                 alpha = Math.max(alpha, v);
             }
@@ -153,7 +153,7 @@ public class AlphaBetaNewVersion {
                 
                 if (result2.value() > v) {
                     v = result2.value();
-                    move = result2.move();
+                    move = a.getValue();
                     
                     alpha = Math.max(alpha, v);
                 }
@@ -182,7 +182,7 @@ public class AlphaBetaNewVersion {
             
             if (result2.value() < v) {
                 v = result2.value();
-                move = result2.move();
+                move = a.getValue();
                 
                 beta = Math.min(beta, v);
             }
