@@ -74,14 +74,14 @@ public class MoveVerifier {
                         if (MoveVerifier.isValid(move, gameState)) {
                                 GameState toEvalGameState = gameState.clone();
                                 toEvalGameState.updateGameState(move);
-                                Score score = new Score(move,heuristics.evaluate(gameState, playerId),toEvalGameState);
+                                Score score = new Score(move,heuristics.evaluate(toEvalGameState, playerId),toEvalGameState);
                                 moves.add(score);
                         }
                         move = Coder.encodeMove(x, y, 21, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
                                 GameState toEvalGameState = gameState.clone();
                                 toEvalGameState.updateGameState(move);
-                                Score score = new Score(move,heuristics.evaluate(gameState, playerId),toEvalGameState);
+                                Score score = new Score(move,heuristics.evaluate(toEvalGameState, playerId),toEvalGameState);
                                 moves.add(score);
                         }
                     }
@@ -92,7 +92,7 @@ public class MoveVerifier {
                             if (MoveVerifier.isValid(move, gameState)) {
                                 GameState toEvalGameState = gameState.clone();
                                 toEvalGameState.updateGameState(move);
-                                Score score = new Score(move,heuristics.evaluate(gameState, playerId),toEvalGameState);
+                                Score score = new Score(move,heuristics.evaluate(toEvalGameState, playerId),toEvalGameState);
                                 moves.add(score);
                             }
                         }
@@ -103,7 +103,7 @@ public class MoveVerifier {
                         if (MoveVerifier.isValid(move, gameState)) {
                             GameState toEvalGameState = gameState.clone();
                             toEvalGameState.updateGameState(move);
-                            Score score = new Score(move,heuristics.evaluate(gameState, playerId),toEvalGameState);
+                            Score score = new Score(move,heuristics.evaluate(toEvalGameState, playerId),toEvalGameState);
                             moves.add(score);
                         }
                     }
@@ -132,7 +132,7 @@ public class MoveVerifier {
                     int move = Coder.encodeMove(i, j, 0, attributes.getOurPlayerId());
                     GameState toEvalGameState = gameState.clone();
                     toEvalGameState.updateGameState(move);
-                    Score score = new Score(move,heuristics.evaluate(gameState, attributes.getOurPlayerId()),toEvalGameState);
+                    Score score = new Score(move,heuristics.evaluate(toEvalGameState, attributes.getOurPlayerId()),toEvalGameState);
                     res.add(score);
                 }
             }

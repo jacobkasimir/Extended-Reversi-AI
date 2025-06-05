@@ -61,7 +61,7 @@ public class AlphaBetaNewVersion {
             int v = Integer.MAX_VALUE;
             int move = -1;
 
-            if(moveSorting) Collections.sort(allMoves);
+            if(moveSorting) Collections.sort(allMoves); // Aufsteigend nach score
 
             for(Score a: allMoves){
                 Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1);
