@@ -1,6 +1,11 @@
 package control;
 
-import algorithms.strategies.*;
+import algorithms.strategies.AlphaBeta;
+import algorithms.strategies.AlphaBetaNewVersion;
+import algorithms.strategies.Heuristics;
+import algorithms.strategies.IterativeDeepening;
+import algorithms.strategies.MiniMax;
+import algorithms.strategies.SearchInfo;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
@@ -200,8 +205,10 @@ public class GameClient {
         } else {
             if (timeLimit == 0) { //case for only depth limit
                 SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
-                AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info, moveSorting);
-                return alphaBeta.chooseMove();
+                // AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info, moveSorting);
+                // return alphaBeta.chooseMove();
+                AlphaBetaNewVersion alphaBetaNew=  new AlphaBetaNewVersion(current_gameState, heuristics, depthLimit, info, moveSorting);
+                return alphaBetaNew.alphaBetaSearch();
             } else {  //case for only time limit
                 return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState, moveSorting);
             }

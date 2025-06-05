@@ -1,7 +1,9 @@
 package algorithms.strategies;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import algorithms.datastructures.IntLinkedList;
-import algorithms.datastructures.ListNode;
 import control.Coder;
 import gamestate.GameState;
 import validation.MoveVerifier;
@@ -42,39 +44,31 @@ public class AlphaBetaNewVersion {
     }
 
 
-
-
-
-
-
-
     public Result maxValue(GameState gameState, int alpha,int beta, int previousPlayer, int depth){
 
         if(depth <= 0){
             int value = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
             return new Result(value, -1);
         }
-
-        IntLinkedList allMoves = MoveVerifier.calculateNextMoves(gameState, previousPlayer);
+        ArrayList<Score> allMoves = new ArrayList<>();
+        allMoves = MoveVerifier.calculateNextMoves(gameState, previousPlayer,heuristics);
         
         if(allMoves.isEmpty()){ //Pseudo: is Terminal?
             return new Result(heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId()), -1);
         }
 
-        if (Coder.decodePlayerId(allMoves.getHead().getValue()) != gameState.attributes().getOurPlayerId()){
+        if (Coder.decodePlayerId(allMoves.getFirst().move()) != gameState.attributes().getOurPlayerId()){
             int v = Integer.MAX_VALUE;
             int move = -1;
 
-            ListNode a = allMoves.getHead();
+            if(moveSorting) Collections.sort(allMoves);
 
-            while(a!=null){
-                GameState newGameState = gameState.clone();
-                newGameState.updateGameState(a.getValue());
-                Result result2 = maxValue(newGameState, alpha, beta, Coder.decodePlayerId(a.getValue()), depth - 1);
+            for(Score a: allMoves){
+                Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1);
                 
                 if (result2.value() < v) {
                     v = result2.value();
-                    move = a.getValue();
+                    move = a.move();
                     
                     beta = Math.min(beta, v);
                 }
@@ -82,8 +76,6 @@ public class AlphaBetaNewVersion {
                 if (v <= alpha) {
                     return new Result(v, move);
                 }
-
-                a = a.getNext();
             }
             
             return new Result(v, move);
@@ -92,16 +84,14 @@ public class AlphaBetaNewVersion {
         int v = Integer.MIN_VALUE;
         int move = -1;
 
-        ListNode a = allMoves.getHead();
+        if(moveSorting) Collections.sort(allMoves,Collections.reverseOrder());
 
-        while(a!=null){
-            GameState newGameState = gameState.clone();
-            newGameState.updateGameState(a.getValue());
-            Result result2 = minValue(newGameState, alpha, beta, Coder.decodePlayerId(a.getValue()), depth - 1);
+        for(Score a: allMoves){
+            Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1);
             
             if (result2.value() > v) {
                 v = result2.value();
-                move = a.getValue();
+                move = a.move();
                 
                 alpha = Math.max(alpha, v);
             }
@@ -109,93 +99,8 @@ public class AlphaBetaNewVersion {
             if (v >= beta) {
                 return new Result(v, move);
             }
-
-            a = a.getNext();
         }
 
         return new Result(v, move);
     }
-
-
-
-
-
-
-
-
-
-
-    public Result minValue(GameState gameState, int alpha,int beta, int previousPlayer, int depth){
-        
-        if(depth <= 0){
-            int value = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
-            return new Result(value, -1);
-        }
-
-        IntLinkedList allMoves = MoveVerifier.calculateNextMoves(gameState, previousPlayer);
-        
-        if(allMoves.isEmpty()){ //Pseudo: is Terminal?
-            return new Result(heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId()), -1);
-        }
-
-
-        if (Coder.decodePlayerId(allMoves.getHead().getValue()) == gameState.attributes().getOurPlayerId()) {
-            
-            int v = Integer.MIN_VALUE;
-            int move = -1;
-
-            ListNode a = allMoves.getHead();
-
-            while(a!=null){
-                GameState newGameState = gameState.clone();
-                newGameState.updateGameState(a.getValue());
-                Result result2 = minValue(newGameState, alpha, beta, Coder.decodePlayerId(a.getValue()), depth - 1);
-                
-                if (result2.value() > v) {
-                    v = result2.value();
-                    move = a.getValue();
-                    
-                    alpha = Math.max(alpha, v);
-                }
-
-                if (v >= beta) {
-                    return new Result(v, move);
-                }
-
-                a = a.getNext();
-            }
-
-            return new Result(v, move);
-        }
-
-
-
-        int v = Integer.MAX_VALUE;
-        int move = -1;
-
-        ListNode a = allMoves.getHead();
-
-        while(a!=null){
-            GameState newGameState = gameState.clone();
-            newGameState.updateGameState(a.getValue());
-            Result result2 = maxValue(newGameState, alpha, beta, Coder.decodePlayerId(a.getValue()), depth - 1);
-            
-            if (result2.value() < v) {
-                v = result2.value();
-                move = a.getValue();
-                
-                beta = Math.min(beta, v);
-            }
-
-            if (v <= alpha) {
-                return new Result(v, move);
-            }
-
-            a = a.getNext();
-        }
-        
-        return new Result(v, move);
-    }
-
-
 }

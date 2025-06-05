@@ -1,14 +1,12 @@
 package algorithms.strategies;
 
-import algorithms.datastructures.IntLinkedList;
-import algorithms.datastructures.ListNode;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import control.Coder;
 import control.Constants;
 import gamestate.GameState;
 import validation.MoveVerifier;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Represents a node in a game tree for implementing game AI algorithms like minimax.
@@ -136,24 +134,21 @@ public class Node implements Comparable<Node> {
             gameState.updateGameState(this.move);
 
             //calculate all possible moves in this state
-            IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
+            ArrayList<Score> possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId,heuristics);
 
             //use the heuristics if no moves available
             if (possibleMoves.isEmpty()) {
                 return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
             }
 
-            ListNode node = possibleMoves.getHead();
-
             //iterate over all possible moves in the current game state
-            while (node != null) {
+            for(Score node:possibleMoves) {
                 //create the next layer of the "mini-max"-tree
-                this.nextMoves.add(new Node(node.getValue(), this, gameState.clone(), this.heuristics, false));
-                node = node.getNext();
+                this.nextMoves.add(new Node(node.move(), this, gameState.clone(), this.heuristics, false));
             }
             int result;
 
-            int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getHead().getValue());
+            int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getFirst().move());
 
             //decide if we perform the next move or one of our opponents:
             if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move
@@ -210,7 +205,7 @@ public class Node implements Comparable<Node> {
             if (!gameState.attributes().isPhase1()) info.setReachedBombPhase();
 
             //calculate all possible moves
-            IntLinkedList possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId);
+            ArrayList<Score> possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId,heuristics);
             if (possibleMoves.isEmpty()) {
                 if(moveSorting){
                     return this.score;
@@ -219,17 +214,15 @@ public class Node implements Comparable<Node> {
                 }
             }
 
-            ListNode m = possibleMoves.getHead();
             //iterate over all possible moves and add them as children of the current node
-            while (m != null) {
-                this.nextMoves.add(new Node(m.getValue(), this, gameState.clone(), this.heuristics, moveSorting));
-                m = m.getNext();
+            for(Score m:possibleMoves) {
+                this.nextMoves.add(new Node(m.move(), this, gameState.clone(), this.heuristics, moveSorting));
             }
 
-            info.addNewBranchingFactor(possibleMoves.getSize());
+            info.addNewBranchingFactor(possibleMoves.size()); //SIZE!!
             int result;
 
-            int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getHead().getValue());
+            int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getFirst().move());
 
             //decide if we perform the next move or one of our opponents:
             if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move

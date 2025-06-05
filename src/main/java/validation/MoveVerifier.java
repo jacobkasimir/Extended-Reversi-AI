@@ -1,6 +1,9 @@
 package validation;
 
-import algorithms.datastructures.IntLinkedList;
+import java.util.ArrayList;
+
+import algorithms.strategies.Heuristics;
+import algorithms.strategies.Score;
 import control.Coder;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
@@ -50,10 +53,10 @@ public class MoveVerifier {
      * @param playerId  The playerId of the player whose moves should be calculated.
      * @return All possible moves in an IntLinkedList.
      */
-    public static IntLinkedList allMovesPhase1(GameState gameState, int playerId) {
+    public static ArrayList<Score> allMovesPhase1(GameState gameState, int playerId, Heuristics heuristics) {
         MapController map = gameState.mapController();
         GameAttributes attributes = gameState.attributes();
-        IntLinkedList moves = new IntLinkedList();
+        ArrayList<Score> moves = new ArrayList<>();
         int width = map.getWidth();
         int height = map.getHeight();
         int numPlayers = attributes.getNumberPlayers();
@@ -69,11 +72,17 @@ public class MoveVerifier {
                     case 'b' -> {
                         move = Coder.encodeMove(x, y, 20, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
-                            moves.add(move);
+                                GameState toEvalGameState = gameState.clone();
+                                toEvalGameState.updateGameState(move);
+                                Score score = new Score(move,heuristics.evaluate(gameState, playerId),toEvalGameState);
+                                moves.add(score);
                         }
                         move = Coder.encodeMove(x, y, 21, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
-                            moves.add(move);
+                                GameState toEvalGameState = gameState.clone();
+                                toEvalGameState.updateGameState(move);
+                                Score score = new Score(move,heuristics.evaluate(gameState, playerId),toEvalGameState);
+                                moves.add(score);
                         }
                     }
                     // Choice for every playerId
@@ -81,7 +90,10 @@ public class MoveVerifier {
                         for (int choice = 1; choice <= numPlayers; choice++) {
                             move = Coder.encodeMove(x, y, choice, playerId);
                             if (MoveVerifier.isValid(move, gameState)) {
-                                moves.add(move);
+                                GameState toEvalGameState = gameState.clone();
+                                toEvalGameState.updateGameState(move);
+                                Score score = new Score(move,heuristics.evaluate(gameState, playerId),toEvalGameState);
+                                moves.add(score);
                             }
                         }
                     }
@@ -89,7 +101,10 @@ public class MoveVerifier {
                     default -> {
                         move = Coder.encodeMove(x, y, 0, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
-                            moves.add(move);
+                            GameState toEvalGameState = gameState.clone();
+                            toEvalGameState.updateGameState(move);
+                            Score score = new Score(move,heuristics.evaluate(gameState, playerId),toEvalGameState);
+                            moves.add(score);
                         }
                     }
                 }
@@ -105,16 +120,20 @@ public class MoveVerifier {
      *                  GameAttributes object.
      * @return All possible moves in an IntLinkedList.
      */
-    public static IntLinkedList allMovesPhase2(GameState gameState) {
+    public static ArrayList<Score> allMovesPhase2(GameState gameState, Heuristics heuristics) {
         MapController map = gameState.mapController();
         GameAttributes attributes = gameState.attributes();
 
-        IntLinkedList res = new IntLinkedList();
+        ArrayList<Score> res = new ArrayList<>();
         for (int i = 0; i < map.getWidth(); i++) {
             for (int j = 0; j < map.getHeight(); j++) {
                 if (map.getTile(i, j) != '-'
                         && Coder.decodeplayerBombs(attributes.getPlayer(attributes.getOurPlayerId())) > 0) {
-                    res.addIfNotContains(Coder.encodeMove(i, j, 0, attributes.getOurPlayerId()));
+                    int move = Coder.encodeMove(i, j, 0, attributes.getOurPlayerId());
+                    GameState toEvalGameState = gameState.clone();
+                    toEvalGameState.updateGameState(move);
+                    Score score = new Score(move,heuristics.evaluate(gameState, attributes.getOurPlayerId()),toEvalGameState);
+                    res.add(score);
                 }
             }
         }
@@ -130,14 +149,14 @@ public class MoveVerifier {
      * @param playerId  The playerId to evaluate.
      * @return All possible moves in an IntLinkedList.
      */
-    public static IntLinkedList calculateMoves(GameState gameState, int playerId) {
+    public static ArrayList<Score> calculateMoves(GameState gameState, int playerId, Heuristics heuristics) {
         if (Coder.decodeplayerInGame(gameState.attributes().getPlayer(playerId)) == 0) {
-            return new IntLinkedList();
+            return new ArrayList<>();
         }
         if (gameState.attributes().isPhase1()) {
-            return MoveVerifier.allMovesPhase1(gameState, playerId);
+            return MoveVerifier.allMovesPhase1(gameState, playerId, heuristics);
         } else
-            return allMovesPhase2(gameState);
+            return allMovesPhase2(gameState, heuristics);
     }
 
     /**
@@ -148,15 +167,15 @@ public class MoveVerifier {
      * @param lastPlayerId The playerId that has done the last move.
      * @return All possible moves of the next player in an IntLinkedList.
      */
-    public static IntLinkedList calculateNextMoves(GameState gameState, int lastPlayerId) {
+    public static ArrayList<Score> calculateNextMoves(GameState gameState, int lastPlayerId, Heuristics heuristics) {
         lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers()) + 1;
-        IntLinkedList res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
+        ArrayList<Score> res = MoveVerifier.calculateMoves(gameState, lastPlayerId, heuristics);
         int counter = 1; // counts how many players have been checked
 
         // Iterates over players until someone does have moves left
         while (res.isEmpty() && counter < gameState.attributes().getNumberPlayers() + 1) {
             lastPlayerId = (lastPlayerId % gameState.attributes().getNumberPlayers()) + 1;
-            res = MoveVerifier.calculateMoves(gameState, lastPlayerId);
+            res = MoveVerifier.calculateMoves(gameState, lastPlayerId, heuristics);
             counter++;
         }
         // Handles logic if no player has moves left
@@ -170,9 +189,9 @@ public class MoveVerifier {
                 } else {
                     nextPlayerId--;
                 }
-                return calculateNextMoves(gameState, nextPlayerId);
+                return calculateNextMoves(gameState, nextPlayerId, heuristics);
             } else { // End game logic
-                return new IntLinkedList();
+                return new ArrayList<>();
             }
         } else {
             return res;

@@ -1,13 +1,11 @@
 package algorithms.strategies;
 
-import algorithms.datastructures.IntLinkedList;
-import algorithms.datastructures.ListNode;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import control.Constants;
 import gamestate.GameState;
 import validation.MoveVerifier;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Implementation of the Alpha-Beta pruning algorithm.
@@ -41,7 +39,7 @@ public class AlphaBeta {
     /**
      * List of possible moves from the current position
      */
-    private IntLinkedList moves;
+    private ArrayList<Score> moves;
     /**
      * Enables move sorting flag
      */
@@ -55,7 +53,7 @@ public class AlphaBeta {
      * @param searchdepth Maximum depth to search in the game tree
      */
     public AlphaBeta(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo, boolean moveSorting) {
-        this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId());
+        this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId(),heuristics);
         this.current_GameState = gameState;
         this.heuristics = heuristics;
         this.root = new Node(0, null, gameState.clone(), heuristics, moveSorting);
@@ -64,16 +62,14 @@ public class AlphaBeta {
         this.moveSorting = moveSorting;
 
         ArrayList<Node> children = new ArrayList<>();
-        ListNode m = moves.getHead();
 
         // for each of our moves, do:
-        while (m != null) {
+        for(Score m:moves) {
             // clone game state
             GameState newGameState = gameState.clone();
 
             // create nodes for each possible move, with the cloned game state
-            children.add(new Node(m.getValue(), root, newGameState, heuristics, moveSorting));
-            m = m.getNext();
+            children.add(new Node(m.move(), root, newGameState, heuristics, moveSorting));
         }
 
         if(moveSorting) Collections.sort(children, Collections.reverseOrder());

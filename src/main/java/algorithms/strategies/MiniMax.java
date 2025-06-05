@@ -1,11 +1,9 @@
 package algorithms.strategies;
 
-import algorithms.datastructures.IntLinkedList;
-import algorithms.datastructures.ListNode;
+import java.util.ArrayList;
+
 import gamestate.GameState;
 import validation.MoveVerifier;
-
-import java.util.ArrayList;
 
 /**
  * Implementation of the MiniMax algorithm.
@@ -28,7 +26,7 @@ public class MiniMax {
     /**
      * List of possible moves
      */
-    private IntLinkedList moves;
+    private ArrayList<Score> moves;
     /**
      * Current state of the game
      */
@@ -47,7 +45,7 @@ public class MiniMax {
      * @param searchdepth The maximum depth to search in the game tree
      */
     public MiniMax(GameState gameState, Heuristics heuristics, int searchdepth) {
-        this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId());
+        this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId(), heuristics);
         this.current_GameState = gameState;
         this.heuristics = heuristics;
         //create the root node for the branched tree of possible moves (or game states)
@@ -58,14 +56,12 @@ public class MiniMax {
         ArrayList<Node> children = new ArrayList<>();
 
         //iterate over all possible moves
-        ListNode m = moves.getHead();
-        while (m != null) {
+        for(Score m:moves) {
             //clone game state
             GameState newGameState = gameState.clone();
 
             //add node for the game state when performing move m
-            children.add(new Node(m.getValue(), root, newGameState, heuristics, false));
-            m = m.getNext();
+            children.add(new Node(m.move(), root, newGameState, heuristics, false));
         }
 
         //add all nodes to the root node
