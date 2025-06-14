@@ -188,21 +188,14 @@ public class Node implements Comparable<Node> {
      */
     public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info, boolean moveSorting) {
         //in case of a time-out
-        if (info.isTimeout()) {
-            return -1;
-        }
-        long currentTime = System.nanoTime() / 1000000;
-        if (currentTime - info.getStartTime() + Constants.TIMELIMIT_TIMEOUT_OFFSET >= info.getTimeLimit()) {
-            info.setTimeout(true);
-            return -1;
-        }
+        if (info.isTimeout(info)) return -1;
 
         if (searchDepth > 0) {
 
             //update gameState by performing the move of this node
             gameState.updateGameState(this.move);
 
-            if (!gameState.attributes().isPhase1()) info.setReachedBombPhase();
+            //if (!gameState.attributes().isPhase1()) info.setReachedBombPhase();
 
             //calculate all possible moves
             ArrayList<Score> possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId,heuristics);
@@ -219,7 +212,7 @@ public class Node implements Comparable<Node> {
                 this.nextMoves.add(new Node(m.move(), this, gameState.clone(), this.heuristics, moveSorting));
             }
 
-            info.addNewBranchingFactor(possibleMoves.size()); //SIZE!!
+            info.updateBranchingFactor(possibleMoves.size()); //SIZE!!
             int result;
 
             int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getFirst().move());
