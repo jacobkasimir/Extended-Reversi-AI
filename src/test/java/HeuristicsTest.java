@@ -1,3 +1,6 @@
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
 import algorithms.datastructures.IntLinkedList;
 import algorithms.strategies.Heuristics;
 import control.Coder;
@@ -5,9 +8,6 @@ import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 import gamestate.map.Transitions;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HeuristicsTest {
 

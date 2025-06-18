@@ -1,6 +1,5 @@
 package algorithms.strategies;
 
-import control.Constants;
 import gamestate.GameState;
 
 /**
@@ -33,8 +32,8 @@ public class IterativeDeepening {
 
             // calculate a move with a certain depth via Alpha Beta Pruning
             SearchInfo info = new SearchInfo(timeLimit, startTimeMS);
-            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info, moveSorting);
-            posResultMove = alphaBeta.chooseMove();
+            AlphaBetaNewVersion alphaBetaNew = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting);
+            posResultMove = alphaBetaNew.alphaBetaSearch();
 
             if (info.isTimeout()) { // check if a timeout flag is set
                 return resultMove;
