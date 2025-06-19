@@ -1,8 +1,9 @@
 package algorithms.strategies;
 
-import gamestate.GameState;
-
 import java.util.List;
+
+import control.Constants;
+import gamestate.GameState;
 
 /**
  * This class handles the iterative deepening strategies to calculate a
