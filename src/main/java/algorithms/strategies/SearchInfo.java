@@ -1,5 +1,10 @@
 package algorithms.strategies;
 
+import control.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Stores the necessary information required during the iterative deepening search process.
  */
@@ -8,9 +13,13 @@ public class SearchInfo {
     private final long startTime;
     private final int timeLimit;
 
-    private boolean reachedBombPhase;
-    private int maxBranchingFactor;
+    private int branchingFactor;
+    private int nodes;
+    private int nodesLastLvl;
+
     private boolean timeout = false;
+
+    private final List<Long> depthTimes = new ArrayList<>(); //Time per depth
 
     /**
      * Creates a new SearchInfo Instance with the specified parameters.
@@ -21,18 +30,7 @@ public class SearchInfo {
     public SearchInfo(int timeLimit, long startTime) {
         this.timeLimit = timeLimit;
         this.startTime = startTime;
-        reachedBombPhase = false;
-        maxBranchingFactor = 0;
-    }
-
-    /**
-     * Adds a new branching factor to the current instance.
-     * Calls all further methods to update the different attributes.
-     *
-     * @param branching the branching factor that should be stored in the SearchInfo instance
-     */
-    public void addNewBranchingFactor(int branching) {
-        updateMaxBranchingFactor(branching);
+        branchingFactor = 0;
     }
 
     /**
@@ -40,8 +38,8 @@ public class SearchInfo {
      *
      * @return the maximum branching factor in the search tree.
      */
-    public int getMaxBranchingFactor() {
-        return maxBranchingFactor;
+    public int getBranchingFactor() {
+        return branchingFactor;
     }
 
     /**
@@ -49,42 +47,45 @@ public class SearchInfo {
      *
      * @param branching the new branching factor to add
      */
-    private void updateMaxBranchingFactor(int branching) {
-        maxBranchingFactor = Math.max(maxBranchingFactor, branching);
+    public void updateBranchingFactor(int branching) {
+        branchingFactor = Math.max(branchingFactor, branching);
     }
 
     /**
-     * Returns if we reached the bombing phase (phase 2) with one branch in the search tree.
+     * Checks whether the time limit for the current search has been exceeded.
+     * <p>
+     * This method compares the current system time against the start time and the allowed time limit,
+     * taking into account a small safety offset
+     * If the limit is exceeded, it marks the instance as timed out.
      *
-     * @return True if we reached phase 2 with at least one branch in the search tree
-     */
-    public boolean isBombPhaseReached() {
-        return reachedBombPhase;
-    }
-
-    /**
-     * Marks that the bomb phase has been reached during the search process.
-     */
-    public void setReachedBombPhase() {
-        reachedBombPhase = true;
-    }
-
-    /**
-     * Returns whether the time limit has been exceeded and the recursive call should be aborted.
-     *
-     * @return True if the recursive call should be aborted.
+     * @return true, if the time limit has been exceeded or a timeout has already been flagged
      */
     public boolean isTimeout() {
-        return timeout;
+        if (this.timeout) {
+            return true;
+        }
+        long currentTime = System.nanoTime() / 1000000;
+        if (currentTime - this.getStartTime() + Constants.TIMELIMIT_TIMEOUT_OFFSET >= this.getTimeLimit()) {
+            this.setTimeout();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether a timeout has already been detected for this search.
+     *
+     * @return true if the timeout flag is set, false otherwise
+     */
+    public boolean getTimeout() {
+        return this.timeout;
     }
 
     /**
      * Sets the timeout flag indicating whether the time limit has been exceeded.
-     *
-     * @param timeout True if a timeout is reached
      */
-    public void setTimeout(boolean timeout) {
-        this.timeout = timeout;
+    private void setTimeout() {
+        this.timeout = true;
     }
 
     /**
@@ -105,4 +106,43 @@ public class SearchInfo {
         return timeLimit;
     }
 
+    /**
+     * Records the time taken to complete the current search depth.
+     *
+     * @param duration The time in milliseconds taken for the current depth search.
+     */
+    public void recordDepthTime(long duration) {
+        depthTimes.add(duration);
+    }
+
+    /**
+     * Returns the list of recorded search times for each completed depth.
+     *
+     * @return A list containing the duration (in milliseconds) of each depth-level search.
+     */
+    public List<Long> getDepthTimes() {
+        return depthTimes;
+    }
+
+
+    public void addNode(){
+        nodes++;
+    }
+
+    public void addNodesLastLvl(){
+        nodesLastLvl++;
+    }
+
+    public void resetCount(){
+        nodes = 0;
+        nodesLastLvl = 0;
+    }
+
+    public int getNodes() {
+        return nodes;
+    }
+
+    public int getNodesLastLvl() {
+        return nodesLastLvl;
+    }
 }
