@@ -34,6 +34,8 @@ public class IterativeDeepening {
             SearchInfo info = new SearchInfo(timeLimit, startTimeMS);
             AlphaBetaNewVersion alphaBetaNew = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting);
             posResultMove = alphaBetaNew.alphaBetaSearch();
+            // AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info, moveSorting);
+            // posResultMove = alphaBeta.chooseMove();
 
             if (info.isTimeout()) { // check if a timeout flag is set
                 return resultMove;
