@@ -14,8 +14,8 @@ public class SearchInfo {
     private final int timeLimit;
 
     private int branchingFactor;
-    private int lastBranchingFactor;
-    private int secondLastBranchingFactor;
+    private int nodes;
+    private int nodesLastLvl;
 
     private boolean timeout = false;
 
@@ -49,14 +49,6 @@ public class SearchInfo {
      */
     public void updateBranchingFactor(int branching) {
         branchingFactor = Math.max(branchingFactor, branching);
-    }
-
-    /**
-     * Updates the last and second last branching factors, for the prediction of the next branching factor.
-     */
-    public void updateLastBranchingFactor() {
-        secondLastBranchingFactor = lastBranchingFactor;
-        lastBranchingFactor = branchingFactor;
     }
 
     /**
@@ -132,22 +124,25 @@ public class SearchInfo {
         return depthTimes;
     }
 
-    /**
-     * Returns the branching factor of the most recently completed search depth.
-     *
-     * @return the last branching factor
-     */
-    public int getLastBranchingFactor() {
-        return lastBranchingFactor;
+
+    public void addNode(){
+        nodes++;
     }
 
-    /**
-     * Returns the branching factor of the second most recently completed search depth.
-     *
-     * @return the second last branching factor
-     */
-    public int getSecondLastBranchingFactor() {
-        return secondLastBranchingFactor;
+    public void addNodesLastLvl(){
+        nodesLastLvl++;
     }
 
+    public void resetCount(){
+        nodes = 0;
+        nodesLastLvl = 0;
+    }
+
+    public int getNodes() {
+        return nodes;
+    }
+
+    public int getNodesLastLvl() {
+        return nodesLastLvl;
+    }
 }

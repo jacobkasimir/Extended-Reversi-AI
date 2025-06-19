@@ -34,7 +34,6 @@ public class IterativeDeepening {
             long depthStart = System.nanoTime();
             // calculate a move with a certain depth via Alpha Beta Pruning
             AlphaBetaNewVersion alphaBeta = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting);
-            info.updateLastBranchingFactor(); //for further calculations
             posResultMove = alphaBeta.alphaBetaSearch();
 
             long depthEnd = System.nanoTime();
@@ -74,25 +73,25 @@ public class IterativeDeepening {
         if (size < 2) return false;
 
         long lastTime = times.get(size - 1);
-        long predictedNextTime = getPredictedNextTime(times, size, lastTime);
-
-
-        int bf = info.getBranchingFactor();
-        int next_bf = estimateNextBranchingFactor(info);
+        //long predictedNextTime = getPredictedNextTime(times, size, lastTime);
 
         //ratio from last and predicted branching factor
-        double factor = (double) next_bf / bf;
+        int next_bf = estimateNextBranchingFactor(info);
+
+        double avgTimePerNode = lastTime / (double) info.getNodes();
+
         //predicted next time considering the branching factor
-        long predictedBFTime = (long) (lastTime * factor * 1.1); //10 % safety buffer
+        long predictedBFTime = (long) (next_bf * avgTimePerNode) + lastTime;
 
         long currentTime = System.nanoTime() / 1_000_000;
         long timeUsed = currentTime - info.getStartTime();
         long timeLeft = info.getTimeLimit() - timeUsed;
 
         // safety buffer
-        long buffer = 50; // ms
+        //long buffer = 50; // ms
 
-        return (predictedNextTime + predictedBFTime / 2.0) + buffer >= timeLeft;
+        // return (predictedNextTime + predictedBFTime / 2.0) + buffer >= timeLeft;
+        return predictedBFTime >= timeLeft;
     }
 
     /**
@@ -128,17 +127,10 @@ public class IterativeDeepening {
      * @return an estimated branching factor for the next depth level.
      */
     private static int estimateNextBranchingFactor(SearchInfo info) {
-        int bf = info.getBranchingFactor();
-        int last_bf = info.getLastBranchingFactor();
-        int secondLast_bf = info.getSecondLastBranchingFactor();
+        int parents = info.getNodes() - info.getNodesLastLvl() - 1;
+        int childs = info.getNodes() - 1;
 
-        if (last_bf == 0) return 0;
-        else if (secondLast_bf == 0) return bf * bf / last_bf;
-        else {
-            double avg1 = (double) last_bf / secondLast_bf;
-            double avg2 = (double) bf / last_bf;
-            double avgGrowth = (avg1 + avg2) / 2;
-            return (int) (bf * avgGrowth);
-        }
+        double avgChild = (double) childs / (double) parents;
+        return (int) avgChild * info.getNodesLastLvl();
     }
 }

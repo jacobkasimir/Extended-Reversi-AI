@@ -34,6 +34,7 @@ public class AlphaBetaNewVersion {
 
     public int alphaBetaSearch(){
         int player = currentGameState.attributes().getOurPlayerId();
+        searchInfo.resetCount();
 
         player--;
         if (player == 0) player = currentGameState.attributes().getNumberPlayers();
@@ -46,7 +47,7 @@ public class AlphaBetaNewVersion {
 
 
     public Result maxValue(GameState gameState, int alpha,int beta, int previousPlayer, int depth, int heuristicValue){
-
+        searchInfo.addNode();
         //in case of a time-out
         if (searchInfo.isTimeout()) {
             return null;
@@ -54,6 +55,7 @@ public class AlphaBetaNewVersion {
 
         //in case of no time-out
         if(depth <= 0){
+            searchInfo.addNodesLastLvl();
             int value;
             if(heuristicValue != -1) value = heuristicValue;
             else value = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
@@ -65,7 +67,6 @@ public class AlphaBetaNewVersion {
         if(allMoves.isEmpty()){ //Pseudo: is Terminal?
             return new Result(heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId()), -1);
         }
-        searchInfo.updateBranchingFactor(allMoves.size());
 
         if (Coder.decodePlayerId(allMoves.getFirst().move()) != gameState.attributes().getOurPlayerId()){
             int v = Integer.MAX_VALUE;
