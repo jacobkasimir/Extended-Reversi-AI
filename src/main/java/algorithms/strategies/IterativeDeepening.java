@@ -105,7 +105,7 @@ public class IterativeDeepening {
         //long buffer = 50; // ms
 
         // return (predictedNextTime + predictedBFTime / 2.0) + buffer >= timeLeft;
-        return predictedBFTime >= timeLeft;
+        return predictedBFTime * Constants.TIMEBUFFER >= timeLeft;
     }
 
     /**
