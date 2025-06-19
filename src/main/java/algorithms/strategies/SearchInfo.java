@@ -13,8 +13,6 @@ public class SearchInfo {
     private final long startTime;
     private final int timeLimit;
 
-   // private boolean reachedBombPhase;
-
     private int branchingFactor;
     private int lastBranchingFactor;
     private int secondLastBranchingFactor;
@@ -32,7 +30,6 @@ public class SearchInfo {
     public SearchInfo(int timeLimit, long startTime) {
         this.timeLimit = timeLimit;
         this.startTime = startTime;
-        //reachedBombPhase = false;
         branchingFactor = 0;
     }
 
@@ -63,38 +60,21 @@ public class SearchInfo {
     }
 
     /**
-     * Returns if we reached the bombing phase (phase 2) with one branch in the search tree.
-     *
-     * @return True if we reached phase 2 with at least one branch in the search tree
-     */
-//    public boolean isBombPhaseReached() {
-//        return reachedBombPhase;
-//    }
-
-    /**
-     * Marks that the bomb phase has been reached during the search process.
-     */
-//    public void setReachedBombPhase() {
-//        reachedBombPhase = true;
-//    }
-
-    /**
      * Checks whether the time limit for the current search has been exceeded.
      * <p>
      * This method compares the current system time against the start time and the allowed time limit,
      * taking into account a small safety offset
      * If the limit is exceeded, it marks the instance as timed out.
      *
-     * @param info the SearchInfo object containing the start time and time limit
      * @return true, if the time limit has been exceeded or a timeout has already been flagged
      */
-    public boolean isTimeout(SearchInfo info) {
+    public boolean isTimeout() {
         if (this.timeout) {
             return true;
         }
         long currentTime = System.nanoTime() / 1000000;
-        if (currentTime - info.getStartTime() + Constants.TIMELIMIT_TIMEOUT_OFFSET >= info.getTimeLimit()) {
-            info.setTimeout(true);
+        if (currentTime - this.getStartTime() + Constants.TIMELIMIT_TIMEOUT_OFFSET >= this.getTimeLimit()) {
+            this.setTimeout(true);
             return true;
         }
         return false;

@@ -33,9 +33,9 @@ public class IterativeDeepening {
 
             long depthStart = System.nanoTime();
             // calculate a move with a certain depth via Alpha Beta Pruning
-            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info, moveSorting);
+            AlphaBetaNewVersion alphaBeta = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting);
             info.updateLastBranchingFactor(); //for further calculations
-            posResultMove = alphaBeta.chooseMove();
+            posResultMove = alphaBeta.alphaBetaSearch();
 
             long depthEnd = System.nanoTime();
             long duration = (depthEnd - depthStart) / 1000000;

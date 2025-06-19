@@ -188,7 +188,7 @@ public class Node implements Comparable<Node> {
      */
     public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info, boolean moveSorting) {
         //in case of a time-out
-        if (info.isTimeout(info)) return -1;
+        if (info.isTimeout()) return -1;
 
         if (searchDepth > 0) {
 
