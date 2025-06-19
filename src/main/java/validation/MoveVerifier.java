@@ -74,14 +74,14 @@ public class MoveVerifier {
                         if (MoveVerifier.isValid(move, gameState)) {
                                 GameState toEvalGameState = gameState.clone();
                                 toEvalGameState.updateGameState(move);
-                                Score score = new Score(move,heuristics.evaluate(toEvalGameState, playerId),toEvalGameState);
+                                Score score = new Score(move,heuristics.evaluate(toEvalGameState, gameState.attributes().getOurPlayerId()),toEvalGameState);
                                 moves.add(score);
                         }
                         move = Coder.encodeMove(x, y, 21, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
                                 GameState toEvalGameState = gameState.clone();
                                 toEvalGameState.updateGameState(move);
-                                Score score = new Score(move,heuristics.evaluate(toEvalGameState, playerId),toEvalGameState);
+                                Score score = new Score(move,heuristics.evaluate(toEvalGameState, gameState.attributes().getOurPlayerId()),toEvalGameState);
                                 moves.add(score);
                         }
                     }
@@ -92,7 +92,7 @@ public class MoveVerifier {
                             if (MoveVerifier.isValid(move, gameState)) {
                                 GameState toEvalGameState = gameState.clone();
                                 toEvalGameState.updateGameState(move);
-                                Score score = new Score(move,heuristics.evaluate(toEvalGameState, playerId),toEvalGameState);
+                                Score score = new Score(move,heuristics.evaluate(toEvalGameState, gameState.attributes().getOurPlayerId()),toEvalGameState);
                                 moves.add(score);
                             }
                         }
@@ -103,7 +103,7 @@ public class MoveVerifier {
                         if (MoveVerifier.isValid(move, gameState)) {
                             GameState toEvalGameState = gameState.clone();
                             toEvalGameState.updateGameState(move);
-                            Score score = new Score(move,heuristics.evaluate(toEvalGameState, playerId),toEvalGameState);
+                            Score score = new Score(move,heuristics.evaluate(toEvalGameState, gameState.attributes().getOurPlayerId()),toEvalGameState);
                             moves.add(score);
                         }
                     }
