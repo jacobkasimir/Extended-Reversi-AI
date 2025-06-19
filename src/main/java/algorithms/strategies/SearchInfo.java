@@ -74,7 +74,7 @@ public class SearchInfo {
         }
         long currentTime = System.nanoTime() / 1000000;
         if (currentTime - this.getStartTime() + Constants.TIMELIMIT_TIMEOUT_OFFSET >= this.getTimeLimit()) {
-            this.setTimeout(true);
+            this.setTimeout();
             return true;
         }
         return false;
@@ -91,11 +91,9 @@ public class SearchInfo {
 
     /**
      * Sets the timeout flag indicating whether the time limit has been exceeded.
-     *
-     * @param timeout True if a timeout is reached
      */
-    public void setTimeout(boolean timeout) {
-        this.timeout = timeout;
+    private void setTimeout() {
+        this.timeout = true;
     }
 
     /**

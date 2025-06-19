@@ -5,7 +5,6 @@ import java.util.Collections;
 
 import algorithms.datastructures.IntLinkedList;
 import control.Coder;
-import control.Constants;
 import gamestate.GameState;
 import validation.MoveVerifier;
 
@@ -39,21 +38,17 @@ public class AlphaBetaNewVersion {
         player--;
         if (player == 0) player = currentGameState.attributes().getNumberPlayers();
 
-        Result result = maxValue(currentGameState.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, player, searchdepth, -1); 
-        
+        Result result = maxValue(currentGameState.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, player, searchdepth, -1);
+
         if(result == null) return -1;
         else return result.move();        
     }
 
 
     public Result maxValue(GameState gameState, int alpha,int beta, int previousPlayer, int depth, int heuristicValue){
+
         //in case of a time-out
         if (searchInfo.isTimeout()) {
-            return null;
-        }
-        long currentTime = System.nanoTime() / 1000000;
-        if (currentTime - searchInfo.getStartTime() + Constants.TIMELIMIT_TIMEOUT_OFFSET >= searchInfo.getTimeLimit()) {
-            searchInfo.setTimeout(true);
             return null;
         }
 
@@ -64,24 +59,25 @@ public class AlphaBetaNewVersion {
             else value = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
             return new Result(value, -1);
         }
-        ArrayList<Score> allMoves = new ArrayList<>();
+        ArrayList<Score> allMoves;
         allMoves = MoveVerifier.calculateNextMoves(gameState, previousPlayer,heuristics);
         
         if(allMoves.isEmpty()){ //Pseudo: is Terminal?
             return new Result(heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId()), -1);
         }
+        searchInfo.updateBranchingFactor(allMoves.size());
 
         if (Coder.decodePlayerId(allMoves.getFirst().move()) != gameState.attributes().getOurPlayerId()){
             int v = Integer.MAX_VALUE;
             int move = -1;
 
-            if(moveSorting) Collections.sort(allMoves); // Aufsteigend nach score
+            if(moveSorting) Collections.sort(allMoves); // ascending (score)
 
             for(Score a: allMoves){
                 Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
                 
                 // case of a timeout
-                if (searchInfo.isTimeout()) {
+                if (searchInfo.getTimeout()) {
                     return null;
                 }
 
@@ -109,7 +105,7 @@ public class AlphaBetaNewVersion {
             Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
 
             // case of a timeout
-            if (searchInfo.isTimeout()) {
+            if (searchInfo.getTimeout()) {
                 return null;
             }
 
