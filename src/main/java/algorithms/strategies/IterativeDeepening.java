@@ -1,8 +1,9 @@
 package algorithms.strategies;
 
-import gamestate.GameState;
-
 import java.util.List;
+
+import control.Constants;
+import gamestate.GameState;
 
 /**
  * This class handles the iterative deepening strategies to calculate a
@@ -23,8 +24,10 @@ public class IterativeDeepening {
 
         long startTimeMS = System.nanoTime() / 1000000; // start time for estimation of left time
         int currentDepth = 1; // starting depth
-        int resultMove = 0;
-        int posResultMove;
+        Result resultMove = new Result(0,0);
+        Result posResultMove;
+        int lower = Integer.MIN_VALUE;
+        int higher = Integer.MAX_VALUE;
 
         SearchInfo info = new SearchInfo(timeLimit, startTimeMS);
 
@@ -33,15 +36,23 @@ public class IterativeDeepening {
 
             long depthStart = System.nanoTime();
             // calculate a move with a certain depth via Alpha Beta Pruning
-            AlphaBetaNewVersion alphaBeta = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting);
+            AlphaBetaNewVersion alphaBeta = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher);
             posResultMove = alphaBeta.alphaBetaSearch();
+
+            if(posResultMove.value() == -1) {
+                lower = Integer.MIN_VALUE;
+                higher = Integer.MAX_VALUE;
+                depthStart = System.nanoTime();
+                AlphaBetaNewVersion alphaBeta2 = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher);
+                posResultMove = alphaBeta2.alphaBetaSearch();
+            }
 
             long depthEnd = System.nanoTime();
             long duration = (depthEnd - depthStart) / 1000000;
             info.recordDepthTime(duration);
 
             if (info.getTimeout()) { // check if a timeout flag is set
-                return resultMove;
+                return resultMove.move();
             } else {
                 resultMove = posResultMove;
             }
@@ -51,10 +62,13 @@ public class IterativeDeepening {
                 break;
             }
 
+
             currentDepth++;
 
+            lower = resultMove.value() - Constants.ASPIRATION_WINDOW;
+            higher = resultMove.value() + Constants.ASPIRATION_WINDOW;
         }
-        return resultMove;
+        return resultMove.move();
     }
 
     /**

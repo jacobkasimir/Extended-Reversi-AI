@@ -22,31 +22,36 @@ public class AlphaBetaNewVersion {
 
     private final boolean moveSorting;
 
+    private int alpha;
 
-    public AlphaBetaNewVersion(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo, boolean sorting){
+    private int beta;
+
+
+    public AlphaBetaNewVersion(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo, boolean sorting, int low, int high){
         this.currentGameState = gameState;
         this.heuristics = heuristics;
         this.searchdepth = searchdepth;
         this.searchInfo =searchInfo;
         this.moveSorting = sorting;
-
+        this.alpha = low;
+        this.beta = high;
     }
 
-    public int alphaBetaSearch(){
+    public Result alphaBetaSearch(){
         int player = currentGameState.attributes().getOurPlayerId();
         searchInfo.resetCount();
 
         player--;
         if (player == 0) player = currentGameState.attributes().getNumberPlayers();
 
-        Result result = maxValue(currentGameState.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, player, searchdepth, -1);
+        Result result = maxValue(currentGameState.clone(), player, searchdepth, -1);
 
-        if(result == null) return -1;
-        else return result.move();        
+        if(result == null) return null;
+        else return result;        
     }
 
 
-    public Result maxValue(GameState gameState, int alpha,int beta, int previousPlayer, int depth, int heuristicValue){
+    public Result maxValue(GameState gameState, int previousPlayer, int depth, int heuristicValue){
         searchInfo.addNode();
         //in case of a time-out
         if (searchInfo.isTimeout()) {
@@ -75,7 +80,9 @@ public class AlphaBetaNewVersion {
             if(moveSorting) Collections.sort(allMoves); // ascending (score)
 
             for(Score a: allMoves){
-                Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
+                Result result2 = maxValue(a.gameState().clone(), Coder.decodePlayerId(a.move()), depth - 1, a.score());
+
+                if(result2.value() == -1) return result2;
                 
                 // case of a timeout
                 if (searchInfo.getTimeout()) {
@@ -91,6 +98,9 @@ public class AlphaBetaNewVersion {
 
                 if (v <= alpha) {
                     return new Result(v, move);
+                } else {
+
+                    return new Result(-1, 0);
                 }
             }
             
@@ -103,7 +113,9 @@ public class AlphaBetaNewVersion {
         if(moveSorting) Collections.sort(allMoves,Collections.reverseOrder());
 
         for(Score a: allMoves){
-            Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
+            Result result2 = maxValue(a.gameState().clone(), Coder.decodePlayerId(a.move()), depth - 1, a.score());
+
+            if(result2.value() == -1) return result2;
 
             // case of a timeout
             if (searchInfo.getTimeout()) {
@@ -119,6 +131,8 @@ public class AlphaBetaNewVersion {
 
             if (v >= beta) {
                 return new Result(v, move);
+            } else {
+                return new Result(-1, 0);
             }
         }
 
