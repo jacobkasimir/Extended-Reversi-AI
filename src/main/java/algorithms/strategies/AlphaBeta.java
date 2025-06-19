@@ -3,7 +3,6 @@ package algorithms.strategies;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import control.Constants;
 import gamestate.GameState;
 import validation.MoveVerifier;
 
@@ -75,7 +74,6 @@ public class AlphaBeta {
         if(moveSorting) Collections.sort(children, Collections.reverseOrder());
         // add all nodes (possible states) to the root node
         root.setNextMoves(children);
-        info.addNewBranchingFactor(children.size());
     }
 
     /**
@@ -101,14 +99,8 @@ public class AlphaBeta {
                     beta, info, moveSorting);
 
             // case of a timeout
-            if (info.isTimeout()) {
-                return -1;
-            }
-            long currentTime = System.nanoTime() / 1000000;
-            if (currentTime - info.getStartTime() + Constants.TIMELIMIT_TIMEOUT_OFFSET >= info.getTimeLimit()) {
-                info.setTimeout(true);
-                return -1;
-            }
+            //if (info.isTimeout(info)) return -1;
+            //TO DO: das benötigt man doch nur einmal... entweder in pruning() oder in chooseMove()
 
             // Update the result if the score is higher than the current maxValue
             if (maxValue < childScore) {
