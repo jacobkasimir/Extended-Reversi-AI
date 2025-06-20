@@ -92,7 +92,7 @@ public class AlphaBetaNewVersion {
 
                 Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
 
-                if(result2 != null && result2.value() == -1) return result2;
+                //if(result2 != null && result2.value() == -1) return result2; vermutlich von vorher
                 
                 // case of a timeout
                 if (searchInfo.getTimeout()) {
@@ -122,7 +122,7 @@ public class AlphaBetaNewVersion {
         for(Score a: allMoves){
             Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
 
-            if(result2 != null && result2.value() == -1) return result2;
+            //if(result2 != null && result2.value() == -1) return result2; vermmutlich von vorher
 
             // case of a timeout
             if (searchInfo.getTimeout()) {
