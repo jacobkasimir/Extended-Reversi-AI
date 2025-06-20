@@ -1,8 +1,8 @@
-import control.TCPClient;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import control.TCPClient;
 
 /**
  * Main class to launch the TCP client for the board game.
@@ -14,7 +14,7 @@ public class Main {
         String serverInput = "localhost";
         int port = 12345;
         boolean compare = false;
-        boolean moveSorting = false;
+        boolean moveSorting = true;
         int depthLimit = 1;
 
         try {
@@ -26,7 +26,7 @@ public class Main {
                         System.out.println("  -p, --port <Port>          Port number (default: 12345)");
                         System.out.println("  -d, --depth <SearchDepth>  Depth of the search algorithm (default: 5)");
                         System.out.println("  -c, --compare              Compare MiniMax and Alpha-Beta results");
-                        System.out.println("  -m, --movesorting          Enable move sorting for Alpha Beta Pruning");
+                        System.out.println("  -m, --movesortingOff        Disable move sorting for Alpha Beta Pruning");
                         System.out.println("  -h, --help                 Show this help");
                         return;
                     }
@@ -65,7 +65,7 @@ public class Main {
                         }
                     }
                     case "-c", "--compare" -> compare = true;
-                    case "-m", "--movesorting" -> moveSorting = true;
+                    case "-m", "--movesortingOff" -> moveSorting = false;
                     default -> {
                         System.err.println("Unknown parameter: " + args[i]);
                         return;

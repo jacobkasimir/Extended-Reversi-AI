@@ -63,8 +63,6 @@ public class IterativeDeepening {
                 break;
             }
 
-            System.out.println(currentDepth);
-
             currentDepth++;
 
             if(resultMove.value() - Constants.ASPIRATION_WINDOW > resultMove.value()) {
