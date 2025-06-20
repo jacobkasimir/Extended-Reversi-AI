@@ -39,7 +39,7 @@ public class IterativeDeepening {
             AlphaBetaNewVersion alphaBeta = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher);
             posResultMove = alphaBeta.alphaBetaSearch();
 
-            if(posResultMove != null && posResultMove.value() == -1 && posResultMove.move() == 1234) {
+            if(posResultMove != null && posResultMove.value() == -1) {
                 lower = Integer.MIN_VALUE;
                 higher = Integer.MAX_VALUE;
                 depthStart = System.nanoTime();
