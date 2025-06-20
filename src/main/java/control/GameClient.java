@@ -207,8 +207,8 @@ public class GameClient {
                 SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
                 // AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info, moveSorting);
                 // return alphaBeta.chooseMove();
-                AlphaBetaNewVersion alphaBetaNew=  new AlphaBetaNewVersion(current_gameState, heuristics, depthLimit, info, moveSorting);
-                return alphaBetaNew.alphaBetaSearch();
+                AlphaBetaNewVersion alphaBetaNew=  new AlphaBetaNewVersion(current_gameState, heuristics, depthLimit, info, moveSorting,Integer.MIN_VALUE, Integer.MAX_VALUE);
+                return alphaBetaNew.alphaBetaSearch().value();
             } else {  //case for only time limit
                 return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState, moveSorting);
             }

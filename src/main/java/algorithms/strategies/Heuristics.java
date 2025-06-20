@@ -341,7 +341,21 @@ public class Heuristics {
             double distanceToStrongestOpponent1 = res[2];
             double distanceToStrongestOpponent2 = res[3];
             double ratioPlayersInGame = res[4];
-
+            if(ownToOverall > 1) {
+                System.out.println("OwnToOverall FAIL");
+            }
+            if(ownToOpponents > 1) {
+                System.out.println("ownToOpponents FAIL");
+            }
+            if(distanceToStrongestOpponent1 > 1) {
+                System.out.println("distance1 FAIL");
+            }
+            if(distanceToStrongestOpponent2 > 1) {
+                System.out.println("distance2 FAIL");
+            }
+            if(ratioPlayersInGame > 1) {
+                System.out.println("playersIn Game FAIL");
+            }
             // weights of heuristics (we can modify them)
             double weightOwnToOverall = 700;
             double weightOwnToOpponents = 700;
@@ -357,6 +371,7 @@ public class Heuristics {
             score += weightdistStrongest2 * distanceToStrongestOpponent2;
             score += weightPlayersInGame * ratioPlayersInGame;
 
+            
             return (int) Math.round(score * 1000); // 0-1000 points
         }
     }
