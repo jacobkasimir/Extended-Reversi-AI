@@ -22,19 +22,19 @@ public class AlphaBetaNewVersion {
 
     private final boolean moveSorting;
 
-    private int alpha;
+    private int low;
+    private int high;
 
-    private int beta;
-
-
+     
     public AlphaBetaNewVersion(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo, boolean sorting, int low, int high){
         this.currentGameState = gameState;
         this.heuristics = heuristics;
         this.searchdepth = searchdepth;
         this.searchInfo =searchInfo;
         this.moveSorting = sorting;
-        this.alpha = high;
-        this.beta = low;
+
+        this.low = low;
+        this.high = high;   
     }
 
     public Result alphaBetaSearch(){
@@ -44,14 +44,18 @@ public class AlphaBetaNewVersion {
         player--;
         if (player == 0) player = currentGameState.attributes().getNumberPlayers();
 
-        Result result = maxValue(currentGameState.clone(), player, searchdepth, -1);
+        Result result = maxValue(currentGameState.clone(), low, high, player, searchdepth, -1);
 
         if(result == null) return null;
+        if(result.value() < low || result.value() > high){
+            return new Result(-1, 0);
+        }
         else return result;        
     }
 
 
-    public Result maxValue(GameState gameState, int previousPlayer, int depth, int heuristicValue){
+    public Result maxValue(GameState gameState, int alpha, int beta, int previousPlayer, int depth, int heuristicValue){
+        
         searchInfo.addNode();
         //in case of a time-out
         if (searchInfo.isTimeout()) {
@@ -62,7 +66,7 @@ public class AlphaBetaNewVersion {
         if(depth <= 0){
             searchInfo.addNodesLastLvl();
             int value;
-            if(heuristicValue != -2) value = heuristicValue;
+            if(heuristicValue != -1) value = heuristicValue;
             else value = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
             return new Result(value, -1);
         }
@@ -70,7 +74,11 @@ public class AlphaBetaNewVersion {
         allMoves = MoveVerifier.calculateNextMoves(gameState, previousPlayer,heuristics);
         
         if(allMoves.isEmpty()){ //Pseudo: is Terminal?
-            return new Result(heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId()), -2);
+
+            int value;
+            if(heuristicValue != -1) value = heuristicValue;
+            else value = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
+            return new Result(value, -1);
         }
 
         if (Coder.decodePlayerId(allMoves.getFirst().move()) != gameState.attributes().getOurPlayerId()){
@@ -80,7 +88,8 @@ public class AlphaBetaNewVersion {
             if(moveSorting) Collections.sort(allMoves); // ascending (score)
 
             for(Score a: allMoves){
-                Result result2 = maxValue(a.gameState().clone(), Coder.decodePlayerId(a.move()), depth - 1, a.score());
+
+                Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
 
                 if(result2 != null && result2.value() == -1) return result2;
                 
@@ -98,9 +107,7 @@ public class AlphaBetaNewVersion {
 
                 if (v <= alpha) {
                     return new Result(v, move);
-                } else {
-                    return new Result(-1, 0);
-                }
+                } 
             }
             
             return new Result(v, move);
@@ -112,7 +119,7 @@ public class AlphaBetaNewVersion {
         if(moveSorting) Collections.sort(allMoves,Collections.reverseOrder());
 
         for(Score a: allMoves){
-            Result result2 = maxValue(a.gameState().clone(), Coder.decodePlayerId(a.move()), depth - 1, a.score());
+            Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
 
             if(result2 != null && result2.value() == -1) return result2;
 
@@ -130,8 +137,6 @@ public class AlphaBetaNewVersion {
 
             if (v >= beta) {
                 return new Result(v, move);
-            } else {
-                return new Result(-1, 0);
             }
         }
 
