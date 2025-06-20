@@ -65,8 +65,8 @@ public class IterativeDeepening {
 
             currentDepth++;
 
-            lower = Math.max(Integer.MIN_VALUE, resultMove.value() - Constants.ASPIRATION_WINDOW);
-            higher = Math.min(Integer.MAX_VALUE, resultMove.value() + Constants.ASPIRATION_WINDOW);
+            lower = Math.min(Integer.MIN_VALUE, resultMove.value() - Constants.ASPIRATION_WINDOW);
+            higher = Math.max(Integer.MAX_VALUE, resultMove.value() + Constants.ASPIRATION_WINDOW);
         }
         return resultMove.move();
     }
