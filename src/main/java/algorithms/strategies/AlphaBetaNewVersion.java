@@ -62,7 +62,7 @@ public class AlphaBetaNewVersion {
         if(depth <= 0){
             searchInfo.addNodesLastLvl();
             int value;
-            if(heuristicValue != -1) value = heuristicValue;
+            if(heuristicValue != -2) value = heuristicValue;
             else value = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
             return new Result(value, -1);
         }
@@ -70,7 +70,7 @@ public class AlphaBetaNewVersion {
         allMoves = MoveVerifier.calculateNextMoves(gameState, previousPlayer,heuristics);
         
         if(allMoves.isEmpty()){ //Pseudo: is Terminal?
-            return new Result(heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId()), -1);
+            return new Result(heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId()), -2);
         }
 
         if (Coder.decodePlayerId(allMoves.getFirst().move()) != gameState.attributes().getOurPlayerId()){
