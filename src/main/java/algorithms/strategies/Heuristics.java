@@ -152,7 +152,7 @@ public class Heuristics {
         double reachableTiles = 0;
 
         // for ratioOfOwnTilesToOthers()
-        double opponentTiles = 0;
+        double occupiedTiles = 0;
 
         // for walls()
         double countNeighboring = 0;
@@ -169,8 +169,8 @@ public class Heuristics {
                     ownTiles++;
 
                     // for ratioOfOwnTilesToOthers() (index = 1)
-                else if (GameRules.isPlayer(tile))
-                    opponentTiles++;
+                if (GameRules.isPlayer(tile))
+                    occupiedTiles++;
 
                 // for walls() (index = 2)
                 if (tile == (char) (playerId + '0')) {
@@ -194,10 +194,10 @@ public class Heuristics {
         }
 
         // ratioOfOwnTilesOverall()
-        res[0] = ownTiles / reachableTiles;
+        res[0] = ownTiles / Math.max(1, reachableTiles);
 
         // ratioOfOwnTilesToOthers()
-        res[1] = ownTiles / opponentTiles;
+        res[1] = ownTiles / Math.max(1, occupiedTiles);
 
         // walls()
         double maxNeighboring = ownTiles * 12; // times twelve because horizontal and vertical neighbors are valued with
@@ -233,7 +233,7 @@ public class Heuristics {
         double reachableTiles = 0;
 
         // for ratioOfOwnTilesToOthers()
-        double opponentTiles = 0;
+        double occupiedTiles = 0;
 
         // for distanceToStrongestOpponent()
         int[] tilesPerPlayer = new int[state.attributes().getNumberPlayers()];
@@ -252,8 +252,7 @@ public class Heuristics {
                     tilesPerPlayer[(int) tile - 49]++;
 
                     // for ratioOfOwnTilesToOthers() (index = 1)
-                    if (((int) tile - 49) != playerId)
-                        opponentTiles++;
+                    occupiedTiles++;
                 }
 
             }
@@ -264,7 +263,7 @@ public class Heuristics {
         res[0] = ownTiles / Math.max(1, reachableTiles);
 
         // ratioOfOwnTilesToOthers()
-        res[1] = ownTiles / opponentTiles;
+        res[1] = ownTiles / Math.max(1, occupiedTiles);
 
         // distanceToStrongestPlayer1() & distanceToStrongestPlayer2() &
         // ratioPlayersInGame()
@@ -341,6 +340,8 @@ public class Heuristics {
             double distanceToStrongestOpponent1 = res[2];
             double distanceToStrongestOpponent2 = res[3];
             double ratioPlayersInGame = res[4];
+
+            
             if(ownToOverall > 1) {
                 System.out.println("OwnToOverall FAIL");
             }
@@ -356,6 +357,8 @@ public class Heuristics {
             if(ratioPlayersInGame > 1) {
                 System.out.println("playersIn Game FAIL");
             }
+
+
             // weights of heuristics (we can modify them)
             double weightOwnToOverall = 700;
             double weightOwnToOpponents = 700;
