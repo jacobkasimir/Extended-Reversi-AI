@@ -26,7 +26,7 @@ public class Main {
                         System.out.println("  -p, --port <Port>          Port number (default: 12345)");
                         System.out.println("  -d, --depth <SearchDepth>  Depth of the search algorithm (default: 1)");
                         System.out.println("  -c, --compare              Compare MiniMax and Alpha-Beta results");
-                        System.out.println("  -m, --movesortingOff        Disable move sorting for Alpha Beta Pruning");
+                        System.out.println("  -m, --movesortingOff       Disable move sorting for Alpha Beta Pruning");
                         System.out.println("  -h, --help                 Show this help");
                         return;
                     }

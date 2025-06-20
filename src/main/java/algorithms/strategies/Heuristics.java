@@ -309,32 +309,32 @@ public class Heuristics {
      * @return A combined heuristic score.
      */
     public int evaluate(GameState state, int playerId) {
-        //if (state.attributes().isPhase1()) { // evaluation for Phase 1
+        if (state.attributes().isPhase1()) { // evaluation for Phase 1
             // scores of heuristics
-        //     double[] res = mapRelatedHeuristicsPhase1(state.mapController(), playerId);
-        //     double ownToOverall = res[0];
-        //     double ownToOpponents = res[1];
-        //     double walls = res[2];
+            double[] res = mapRelatedHeuristicsPhase1(state.mapController(), playerId);
+            double ownToOverall = res[0];
+            double ownToOpponents = res[1];
+            double walls = res[2];
 
-        //     // weights of heuristics (we can modify them)
-        //     double weightCorners = 700;
-        //     double weightOwnToOverall = 800;
-        //     double weightOwnToOpponents = 800;
-        //     double weightWalls = 500;
-        //     double weightBombs = 400;
-        //     double weightOverrides = 200;
+            // weights of heuristics (we can modify them)
+            double weightCorners = 700;
+            double weightOwnToOverall = 800;
+            double weightOwnToOpponents = 800;
+            double weightWalls = 500;
+            double weightBombs = 400;
+            double weightOverrides = 200;
 
-        //     double score = 0;
+            double score = 0;
 
-        //     score += weightCorners * ratioOfCornersCaptured(state.mapController(), playerId);
-        //     score += weightOwnToOverall * ownToOverall;
-        //     score += weightOwnToOpponents * ownToOpponents;
-        //     score += weightWalls * walls;
-        //     score += weightBombs * ratioBombs(state.attributes(), playerId);
-        //     score += weightOverrides * ratioOverrides(state.attributes(), playerId);
+            score += weightCorners * ratioOfCornersCaptured(state.mapController(), playerId);
+            score += weightOwnToOverall * ownToOverall;
+            score += weightOwnToOpponents * ownToOpponents;
+            score += weightWalls * walls;
+            score += weightBombs * ratioBombs(state.attributes(), playerId);
+            score += weightOverrides * ratioOverrides(state.attributes(), playerId);
 
-        //     return (int) Math.round(score * 1000); // 0-1000 points
-        // } else { // evaluation for Phase 2
+            return (int) Math.round(score * 1000); // 0-1000 points
+        } else { // evaluation for Phase 2
             double[] res = mapRelatedHeuristicsPhase2(state, playerId);
             double ownToOverall = res[0];
             double ownToOpponents = res[1];
@@ -373,7 +373,7 @@ public class Heuristics {
 
             
             return (int) Math.round(score * 1000); // 0-1000 points
-        
+        }
     }
 
 }
