@@ -99,7 +99,7 @@ public class AlphaBetaNewVersion {
                 if (v <= alpha) {
                     return new Result(v, move);
                 } else {
-                    return new Result(-1, 1234);
+                    return new Result(-1, 0);
                 }
             }
             
@@ -131,7 +131,7 @@ public class AlphaBetaNewVersion {
             if (v >= beta) {
                 return new Result(v, move);
             } else {
-                return new Result(-1, 1234);
+                return new Result(-1, 0);
             }
         }
 
