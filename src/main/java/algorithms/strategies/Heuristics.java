@@ -360,10 +360,10 @@ public class Heuristics {
 
 
             // weights of heuristics (we can modify them)
-            double weightOwnToOverall = 700;
-            double weightOwnToOpponents = 700;
-            double weightdistStrongest1 = 500;
-            double weightdistStrongest2 = 500;
+            double weightOwnToOverall = 800;
+            double weightOwnToOpponents = 900;
+            double weightdistStrongest1 = 700;
+            double weightdistStrongest2 = 700;
             double weightPlayersInGame = 300;
 
             double score = 0;
