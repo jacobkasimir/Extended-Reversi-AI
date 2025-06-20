@@ -10,5 +10,5 @@ public class Constants {
     public static final int TIMELIMIT_SAFETY_OFFSET = 20; //in ms
     public static final int TIMELIMIT_TIMEOUT_OFFSET = 150; //in ms
     public static final double TIMEBUFFER = 0.82; //in %
-    public static final int ASPIRATION_WINDOW = 50000;
+    public static final int ASPIRATION_WINDOW = 2_000_000;
 }

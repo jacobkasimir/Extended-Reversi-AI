@@ -40,7 +40,7 @@ public class IterativeDeepening {
             posResultMove = alphaBeta.alphaBetaSearch();
 
             if(posResultMove != null && posResultMove.value() == -1) {
-                System.out.println("FAIL HIGH/LOW");
+
                 lower = Integer.MIN_VALUE;
                 higher = Integer.MAX_VALUE;
                 depthStart = System.nanoTime();
@@ -54,7 +54,7 @@ public class IterativeDeepening {
 
             if (info.getTimeout()) { // check if a timeout flag is set
                 return resultMove.move();
-            } else {
+            } else if(posResultMove.value() != -1){  
                 resultMove = posResultMove;
             }
 

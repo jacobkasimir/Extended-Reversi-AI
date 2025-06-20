@@ -48,6 +48,7 @@ public class AlphaBetaNewVersion {
 
         if(result == null) return null;
         if(result.value() < low || result.value() > high){
+            //System.out.println("FAIL HIGH/LOW: " + searchdepth + "heuristicValue: " + result.value());
             return new Result(-1, 0);
         }
         else return result;        
@@ -55,7 +56,7 @@ public class AlphaBetaNewVersion {
 
 
     public Result maxValue(GameState gameState, int alpha, int beta, int previousPlayer, int depth, int heuristicValue){
-        
+
         searchInfo.addNode();
         //in case of a time-out
         if (searchInfo.isTimeout()) {
