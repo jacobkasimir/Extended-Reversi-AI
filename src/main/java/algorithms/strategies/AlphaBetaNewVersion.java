@@ -33,8 +33,8 @@ public class AlphaBetaNewVersion {
         this.searchdepth = searchdepth;
         this.searchInfo =searchInfo;
         this.moveSorting = sorting;
-        this.alpha = low;
-        this.beta = high;
+        this.alpha = high;
+        this.beta = low;
     }
 
     public Result alphaBetaSearch(){

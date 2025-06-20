@@ -40,6 +40,7 @@ public class IterativeDeepening {
             posResultMove = alphaBeta.alphaBetaSearch();
 
             if(posResultMove != null && posResultMove.value() == -1) {
+                System.out.println("FAIL HIGH/LOW");
                 lower = Integer.MIN_VALUE;
                 higher = Integer.MAX_VALUE;
                 depthStart = System.nanoTime();
@@ -62,11 +63,21 @@ public class IterativeDeepening {
                 break;
             }
 
+            System.out.println(currentDepth);
 
             currentDepth++;
 
-            lower = Math.min(Integer.MIN_VALUE, resultMove.value() - Constants.ASPIRATION_WINDOW);
-            higher = Math.max(Integer.MAX_VALUE, resultMove.value() + Constants.ASPIRATION_WINDOW);
+            if(resultMove.value() - Constants.ASPIRATION_WINDOW > resultMove.value()) {
+                lower = Integer.MIN_VALUE;
+            } else {
+                lower = resultMove.value() - Constants.ASPIRATION_WINDOW;
+            }
+            
+            if(resultMove.value() + Constants.ASPIRATION_WINDOW < resultMove.value()) {
+                higher = Integer.MAX_VALUE;
+            } else {
+                higher = resultMove.value() + Constants.ASPIRATION_WINDOW;
+            }
         }
         return resultMove.move();
     }
