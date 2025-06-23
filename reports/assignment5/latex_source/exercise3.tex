@@ -1,0 +1,166 @@
+\section*{Exercise 3}
+
+\textbf{Task:} \textit{Perform benchmarks to evaluate your implementation of Aspiration
+Windows} \\
+
+\noindent In this task we had to benchmark our newly implemented aspiration windows algorithm to find the best possible window size. Therefore we simulated on five maps matches. For each map we played four matches. For each match we adjusted the window size to one of four different values. With the results we can analyse which window size is for our algorithm and implementation the best.\\
+
+\noindent We used the window sizes 100.000, 200.000, 300.000 and 400.000 which are the results from testing the aspiration windows algorithm on two random maps. As we will later see this turns out to be a problem because the difference of heuristic values of game states that are connected with only one move depends strongly on certain map properties. For benchmarking we collected the following data per move: the amount of nodes visited, the search depth and the amount of high/low - fails by our aspiration algorithm. In theory the best window size is defined by the smallest ratio of average search depth to average high/low fails (in other words the window size with the highest percentage of the search depth which is high/low-fail free) in combination with a "rather high amount of visited nodes". Although the second criterion has little significance for the best window size, we still added it because we only realised its insignificance after completing all of the plotting.\\
+
+\noindent We will now analyse each map on its own and then conclude on what window size we should use. For each map we plotted a column chart on the average visited nodes per window size and a column chart which shows the average search depth and average high/low fails per window size.\\
+\begin{enumerate}
+    \item \textbf{Map: FOURPLAYER}
+    
+        \begin{figure}[H] % H kommt von float package, erzwingt Platzierung hier
+            \centering
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/FOUR_Nodes_1.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/FOUR_Rest_1.png}
+            \end{minipage}
+            \caption{Fourplayer map}
+            \label{fig:four-1}
+        \end{figure}
+
+        \noindent As we can see in the right column chart, the amount of high/low fails are already, for a window size of 200.000, zero. For the window size 100.000, the value is very small. As we understand the aspiration windows algorithm, the idea is to have a very small percentage of your search depth as high/low fails. But if it is zero this means that the window is unnecessary big and therefore less efficient. In general one would aim to achieve a very small window size that still has a good high/low fails ratio.\\
+        So as you can see, these window sizes do not suit this map and therefore we tested an even smaller window size on the fourplayer map. The following are the resulting charts in which the new window size benchmarks were added:\\
+
+        \begin{figure}[H] % H kommt von float package, erzwingt Platzierung hier
+            \centering
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/FOUR_Nodes_2.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/FOUR_Rest_2.png}
+            \end{minipage}
+            \caption{Fourplayer map with window size 30.000}
+            \label{fig:four-2}
+        \end{figure}
+        
+        \noindent With the benchmarks of 30.000 added we can see that the average search depth is the highest for WS (window size) 30.000 but the ratio with high/low fails is very high which is why WS 30.000 would be in this case the worst choice. Still the theoretical best window size should be somewhere between 30.000 and 100.000. More likely to be nearer to 100.000.
+        
+    \item \textbf{Map: INFINITY}
+        %infinity map 1
+        \begin{figure}[H] % H kommt von float package, erzwingt Platzierung hier
+            \centering
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/INF_Nodes_1.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/INF_Rest_1.png}
+            \end{minipage}
+            \caption{Infinity map}
+            \label{fig:inf-1}
+        \end{figure}
+        
+        \noindent The Infinity map behaves very similar to the Fourplayer map. It already has 0 high/low fails for WS 100.000, which is the smallest WS. So we also benchmarked Infinity map with WS 30.000:\\
+        
+        %infinity map 2
+        \begin{figure}[H] % H kommt von float package, erzwingt Platzierung hier
+            \centering
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/INF_Nodes_2.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/INF_Rest_2.png}
+            \end{minipage}
+            \caption{Infinity map with window size 30.000}
+            \label{fig:inf-2}
+        \end{figure}
+        
+        \noindent The results for the window size of 30.000 is also the same as for the Fourplayer map. Again 30.000 is not the best option but for our logic the best window size should be between 100.000 and 30.000 for the Infinity map.
+        
+    \item \textbf{Map: TWOPLAYER}
+        \noindent Now we look at a smaller map which has a lot of inversion and choice tiles.\\
+
+        %twoplayer map 1
+        \begin{figure}[H] % H kommt von float package, erzwingt Platzierung hier
+            \centering
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/TWO_Nodes_1.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/TWO_Rest_1.png}
+            \end{minipage}
+            \caption{Twoplayer map}
+            \label{fig:two-1}
+        \end{figure}
+        
+        \noindent As a side information for this set of data, the data for the WS 100.000 can be neglected because it was a very short game. This can occur on the Pikatchu map because sometimes a terminal state is reached very quickly. Because of that we will ignore the data for the 100.000 WS.\\
+        \noindent In this benchmark we see that the ratio between search depth and high/low fails declines with ascending window size. Hence we assume that the best window size for the Twoplayer map lies beyond the 400.000. Consequently we benchmarked an even larger window size with the value 600.000. These are the results:\\
+        
+         %twoplayer map 2
+        \begin{figure}[H] % H kommt von float package, erzwingt Platzierung hier
+            \centering
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/TWO_Nodes_2.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/TWO_Rest_2.png}
+            \end{minipage}
+            \caption{Twoplayer map with window size 600.000}
+            \label{fig:two-2}
+        \end{figure}
+        
+        \noindent As predicted the ratio gets even better. For this map we would guess that the best window size lies beyond 600.000.\\
+        
+    \item \textbf{Map: PIKATCHU}
+        The benchmarks of the Pikatchu map behave exactly like the Twoplayer map benchmarks. This map has also a lot of inversion and choice tiles. 
+
+         %pikatchu map
+        \begin{figure}[H] % H kommt von float package, erzwingt Platzierung hier
+            \centering
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/PIK_Nodes_2.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/PIK_Rest_2.png}
+            \end{minipage}
+            \caption{Pikatchu map with window size 600.000}
+            \label{fig:pikatchu}
+        \end{figure}
+        
+    \item \textbf{Map: RANDOM}
+        \noindent The last map that we analysed is the Random map which is a very large map which concludes in a lot of possible moves on the peak of the match. But because there are so many possible moves our iterative deepening algorithm mostly goes not further than level 1 or 2. Therefore our aspiration algorithm can not really get to work because pruning only works for levels greater than 1. This means that the benchmarks are not useful for evaluating the aspiration windows algorithm. Nonetheless we could still learn something from the data. We know that we should definitely get past level one and also level two on average (we know that from earlier tests without time estimation). Because this not the case, the only plausible explanation is that our time estimation for the next level is to pessimistic and should be less strict.\\
+        
+        %random map
+        \begin{figure}[H] % H kommt von float package, erzwingt Platzierung hier
+            \centering
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/RAND_Nodes.png}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{assignment5/plots/aspirationWindow_plots/RAND_Rest.png}
+            \end{minipage}
+            \caption{Random map}
+            \label{fig:rand}
+        \end{figure}
+\end{enumerate}
+
+\noindent The question now is what we conclude from all these benchmarks. Which single window size should we use? Well the most intuitive idea is most likely to calculate the average. If we would do that we would probably land somewhere in the middle of our interval [100.000, 400.000], so something like 200.000. The problem is that 200.000 is for four from five maps an absolute terrible choice of window size. That being the case, the best and only choice is to set the window size individually for specific map properties. \\
+The four maps that were relevant for our evaluation can be classified according to one category, the amount of inversion and choice tiles on the map. If a map has a lot of inversion and choice tiles it is more likely for two game states which are connected through one move to have completely different heuristic values. That is why we will add constraints in the initialisation phase of our program which counts the amount of inversion and choice tiles and then decides on the value of the window size. Maps with a lot of inversion and choice tiles need higher window sizes and maps with less inversion and choice tiles need lower window sizes. 

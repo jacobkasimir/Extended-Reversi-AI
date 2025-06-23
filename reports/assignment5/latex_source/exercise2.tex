@@ -1,0 +1,130 @@
+\section*{Exercise 2}
+
+\textbf{Task:} \textit{Implement the Aspiration Windows algorithm on top of your iterative deepening search algorithm}
+
+\noindent The intention of the aspiration window algorithm is that we try to narrow down the window between $\alpha$ and $\beta$ for the next depth in iterative deepening based on the heuristic value of the chosen move of the previous depth.
+Therefore we start the first iteration with searchdepth 1 with the aspiration window limits set on the bounds of an integer value:
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small]
+IterativeDeepening.java
+
+public static int findMove(int timeLimit, Heuristics heuristics, 
+GameState state, boolean moveSorting) {
+
+    ...
+        
+    int currentDepth = 1; // starting depth
+    int lower = Integer.MIN_VALUE;
+    int higher = Integer.MAX_VALUE;
+
+    ...
+
+        AlphaBetaNewVersion alphaBeta = 
+        new AlphaBetaNewVersion(state, heuristics, currentDepth, 
+        info, moveSorting, lower, higher);
+        posResultMove = alphaBeta.alphaBetaSearch();
+        
+    ...
+
+}
+\end{lstlisting}
+
+\noindent After getting a heuristic value of a move from searchdepth 1, we use a Constant, to estimate the higher and lower bound for the next iteration. This Constant is empirically calculated as shown in Excercise 3: 
+
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small]
+IterativeDeepening.java
+
+public static int findMove(int timeLimit, Heuristics heuristics, 
+GameState state, boolean moveSorting) {
+
+    ...
+        
+    if(resultMove.value() - Constants.ASPIRATION_WINDOW > 
+    resultMove.value()) {
+        lower = Integer.MIN_VALUE;
+    } else {
+        lower = resultMove.value() - Constants.ASPIRATION_WINDOW;
+    }
+    
+    if(resultMove.value() + Constants.ASPIRATION_WINDOW < 
+    resultMove.value()) {
+        higher = Integer.MAX_VALUE;
+    } else {
+        higher = resultMove.value() + Constants.ASPIRATION_WINDOW;
+    }
+        
+    ...
+        
+}
+\end{lstlisting}
+
+\noindent This implementation works as long as we do not encounter the situation of a fail low/fail high, were the heuristic value of the move that is found in the alpha beta pruning algorithm is outside the aspiration window we predicted the move to be in. That can often occur when we reach a depth we have not looked at before and there we get an override stone and can play on much more tiles or an inversion tile/choice tile is captured and we switch stones with a different player. In those cases it can happen that the best move for us is outside the aspiration window and is returned in \texttt{alphaBetaSearch()} were we handle it as follows:
+
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small]
+AlphaBetaNewVersion.java
+
+public Result alphaBetaSearch(){
+
+    ...
+        
+    Result result = maxValue(currentGameState.clone(), low, high, 
+    player, searchdepth, -1);
+
+    if(result == null) return null; //Nullpointer check
+    if(result.value() < low) {
+        return new Result(-1, 0);
+    } else if (result.value() > high){
+        return new Result(-2,0);
+    }
+        
+    ...
+        
+}
+\end{lstlisting}
+
+\noindent So what we do is returning a characteristic \text{Result} object with values that will never occur under normal conditions as a flag, depending on the situation either fail low or fail high and then we handle this situation in the \texttt{iterativeDeepening} class by setting one bound of the aspiring window either to \texttt{Integer.MIN\_VALUE} or \texttt{Integer.MAX\_VALUE}. After that we do another search with the new limits:
+
+\begin{lstlisting}[language=Java, basicstyle=\ttfamily\small]
+IterativeDeepening.java
+
+public static int findMove(int timeLimit, Heuristics heuristics, 
+GameState state, boolean moveSorting){
+
+    ...
+        
+        AlphaBetaNewVersion alphaBeta = 
+        new AlphaBetaNewVersion(state, heuristics, currentDepth, 
+        info, moveSorting, lower, higher);
+        posResultMove = alphaBeta.alphaBetaSearch();
+
+        if(posResultMove != null && posResultMove.value() == -1) {
+            lower = Integer.MIN_VALUE;
+            depthStart = System.nanoTime();
+            alphaBeta = new AlphaBetaNewVersion(state, heuristics, 
+            currentDepth, info, moveSorting, lower, higher);
+            posResultMove = alphaBeta.alphaBetaSearch();
+        } else if(posResultMove != null && posResultMove.value() == -2) {
+            higher = Integer.MAX_VALUE;
+            depthStart = System.nanoTime();
+            alphaBeta = new AlphaBetaNewVersion(state, heuristics, 
+            currentDepth, info, moveSorting, lower, higher);
+            posResultMove = alphaBeta.alphaBetaSearch();
+        }
+
+        long depthEnd = System.nanoTime();
+        long duration = (depthEnd - depthStart) / 1000000;
+        info.recordDepthTime(duration);
+
+        if (info.getTimeout()) { // check if a timeout flag is set
+            return resultMove.move();
+        } else if(posResultMove.value() != -1){  
+            resultMove = posResultMove;
+        }
+        
+    ...
+    
+}
+        
+\end{lstlisting}
+
+\noindent
+With this algorithm, the alpha-beta search can be executed significantly faster, as the narrower window allows for more aggressive pruning of suboptimal moves. This leads to improved performance, which is a critical factor in achieving better gameplay results, as it enables deeper exploration of the search tree and more accurate game state simulations.

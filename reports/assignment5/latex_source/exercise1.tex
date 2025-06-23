@@ -1,0 +1,79 @@
+\section*{Exercise 1}
+
+\textbf{Task:} \textit{Implementation of an algorithm to estimate the time required for the next iteration of iterative deepening. Additionally, we evaluate the solution.}
+
+\noindent In this first exercise, we provide a brief overview of the idea behind the time estimation algorithm in the context of iterative deepening. Since the task is already clear, we will keep this part short and focus instead on our implementation, which is presented in the second part of this section. Finally, we will show some results and evaluate the quality of our solution.
+
+\subsection*{Idea of the Algorithm}
+
+\noindent The core idea of the algorithm is to estimate the time required for the next depth of an iterative deepening search based on how long previous depths took. As each additional depth typically leads to an exponential increase in the number of nodes visited, we extrapolate the observed time growth (e.g., doubling or more) to predict whether the next iteration can be completed within the remaining time budget. This avoids starting searches that are unlikely to finish in time and helps preserve unused time for future moves.
+
+\noindent The specific variant of Reversi used in this course presents an additional challenge, as special tiles (such as “choice” or “inversion” tiles) can suddenly reduce or increase the number of available moves due to the actions of either player. However, such drastic changes are relatively rare and usually depend on the structure of the map. Only a few maps cause these special conditions to have a major impact throughout the entire game. On most maps, the number of moves tends to grow exponentially, with only minor fluctuations.
+
+\subsection*{Heuristic Approach and Estimation Method}
+
+\noindent Based on this observation, we decided to estimate a branching factor, which we interpret as the number of expected moves (i.e., child nodes) for the next iteration. We multiply this with the average time per node from the previous iteration and add the total time of that last iteration to arrive at a predicted time for the next depth. This value is then compared to the remaining time, with an added buffer to improve robustness.
+
+\noindent The decision whether to proceed with the next depth is made after each call to the alpha-beta search. The algorithm \texttt{shouldStopSearch()} returns \texttt{true} if the predicted time for the next iteration exceeds the remaining time and \texttt{false} otherwise. For each iteration, we store the duration in an \texttt{ArrayList<Long>}. The most important component for our estimation is the branching factor. To estimate it, we introduced two variables: \textbf{nodes} (total number of visited nodes) and \textbf{nodesLastLvl} (number of nodes at the last level of the tree).
+
+From these, we compute:
+
+$$n_{\text{children}} = n_{\text{nodes}} - 1$$
+where we subtract 1 to account for the root node, and
+$$n_{\text{parents}} = n_{\text{nodes}} - n_{\text{nodesLastLvl}}$$
+
+for the number of parent nodes. Using this information, we estimate how many children each node at the current deepest level will generate in the next iteration:
+$$N = \frac{n_{\text{children}}}{n_{\text{parents}}}$$
+
+Finally, we estimate the total number of nodes for the next iteration as:
+$$n_{\text{next\_bf}} = N \cdot n_{\text{nodesLastLvl}}$$
+
+\noindent This simple heuristic is justified by the fact that large shifts in the number of possible moves usually only occur in isolated cases, and are difficult to predict efficiently. As previously explained, such cases are rare and thus can be safely ignored in most practical scenarios.
+
+\noindent Exponential growth is observed consistently—except in rare situations where the number of possible moves, and thus the number of child nodes, decreases drastically compared to previous depths. When considering the entire search tree, these anomalies can cause the estimated value for the next iteration to be underestimated. To compensate for this, we apply a buffer to the final prediction.
+
+\noindent The following code shows how we estimate the required time for the next iteration:
+
+\begin{lstlisting}
+int next_bf = estimateNextBranchingFactor(info);
+
+double avgTimePerNode = lastTime / (double) info.getNodes();
+
+long predictedBFTime = (long) (next_bf * avgTimePerNode) + lastTime;
+
+...
+
+return predictedBFTime * Constants.TIMEBUFFER >= timeLeft;
+\end{lstlisting}
+
+\noindent Note that we multiply the buffer instead of adding it. This ensures that the buffer scales proportionally with the predicted time, making it more flexible for different search depths.
+
+\subsection*{Evaluation and Results}
+
+Our time estimation approach improves search efficiency by deciding earlier whether the next iteration of iterative deepening is likely to finish in time. If the estimated duration exceeds the remaining time, the algorithm stops the search earlier—avoiding incomplete iterations and preserving unused time for future moves. This leads to time usage patterns with short, intentional drops (spikes), followed by deeper searches in later moves where more time is available.\n
+
+\noindent Figure \ref{fig:timelimit} shows this behavior by visualizing the \textit{time limit}, the \textit{search depth}, and the \textit{number of timeouts} per move. When time estimation is active, the time spent stabilizes just below the maximum limit, with controlled early cutoffs when a deeper search is not feasible. Without estimation, the algorithm consistently reaches the time limit, often resulting in incomplete searches and high timeout counts.
+
+\noindent In contrast, without time estimation, the search depth remains relatively constant across all moves, since failed iterations consume the entire time limit without yielding additional value. Moreover, the number of timeouts is drastically reduced when estimation is enabled—occurring only in rare cases, typically due to unexpectedly high branching factors. Without estimation, timeouts occur almost every round, which prevents the algorithm from reaching deeper levels and may lead to suboptimal decisions.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\linewidth]{assignment5/plots/myplot.png}
+    
+    \includegraphics[width=0.85\linewidth]{assignment5/plots/myplot1.png}
+    \caption{Heart map, for 5 players with a time limit of 2 ms. Comparison of search depth, available time per move, and number of timeouts with and without time estimation.  Without estimation, frequent timeouts occur due to unfinished deeper iterations, leading to stagnating depth and wasted time. With estimation, the algorithm avoids such failures and achieves more consistent performance.}
+
+    \label{fig:timelimit}
+\end{figure}
+
+\subsection*{Conclusion}
+
+Our time estimation algorithm significantly improves the performance and reliability of the iterative deepening approach. By estimating the branching factor and extrapolating expected node expansions, we prevent the algorithm from initiating unfinishable search iterations. The buffer scaling ensures that the prediction remains robust across different depths. This leads to:
+
+\begin{itemize}
+    \item fewer timeouts,
+    \item more efficient use of available time,
+    \item and deeper, more consistent searches.
+\end{itemize}
+
+In practice, this translates to stronger gameplay, as the AI makes better-informed decisions within its allowed time constraints. While the approach may slightly underestimate in rare pathological game states, its overall reliability and performance make it a valuable addition to any iterative deepening framework.

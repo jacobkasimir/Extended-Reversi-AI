@@ -1,0 +1,135 @@
+\section*{Exercise 4}
+
+\textbf{Task:} \textit{Evaluating our heuristics to identify how to weight them.} \n
+
+\noindent For this task, we had to evaluate our different heuristic functions. Then, we used the results to decide how to weight each function. Before assignment 5, our weights were based solely on our intuition about the importance of different aspects of Riversi.
+Since our heuristic evaluation method is divided into two parts, we decided to evaluate them separately and find individual weights. 
+
+%phase 1 standard
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{assignment5/plots/Heuristics_phase1_standard.png}
+    \caption{Results after phase 1 with only selected heuristics - standard map}
+    \label{fig:phase1-standard}
+\end{figure}
+
+\noindent In phase 1, we plotted graphs for games on four different maps to find successful weights for our heuristics. For this evaluation task, we used the standard map, created a new 1v1 map (listing \ref{lst:1v1testmap}), and downloaded the four-player and eight-player maps from Matchpoint to collect data for our plots. \\
+On each map, we played six games against the ai client from the given binaries. In each game we selected one heuristic function and weighted it with a value of 100. We played an additional game with a weight of 100 for each heuristic. \\
+After completing the first game phase, the server provided us with the results, including a list of the captured stones for each player. We used this result for our evaluation. Additionally, we tracked the overall maximum and minimum heuristic scores computed throughout the entire game. This helped us check whether we reached the full range of values of the heuristic functions, as we designed our heuristic to be normalized. This means they should all return a result between 0 and 1, which we then multiply by their corresponding weights. Finally, we multiply the sum by 1000 to avoid losing too many decimal places when casting the result to an integer value.
+
+%phase 1 1v1 test
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{assignment5/plots/Heuristics_phase1_1v1test.png}
+    \caption{Results after phase 1 with only selected heuristics - 1v1 test map}
+    \label{fig:phase1-1v1test}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \lstinputlisting[caption={1v1 test map}, label={lst:1v1testmap}]{assignment5/plots/heuristicEvaluation_1v1.map}
+\end{figure}
+
+\noindent Not all results for the standard map are that convincing because there are no initial bombs, overrides or bonus fields. Therefore, all heuristic scores are 0 and it is nearly random which move is chosen by our client. But Figure \ref{fig:phase1-standard} shows that our initial intuition was correct. Corners are important for wining. The amount of stones represented by OwnToOverall and OwnToOpponents are also good indicators for the right strategy to win a game. The same observations can be made from Figure \ref{fig:phase1-1v1test}.
+
+%phase 1 fourplayer
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{assignment5/plots/Heuristics_phase1_fourplayer.png}
+    \caption{Results after phase 1 with only selected heuristics - fourplayer map}
+    \label{fig:phase1-fourplayer}
+\end{figure}
+
+\noindent The results in Figures \ref{fig:phase1-fourplayer} and \ref{fig:phase1-eightplayer} are similar to those of the 2 player maps. Again, OwnToOverall and OwnToOpponents are performing the best. The Corner heuristic is probably not that successful because these two maps are larger and the number of corners in relation to the total fields is lower. Nevertheless, we still believe that capturing corners improves our gameplay, and Corners achieves the best results in combination with the other heuristics. With only weighting the Walls heuristic, our performance significantly decreaces. Nevertheless, we still want to consider this function in our final evaluation because we think that less clustered stones are safer during the bombing phase. So we will include Walls with a decreased weight. \\
+
+\noindent The results of the Bombs heuristic plots are not that meaningful because you are not able to make use of all collected bombs. Nevertheless, we see it as our goal to collect bombs to gain advantages in phase 2.\\
+\noindent The peak in Figure \ref{fig:phase1-fourplayer} in the Overrides plot can be explained by a very large number of override stones which we collected during the game. By the end of phase 1, we were the only player with possible moves due to the overrides and we captured many opponents. But this might be a coincidence that we achieved such a great result with only this heuristic, because otherwise, the other games would have ended similarly.
+
+%phase 1 eightplayer
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{assignment5/plots/Heuristics_phase1_eightplayer.png}
+    \caption{Results after phase 1 with only selected heuristics - eightplayer map}
+    \label{fig:phase1-eightplayer}
+\end{figure}
+
+\noindent Overall, we consider the following weights as outcomes from our previous experiments. We upload our client to matchpoint and we are curious about the results. However, we might adjust them a slightly before the final match.
+
+\begin{center}
+\begin{tabular}{|c c c c c c|} 
+ \hline
+ Corners & OwnToOverall & OwnToOpponent & Walls & Bombs & Overrides \\  
+ \hline\hline
+ 600 & 825 & 825 & 400 & 400 & 350\\ 
+ \hline
+\end{tabular}
+\end{center}
+
+
+% ----------------------------------------------------------
+% Phase 2 – Bombing-phase heuristic evaluation
+% ----------------------------------------------------------
+\subsection*{Phase 2 – Bombing-phase heuristic evaluation}
+
+In the second game phase, the goal is no longer to \emph{gain} stones, but rather to \emph{preserve} as many of the stones obtained in phase 1 as possible.  
+To evaluate our bombing-phase heuristics independently of the performance in phase 1, we calculated the \textit{retention ratio}, i.e., the ratio of stones a player retained after the bombing phase relative to their stone count at the end of phase 1.  
+A value of~1 indicates that no stones were lost, whereas a value of~0 means all stones were eliminated.  
+Figures \ref{fig:phase2-four} to \ref{fig:phase2-matrix} present the results across three different maps with increasing size and player count.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.9\textwidth]{assignment5/plots/Heuristics_Four.png}
+    \caption{Ratio of stones kept after the bombing phase when only \emph{one} heuristic is active (\textit{Four} map, 4 players, 2 s time limit).}
+    \label{fig:phase2-four}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.9\textwidth]{assignment5/plots/Heuristics_Infinity.png}
+    \caption{Retention performance on the large, irregular \textit{Infinity} map (8 players).}
+    \label{fig:phase2-infinity}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.9\textwidth]{assignment5/plots/Heuristics_Matrix.png}
+    \caption{Results on the highly symmetric and balanced \textit{Matrix} map (8 players).}
+    \label{fig:phase2-matrix}
+\end{figure}
+
+\paragraph{Heuristic definitions.}
+We evaluated the following heuristics in isolation by setting their weight to 100 and all others to 0:
+\begin{itemize}
+    \item \texttt{ownToOverall}: Ratio of own occupied tiles to all reachable tiles.
+    \item \texttt{ownToOpponents}: Ratio of own tiles to all tiles occupied by opponents.
+    \item \texttt{distStrongest1}: Ratio of own tiles to the tile count of the strongest opponent (1 if we are stronger).
+    \item \texttt{distStrongest2}: Ratio of the strongest opponent’s tiles to our own (0 if we are stronger).
+    \item \texttt{playersInGame}: Ratio of currently alive players to the initial player count.
+\end{itemize}
+
+\paragraph{Observations.}
+\begin{itemize}
+    \item \textbf{\texttt{distStrongest1}} and \textbf{\texttt{distStrongest2}} (“target the current leader”) achieved good performance, especially when we were close to leading ourselves. This heuristic allows us to reduce the advantage of the strongest player and often led to rank improvements in the final scoring.
+    \item \textbf{\texttt{playersInGame}} tries to "finish" other opponents and are helpful on two player maps or if we are close to being last and try to prevent that.
+    \item \textbf{\texttt{ownToOverall}} and \textbf{\texttt{ownToOpponents}} are more defensive in nature and aim to protect our high-value clusters. They distribute attacks broadly and weakens as many opponents as possible. While they did not outperform the aggressive strategies, they proved robust and consistent across all map types, making them ideal as \emph{baseline components}.
+    \item Equal weighting of all heuristics already provided strong results, especially on simpler maps (e.g., Player 1 reached a retention ratio of 0.93 in Figure \ref{fig:phase2-four}). This supports the idea that our heuristics capture complementary aspects of good play.
+\end{itemize}
+
+\paragraph{Selected weights for phase 2.}
+Based on the empirical results we realised that \texttt{ownToOverall}, \texttt{distStrongest1} and \texttt{ownToOpponents} are quite strong across maps. But as discussed later, each heuristic is valuable in different scenarios so we still try to find a healthy, balanced distribution for the weights. As in phase 1, each heuristic is scaled to the range $[0,1]$ and then multiplied by the assigned weight before summation:
+
+\begin{center}
+\begin{tabular}{|c c c c c|} 
+ \hline
+ ownToOverall & OwnToOpponents & distStrongest1 & distStrongest2 & playersInGame \\  
+ \hline\hline
+ 650 & 550 & 650 & 400 & 450\\ 
+ \hline
+\end{tabular}
+\end{center}
+
+The resulting weight vector is normalized as in phase 1, so that the maximum evaluation value remains within the bounds of a 32-bit integer after scaling by 1000 and it adds up to the maximal sum that has been used to test the implementation of the aspiration window algorithm.
+
+\paragraph{Future improvements.}
+As different heuristics excel in different contexts, our current weights represent an approximation of the average utility across all maps and scenarios. However, we have already considered dynamically adapting these weights at runtime, e.g., based on the current game state at the end of phase 1 or the nature of the map we play on for phase 1 heuristics. This could allow us to prioritize defensive or offensive strategies more effectively depending on whether we are currently in the lead or at risk. We plan to prototype this approach in the final assignment and expect further performance gains.
+
