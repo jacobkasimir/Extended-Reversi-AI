@@ -316,12 +316,12 @@ public class Heuristics {
             double walls = res[2];
 
             // weights of heuristics (we can modify them)
-            double weightCorners = 700;
-            double weightOwnToOverall = 800;
-            double weightOwnToOpponents = 800;
-            double weightWalls = 500;
+            double weightCorners = 600;
+            double weightOwnToOverall = 825;
+            double weightOwnToOpponents = 825;
+            double weightWalls = 400;
             double weightBombs = 400;
-            double weightOverrides = 200;
+            double weightOverrides = 350;
 
             double score = 0;
 
