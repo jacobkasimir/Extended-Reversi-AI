@@ -20,7 +20,7 @@ public class IterativeDeepening {
      * @param state      The current game state
      * @return The computed move
      */
-    public static int findMove(int timeLimit, Heuristics heuristics, GameState state, boolean moveSorting) {
+    public static int findMove(int timeLimit, Heuristics heuristics, GameState state, boolean moveSorting, boolean aspirationWindow) {
 
         long startTimeMS = System.nanoTime() / 1000000; // start time for estimation of left time
         int currentDepth = 1; // starting depth
@@ -36,15 +36,15 @@ public class IterativeDeepening {
 
             long depthStart = System.nanoTime();
             // calculate a move with a certain depth via Alpha Beta Pruning
-            AlphaBetaNewVersion alphaBeta = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher);
+            AlphaBetaNewVersion alphaBeta = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher, aspirationWindow);
             posResultMove = alphaBeta.alphaBetaSearch();
 
-            if(posResultMove != null && posResultMove.value() == -1) {
+            if(aspirationWindow && posResultMove != null && posResultMove.value() == -1) {
 
                 lower = Integer.MIN_VALUE;
                 higher = Integer.MAX_VALUE;
                 depthStart = System.nanoTime();
-                AlphaBetaNewVersion alphaBeta2 = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher);
+                AlphaBetaNewVersion alphaBeta2 = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher, aspirationWindow);
                 posResultMove = alphaBeta2.alphaBetaSearch();
             }
 
