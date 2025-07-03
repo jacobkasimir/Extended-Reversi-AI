@@ -23,6 +23,7 @@ public class GameClient {
     private int timeLimit;
     private boolean compareOn;
     private boolean moveSorting;
+    private boolean aspirationWindow;
 
     /**
      * Extracts a subarray of lines between the given start (inclusive) and end (exclusive).
@@ -81,7 +82,7 @@ public class GameClient {
      *
      * @param lines the input map file content as an array of lines
      */
-    public void init(String[] lines, boolean compare, int depthLimit, boolean movesorting) {
+    public void init(String[] lines, boolean compare, int depthLimit, boolean movesorting, boolean aspirationWindow) {
         int playerCount = Integer.parseInt(lines[0]);
         int overrideCount = Integer.parseInt(lines[1]);
 
@@ -110,6 +111,8 @@ public class GameClient {
         this.compareOn = compare;
 
         this.moveSorting = movesorting;
+
+        this.aspirationWindow = aspirationWindow;
 
         this.depthLimit = depthLimit;
 
@@ -207,10 +210,10 @@ public class GameClient {
                 SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
                 // AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info, moveSorting);
                 // return alphaBeta.chooseMove();
-                AlphaBetaNewVersion alphaBetaNew=  new AlphaBetaNewVersion(current_gameState, heuristics, depthLimit, info, moveSorting,Integer.MIN_VALUE, Integer.MAX_VALUE);
+                AlphaBetaNewVersion alphaBetaNew=  new AlphaBetaNewVersion(current_gameState, heuristics, depthLimit, info, moveSorting,Integer.MIN_VALUE, Integer.MAX_VALUE, aspirationWindow);
                 return alphaBetaNew.alphaBetaSearch().value();
             } else {  //case for only time limit
-                return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState, moveSorting);
+                return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState, moveSorting, aspirationWindow);
             }
 
 

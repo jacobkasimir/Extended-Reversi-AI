@@ -173,22 +173,22 @@ public class Heuristics {
                     occupiedTiles++;
 
                 // for walls() (index = 2)
-                if (tile == (char) (playerId + '0')) {
-                    for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) { // counting neighboring tiles that are
-                        // occupied by the playerId
+                // if (tile == (char) (playerId + '0')) {
+                //     for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) { // counting neighboring tiles that are
+                //         // occupied by the playerId
 
-                        // vertical and horizontal neighbors add value 2, diagonal only 1
-                        int nextPosition = map.getNextTile(Coder.encodePosition(x, y, i));
-                        if (nextPosition != -1 && map.getTile(Coder.decodePosX(nextPosition),
-                                Coder.decodePosY(nextPosition)) == (char) (playerId + '0')) {
-                            if (i == 1 || i == 3 || i == 5 || i == 7) {
-                                countNeighboring++;
-                            } else {
-                                countNeighboring += 2;
-                            }
-                        }
-                    }
-                }
+                //         // vertical and horizontal neighbors add value 2, diagonal only 1
+                //         int nextPosition = map.getNextTile(Coder.encodePosition(x, y, i));
+                //         if (nextPosition != -1 && map.getTile(Coder.decodePosX(nextPosition),
+                //                 Coder.decodePosY(nextPosition)) == (char) (playerId + '0')) {
+                //             if (i == 1 || i == 3 || i == 5 || i == 7) {
+                //                 countNeighboring++;
+                //             } else {
+                //                 countNeighboring += 2;
+                //             }
+                //         }
+                //     }
+                // }
 
             }
         }
@@ -319,7 +319,7 @@ public class Heuristics {
             double weightCorners = 600;
             double weightOwnToOverall = 825;
             double weightOwnToOpponents = 825;
-            double weightWalls = 400;
+            //double weightWalls = 400;
             double weightBombs = 400;
             double weightOverrides = 350;
 
@@ -328,7 +328,7 @@ public class Heuristics {
             score += weightCorners * ratioOfCornersCaptured(state.mapController(), playerId);
             score += weightOwnToOverall * ownToOverall;
             score += weightOwnToOpponents * ownToOpponents;
-            score += weightWalls * walls;
+            //score += weightWalls * walls;
             score += weightBombs * ratioBombs(state.attributes(), playerId);
             score += weightOverrides * ratioOverrides(state.attributes(), playerId);
 

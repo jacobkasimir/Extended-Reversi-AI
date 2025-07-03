@@ -22,16 +22,19 @@ public class AlphaBetaNewVersion {
 
     private final boolean moveSorting;
 
+    private final boolean aspirationWindow;
+
     private int low;
     private int high;
 
      
-    public AlphaBetaNewVersion(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo, boolean sorting, int low, int high){
+    public AlphaBetaNewVersion(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo, boolean sorting, int low, int high, boolean aspirationWindow) {
         this.currentGameState = gameState;
         this.heuristics = heuristics;
         this.searchdepth = searchdepth;
-        this.searchInfo =searchInfo;
+        this.searchInfo = searchInfo;
         this.moveSorting = sorting;
+        this.aspirationWindow = aspirationWindow;
 
         this.low = low;
         this.high = high;   
@@ -44,10 +47,15 @@ public class AlphaBetaNewVersion {
         player--;
         if (player == 0) player = currentGameState.attributes().getNumberPlayers();
 
-        Result result = maxValue(currentGameState.clone(), low, high, player, searchdepth, -1);
+        Result result;
+        if(aspirationWindow){
+            result = maxValue(currentGameState.clone(), low, high, player, searchdepth, -1);
+        }else{
+            result = maxValue(currentGameState.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, player, searchdepth, -1);
+        }
 
         if(result == null) return null;
-        if(result.value() < low || result.value() > high){
+        if(aspirationWindow && result.value() < low || result.value() > high){
             //System.out.println("FAIL HIGH/LOW: " + searchdepth + "heuristicValue: " + result.value());
             return new Result(-1, 0);
         }

@@ -15,6 +15,7 @@ public class Main {
         int port = 12345;
         boolean compare = false;
         boolean moveSorting = true;
+        boolean aspirationWindow = false;
         int depthLimit = 1;
 
         try {
@@ -66,6 +67,7 @@ public class Main {
                     }
                     case "-c", "--compare" -> compare = true;
                     case "-m", "--movesortingOff" -> moveSorting = false;
+                    case "-a", "--aspirationWindow" -> aspirationWindow = true;
                     default -> {
                         System.err.println("Unknown parameter: " + args[i]);
                         return;
@@ -84,9 +86,9 @@ public class Main {
             System.out.println("Connecting to " + selectedAddress.getHostAddress() + " ("
                     + selectedAddress.getHostName() + ") on port " + port);
             System.out.println("Search depth: " + depthLimit + ", Compare mode: " + (compare ? "enabled" : "disabled")
-                    + ", Move sorting: " + (moveSorting ? "enabled" : "disabled"));
+                    + ", Move sorting: " + (moveSorting ? "enabled" : "disabled") + ", Aspiration window: " + (aspirationWindow ? "enabled" : "disabled"));
 
-            TCPClient.connect(selectedAddress, port, compare, depthLimit, moveSorting);
+            TCPClient.connect(selectedAddress, port, compare, depthLimit, moveSorting, aspirationWindow);
 
         } catch (UnknownHostException e) {
             System.err.println("Error: Could not resolve host '" + serverInput + "'.");
