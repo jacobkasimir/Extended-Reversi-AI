@@ -8,7 +8,7 @@ public class Constants {
     public static final byte GROUP_NUMBER = 5;
     public static final double SAFETY_FOR_BRANCHING_FACTOR = 1.5;
     public static final int TIMELIMIT_SAFETY_OFFSET = 20; //in ms
-    public static final int TIMELIMIT_TIMEOUT_OFFSET = 200; //in ms
+    public static final int TIMELIMIT_TIMEOUT_OFFSET = 20; //in ms
     public static final double TIMEBUFFER = 0.9; //in %
     public static final int ASPIRATION_WINDOW = 2_000_000;
 }

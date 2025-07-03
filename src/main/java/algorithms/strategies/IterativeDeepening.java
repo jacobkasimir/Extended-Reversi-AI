@@ -31,10 +31,12 @@ public class IterativeDeepening {
 
         SearchInfo info = new SearchInfo(timeLimit, startTimeMS);
 
-        System.gc(); // trigger the garbage collector manually so that we won't be interrupted during our computations
+        
         while (true) {
 
             long depthStart = System.nanoTime();
+            System.gc(); // trigger the garbage collector manually so that we won't be interrupted during our computations
+            
             // calculate a move with a certain depth via Alpha Beta Pruning
             AlphaBetaNewVersion alphaBeta = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher, aspirationWindow);
             posResultMove = alphaBeta.alphaBetaSearch();
