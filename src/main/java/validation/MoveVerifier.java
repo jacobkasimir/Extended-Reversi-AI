@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import algorithms.strategies.Heuristics;
 import algorithms.strategies.Score;
 import control.Coder;
+import control.Constants;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
@@ -68,16 +69,16 @@ public class MoveVerifier {
                 tile = map.getTile(x, y);
 
                 switch (tile) {
-                    // Bonus for both choices (20: Bomb, 21: Override)
+                    // Bonus for both choices 
                     case 'b' -> {
-                        move = Coder.encodeMove(x, y, 20, playerId);
+                        move = Coder.encodeMove(x, y, Constants.BOMB, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
                                 GameState toEvalGameState = gameState.clone();
                                 toEvalGameState.updateGameState(move);
                                 Score score = new Score(move,heuristics.evaluate(toEvalGameState, gameState.attributes().getOurPlayerId()),toEvalGameState);
                                 moves.add(score);
                         }
-                        move = Coder.encodeMove(x, y, 21, playerId);
+                        move = Coder.encodeMove(x, y, Constants.OVERRIDE, playerId);
                         if (MoveVerifier.isValid(move, gameState)) {
                                 GameState toEvalGameState = gameState.clone();
                                 toEvalGameState.updateGameState(move);
