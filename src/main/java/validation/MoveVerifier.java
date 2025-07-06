@@ -179,7 +179,7 @@ public class MoveVerifier {
             counter++;
         }
         // Handles logic if no player has moves left
-        if (counter == gameState.attributes().getNumberPlayers()) {
+        if (counter == gameState.attributes().getNumberPlayers() + 1) {
             // Switch from phase 1 to 2
             if (gameState.attributes().isPhase1()) {
                 gameState.attributes().setGamePhase(2);
