@@ -53,7 +53,7 @@ public class SearchInfo {
 
     /**
      * Checks whether the time limit for the current search has been exceeded.
-     * <p>
+     * 
      * This method compares the current system time against the start time and the allowed time limit,
      * taking into account a small safety offset
      * If the limit is exceeded, it marks the instance as timed out.
@@ -124,24 +124,42 @@ public class SearchInfo {
         return depthTimes;
     }
 
-
+    /**
+     * Increases the node count by 1.
+     */
     public void addNode(){
         nodes++;
     }
 
+    /**
+     * Increases the last levels node count by 1.
+     */
     public void addNodesLastLvl(){
         nodesLastLvl++;
     }
 
+    /**
+     * Sets the node count and the last levels node count both to 0.
+     */
     public void resetCount(){
         nodes = 0;
         nodesLastLvl = 0;
     }
 
+    /**
+     * Returns the node count.
+     * 
+     * @return  the number of counted nodes
+     */
     public int getNodes() {
         return nodes;
     }
 
+    /**
+     * Retuns the last levels node count.
+     * 
+     * @return  the number of counted nodes of only the last level
+     */
     public int getNodesLastLvl() {
         return nodesLastLvl;
     }
