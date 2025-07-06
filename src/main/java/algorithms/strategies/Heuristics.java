@@ -1,9 +1,8 @@
 package algorithms.strategies;
 
-import algorithms.datastructures.IntLinkedList;
-import algorithms.datastructures.ListNode;
+import java.util.ArrayList;
+
 import control.Coder;
-import control.Constants;
 import gamestate.GameState;
 import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
@@ -15,7 +14,7 @@ import validation.GameRules;
  */
 public class Heuristics {
 
-    private final IntLinkedList corners; // list of all the corners on the map
+    private final ArrayList<Integer> corners; // list of all the corners on the map
     private final int initialBombs; // initial number of bombs
     private final int initialOverrides; // initial number of override stones
     private final int initalNumberPlayers; // initial numbers of players
@@ -46,8 +45,8 @@ public class Heuristics {
      * @param map The game map.
      * @return A list of encoded corner coordinates.
      */
-    public IntLinkedList findCorners(MapController map) {
-        IntLinkedList result = new IntLinkedList();
+    public ArrayList<Integer> findCorners(MapController map) {
+        ArrayList<Integer> result = new ArrayList<Integer>();
         int bonusTileCounter = 0;
 
         for (int x = 0; x < map.getWidth(); x++) {
@@ -90,21 +89,17 @@ public class Heuristics {
      * @return Fraction of all corners held by the player.
      */
     public double ratioOfCornersCaptured(MapController map, int playerId) {
-        if (corners.isEmpty())
-            return 0;
+        if (corners.isEmpty()) return 0;
 
         double cornersCaptured = 0;
-        ListNode node = corners.getHead();
 
-        while (node != null) {
-            int x = Coder.decodeXCoords(node.getValue());
-            int y = Coder.decodeYCoords(node.getValue());
-            if (map.getTile(x, y) == (char) (playerId + '0'))
-                cornersCaptured++;
-            node = node.getNext();
+        for (Integer corner : corners) {
+            int x = Coder.decodeXCoords(corner);
+            int y = Coder.decodeYCoords(corner);
+            if (map.getTile(x, y) == (char) (playerId + '0')) cornersCaptured++;
         }
 
-        return cornersCaptured / corners.getSize();
+        return cornersCaptured / corners.size();
     }
 
     /**
@@ -115,7 +110,7 @@ public class Heuristics {
      * @return The number of available overwrites.
      */
     public double ratioOverrides(GameAttributes state, int playerId) {
-        return Coder.decodeplayerOverrides(state.getPlayer(playerId))
+        return Coder.decodeplayerOverrides(state.getPlayer(playerId)) 
                 / Math.max((double) initialOverrides + numberBonusTiles, 1.0);
     }
 

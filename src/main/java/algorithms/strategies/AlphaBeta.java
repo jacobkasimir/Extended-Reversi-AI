@@ -3,116 +3,149 @@ package algorithms.strategies;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import control.Coder;
 import gamestate.GameState;
 import validation.MoveVerifier;
 
-/**
- * Implementation of the Alpha-Beta pruning algorithm.
- * This class performs minimax search with alpha-beta pruning to determine
- * the optimal move in a game state.
- * <p>
- * The algorithm evaluates possible moves up to a specified depth, using
- * heuristic evaluation to estimate positions beyond the search depth.
- */
 public class AlphaBeta {
-    /**
-     * Root node of the game tree
-     */
-    private final Node root;
-    /**
-     * Current state of the game
-     */
-    private final GameState current_GameState;
-    /**
-     * Heuristic evaluator used to assess game positions
-     */
+
+    private final GameState currentGameState;
+
     private final Heuristics heuristics;
-    /**
-     * Maximum depth of search in the game tree
-     */
+
     private final int searchdepth;
-    /**
-     * An object that holds all information for the optimal search time
-     */
-    private final SearchInfo info;
-    /**
-     * List of possible moves from the current position
-     */
-    private ArrayList<Score> moves;
-    /**
-     * Enables move sorting flag
-     */
-    private boolean moveSorting;
 
-    /**
-     * Constructs a new Alpha-Beta search instance.
-     *
-     * @param gameState   The current state of the game
-     * @param heuristics  The heuristic evaluation function to use
-     * @param searchdepth Maximum depth to search in the game tree
-     */
-    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo, boolean moveSorting) {
-        this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId(),heuristics);
-        this.current_GameState = gameState;
+    private final SearchInfo searchInfo;
+
+    private final boolean moveSorting;
+
+    private final boolean aspirationWindow;
+
+    private int low;
+    private int high;
+
+     
+    public AlphaBeta(GameState gameState, Heuristics heuristics, int searchdepth, SearchInfo searchInfo, boolean sorting, int low, int high, boolean aspirationWindow) {
+        this.currentGameState = gameState;
         this.heuristics = heuristics;
-        this.root = new Node(0, null, gameState.clone(), heuristics, moveSorting);
         this.searchdepth = searchdepth;
-        this.info = searchInfo;
-        this.moveSorting = moveSorting;
+        this.searchInfo = searchInfo;
+        this.moveSorting = sorting;
+        this.aspirationWindow = aspirationWindow;
 
-        ArrayList<Node> children = new ArrayList<>();
-
-        // for each of our moves, do:
-        for(Score m:moves) {
-            // clone game state
-            GameState newGameState = gameState.clone();
-
-            // create nodes for each possible move, with the cloned game state
-            children.add(new Node(m.move(), root, newGameState, heuristics, moveSorting));
-        }
-
-        if(moveSorting) Collections.sort(children, Collections.reverseOrder());
-        // add all nodes (possible states) to the root node
-        root.setNextMoves(children);
+        this.low = low;
+        this.high = high;   
     }
 
-    /**
-     * Performs the alpha-beta search and returns the best move found.
-     *
-     * <p>
-     * This method initiates the alpha-beta pruning algorithm from the root node,
-     * evaluating all possible moves to the specified depth. It uses the minimax
-     * principle with pruning to efficiently search the game tree.
-     * </p>
-     *
-     * @return The encoded move value representing the best move found
-     */
-    public int chooseMove() {
-        int maxValue = Integer.MIN_VALUE;
-        int result = 0;
-        int alpha = Integer.MIN_VALUE;
-        int beta = Integer.MAX_VALUE;
-        // Iterate over all possible child nodes (moves) of the root node
-        for (Node child : root.getNextMoves()) {
-            // Perform alpha-beta pruning on this node and retrieve its score
-            int childScore = child.pruning(searchdepth - 1, current_GameState.attributes().getOurPlayerId(), alpha,
-                    beta, info, moveSorting);
+    public Result alphaBetaSearch(){
+        int player = currentGameState.attributes().getOurPlayerId();
+        searchInfo.resetCount();
+
+        player--;
+        if (player == 0) player = currentGameState.attributes().getNumberPlayers();
+
+        Result result;
+        if(aspirationWindow){
+            result = maxValue(currentGameState.clone(), low, high, player, searchdepth, -1);
+        }else{
+            result = maxValue(currentGameState.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, player, searchdepth, -1);
+        }
+
+        if(result == null) return null;
+        if(aspirationWindow && result.value() < low || result.value() > high){
+            //System.out.println("FAIL HIGH/LOW: " + searchdepth + "heuristicValue: " + result.value());
+            return new Result(-1, 0);
+        }
+        else return result;        
+    }
+
+
+    public Result maxValue(GameState gameState, int alpha, int beta, int previousPlayer, int depth, int heuristicValue){
+
+        searchInfo.addNode();
+        //in case of a time-out
+        if (searchInfo.isTimeout()) {
+            return null;
+        }
+
+        //in case of no time-out
+        if(depth <= 0){
+            searchInfo.addNodesLastLvl();
+            int value;
+            if(heuristicValue != -1) value = heuristicValue;
+            else value = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
+            return new Result(value, -1);
+        }
+        ArrayList<Score> allMoves;
+        allMoves = MoveVerifier.calculateNextMoves(gameState, previousPlayer,heuristics);
+        
+        if(allMoves.isEmpty()){ //Pseudo: is Terminal?
+
+            int value;
+            if(heuristicValue != -1) value = heuristicValue;
+            else value = heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
+            return new Result(value, -1);
+        }
+
+        if (Coder.decodePlayerId(allMoves.getFirst().move()) != gameState.attributes().getOurPlayerId()){
+            int v = Integer.MAX_VALUE;
+            int move = -1;
+
+            if(moveSorting) Collections.sort(allMoves); // ascending (score)
+
+            for(Score a: allMoves){
+
+                Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
+
+                //if(result2 != null && result2.value() == -1) return result2; vermutlich von vorher
+                
+                // case of a timeout
+                if (searchInfo.getTimeout()) {
+                    return null;
+                }
+
+                if (result2.value() < v) {
+                    v = result2.value();
+                    move = a.move();
+                    
+                    beta = Math.min(beta, v);
+                }
+
+                if (v <= alpha) {
+                    return new Result(v, move);
+                } 
+            }
+            
+            return new Result(v, move);
+        }
+
+        int v = Integer.MIN_VALUE;
+        int move = -1;
+
+        if(moveSorting) Collections.sort(allMoves,Collections.reverseOrder());
+
+        for(Score a: allMoves){
+            Result result2 = maxValue(a.gameState().clone(), alpha, beta, Coder.decodePlayerId(a.move()), depth - 1, a.score());
+
+            //if(result2 != null && result2.value() == -1) return result2; vermmutlich von vorher
 
             // case of a timeout
-            //if (info.isTimeout(info)) return -1;
-            //TO DO: das benötigt man doch nur einmal... entweder in pruning() oder in chooseMove()
-
-            // Update the result if the score is higher than the current maxValue
-            if (maxValue < childScore) {
-                result = child.getMove();
-                maxValue = childScore;
+            if (searchInfo.getTimeout()) {
+                return null;
             }
-            // Update alpha and exit early if alpha is greater than or equal to beta
-            alpha = Math.max(alpha, maxValue);
-            if (beta <= alpha) {
-                break;
+
+            if (result2.value() > v) {
+                v = result2.value();
+                move = a.move();
+                
+                alpha = Math.max(alpha, v);
+            }
+
+            if (v >= beta) {
+                return new Result(v, move);
             }
         }
-        return result;
+
+        return new Result(v, move);
     }
 }
