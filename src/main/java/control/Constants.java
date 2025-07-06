@@ -11,4 +11,6 @@ public class Constants {
     public static final int TIMELIMIT_TIMEOUT_OFFSET = 200; //in ms
     public static final double TIMEBUFFER = 0.9; //in %
     public static final int ASPIRATION_WINDOW = 2_000_000;
+    public static final int BOMB = 20;
+    public static final int OVERRIDE = 21;
 }
