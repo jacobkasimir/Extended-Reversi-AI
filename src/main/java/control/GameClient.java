@@ -185,6 +185,7 @@ public class GameClient {
 
     /**
      * Computes and returns the best move with Alpha Beta Pruning (compareOn false) or with MiniMax AND Alpha Beta Pruning and compares their result (compareOn true).
+     * Handling of a given time limit (iterative deepening) or depth limit
      *
      * @return the encoded move
      */
@@ -201,6 +202,7 @@ public class GameClient {
             if (moveMiniMax != moveAlphaBeta) {
                 System.err.println("Different Results! MiniMax: " + moveMiniMax + " | AlphaBeta: " + moveAlphaBeta);
             }
+
             return moveAlphaBeta;
 
         } else {
@@ -211,8 +213,6 @@ public class GameClient {
             } else {  //case for only time limit
                 return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState, moveSorting, aspirationWindow);
             }
-
-
         }
     }
 
