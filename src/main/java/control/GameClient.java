@@ -223,11 +223,4 @@ public class GameClient {
         current_gameState.attributes().setGamePhase(2);
     }
 
-    /**
-     * Is called when the server sends the game ending message
-     */
-    public void endGame() {
-        // Possible additions for game evaluation?
-    }
-
 }

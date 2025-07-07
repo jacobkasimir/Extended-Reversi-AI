@@ -1,10 +1,8 @@
 package algorithms.strategies;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import control.Coder;
-import control.Constants;
 import gamestate.GameState;
 import validation.MoveVerifier;
 
@@ -38,14 +36,7 @@ public class Node implements Comparable<Node> {
      */
     private Integer score;
 
-    /**
-     * Creates a new Node with the specified parameters.
-     *
-     * @param move       The move value associated with this node
-     * @param parent     The parent node in the game tree
-     * @param gameState  The game state at this node
-     * @param heuristics The heuristics calculator to evaluate positions
-     */
+
     public Node(int move, Node parent, GameState gameState, Heuristics heuristics, boolean moveSorting) {
         this.move = move;
         this.parent = parent;
@@ -176,91 +167,7 @@ public class Node implements Comparable<Node> {
         }
     }
 
-    /**
-     * Performs alpha-beta pruning search in the game tree, an optimized version of minimax algorithm.
-     *
-     * @param searchDepth  The maximum depth to search
-     * @param lastPlayerId The ID of the player who made the last move
-     * @param alpha        The alpha value for pruning
-     * @param beta         The beta value for pruning
-     * @param info         The SearchInfo-object
-     * @return The heuristic value of the best move found
-     */
-    public int pruning(int searchDepth, int lastPlayerId, int alpha, int beta, SearchInfo info, boolean moveSorting) {
-        //in case of a time-out
-        if (info.isTimeout()) return -1;
-
-        if (searchDepth > 0) {
-
-            //update gameState by performing the move of this node
-            gameState.updateGameState(this.move);
-
-            //if (!gameState.attributes().isPhase1()) info.setReachedBombPhase();
-
-            //calculate all possible moves
-            ArrayList<Score> possibleMoves = MoveVerifier.calculateNextMoves(gameState, lastPlayerId,heuristics);
-            if (possibleMoves.isEmpty()) {
-                if(moveSorting){
-                    return this.score;
-                } else {
-                    return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
-                }
-            }
-
-            //iterate over all possible moves and add them as children of the current node
-            for(Score m:possibleMoves) {
-                this.nextMoves.add(new Node(m.move(), this, gameState.clone(), this.heuristics, moveSorting));
-            }
-
-            info.updateBranchingFactor(possibleMoves.size()); //SIZE!!
-            int result;
-
-            int playerIdUpcomingMove = Coder.decodePlayerId(possibleMoves.getFirst().move());
-
-            //decide if we perform the next move or one of our opponents:
-            if (playerIdUpcomingMove == gameState.attributes().getOurPlayerId()) {   //our move
-                result = Integer.MIN_VALUE;
-
-                //sort the moves based on their heuristic values
-                if(moveSorting) Collections.sort(nextMoves, Collections.reverseOrder());
-
-                //iterate over all moves in a deeper layer and recursively call pruning algorithm and update the parameters
-                for (Node child : nextMoves) {
-                    result = Math.max(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info, moveSorting));
-                    alpha = Math.max(alpha, result);
-                    if (beta <= alpha) {
-                        break;
-                    }
-                }
-            } else {  //opponents move
-                result = Integer.MAX_VALUE;
-
-                //sort the moves based on their heuristic values
-                if(moveSorting) Collections.sort(nextMoves);
-
-                //iterate over all moves in a deeper layer and recursively call pruning algorithm and update the parameters
-                for (Node child : nextMoves) {
-                    result = Math.min(result, child.pruning(searchDepth - 1, Coder.decodePlayerId(this.move), alpha, beta, info, moveSorting));
-                    beta = Math.min(beta, result);
-                    if (beta <= alpha) {
-                        break;
-                    }
-                }
-            }
-            this.nextMoves = null;
-            //return result that is used in "AlphaBeta"-class
-            return result;
-
-        } else { //return heuristic value if searchDepth is 0
-            if(moveSorting){
-                return this.score;
-            } else {
-                return heuristics.evaluate(gameState, gameState.attributes().getOurPlayerId());
-            }
-        }
-    }
-
-
+    
     @Override
     public int compareTo(Node node) {
         return this.score.compareTo(node.getScore());

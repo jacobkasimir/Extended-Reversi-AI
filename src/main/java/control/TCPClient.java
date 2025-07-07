@@ -11,7 +11,6 @@ import java.net.Socket;
  * It interprets incoming messages and delegates game logic to GameClient.
  */
 
-
 public class TCPClient {
 
     /**
@@ -99,7 +98,6 @@ public class TCPClient {
                     }
 
                     case 9 -> {
-                        game.endGame();
                         System.out.println(">>> Game finished");
                         socket.close();
                         return;
