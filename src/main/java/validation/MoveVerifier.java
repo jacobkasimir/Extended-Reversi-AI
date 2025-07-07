@@ -11,7 +11,8 @@ import gamestate.attributes.GameAttributes;
 import gamestate.map.MapController;
 
 /**
- * Verifies if a move is valid by using the individual rules from the GameRules.
+ * Verifies if a move is valid by using the individual rules from the GameRules 
+ * and calulates the next moves and their corresponding game states.
  */
 public class MoveVerifier {
 
@@ -45,8 +46,10 @@ public class MoveVerifier {
         }
     }
 
+
+
     /**
-     * Calculates all possible Moves on a current game state for a certain player in
+     * Calculates all possible Moves, the resulting game state and it's heuristic vlaue on a current game state for a certain player in
      * game phase 1.
      *
      * @param gameState GameState object holding a MapController and a
@@ -115,8 +118,9 @@ public class MoveVerifier {
     }
 
     /**
-     * Calculates all possible Moves on a current game state in game phase 2.
-     *
+     * Calculates all possible Moves, the resulting game state and it's heuristic vlaue on a current game state for a certain player in
+     * game phase 2.
+     * 
      * @param gameState GameState object holding a MapController and a
      *                  GameAttributes object.
      * @return All possible moves in an IntLinkedList.
@@ -126,10 +130,11 @@ public class MoveVerifier {
         GameAttributes attributes = gameState.attributes();
 
         ArrayList<Score> res = new ArrayList<>();
+
         for (int i = 0; i < map.getWidth(); i++) {
             for (int j = 0; j < map.getHeight(); j++) {
-                if (map.getTile(i, j) != '-'
-                        && Coder.decodeplayerBombs(attributes.getPlayer(attributes.getOurPlayerId())) > 0) {
+
+                if (map.getTile(i, j) != '-' && Coder.decodeplayerBombs(attributes.getPlayer(attributes.getOurPlayerId())) > 0) {
                     int move = Coder.encodeMove(i, j, 0, attributes.getOurPlayerId());
                     GameState toEvalGameState = gameState.clone();
                     toEvalGameState.updateGameState(move);
