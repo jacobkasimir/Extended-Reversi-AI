@@ -1,7 +1,7 @@
 package algorithms.strategies;
 
-import algorithms.datastructures.IntLinkedList;
-import algorithms.datastructures.ListNode;
+import java.util.ArrayList;
+
 import control.Coder;
 import control.Constants;
 import gamestate.GameState;
@@ -15,7 +15,7 @@ import validation.GameRules;
  */
 public class Heuristics {
 
-    private final IntLinkedList corners; // list of all the corners on the map
+    private final ArrayList<Integer> corners; // list of all the corners on the map
     private final int initialBombs; // initial number of bombs
     private final int initialOverrides; // initial number of override stones
     private final int initalNumberPlayers; // initial numbers of players
@@ -46,8 +46,8 @@ public class Heuristics {
      * @param map The game map.
      * @return A list of encoded corner coordinates.
      */
-    public IntLinkedList findCorners(MapController map) {
-        IntLinkedList result = new IntLinkedList();
+    public ArrayList<Integer> findCorners(MapController map) {
+        ArrayList<Integer> result = new ArrayList<Integer>();
         int bonusTileCounter = 0;
 
         for (int x = 0; x < map.getWidth(); x++) {
@@ -90,21 +90,17 @@ public class Heuristics {
      * @return Fraction of all corners held by the player.
      */
     public double ratioOfCornersCaptured(MapController map, int playerId) {
-        if (corners.isEmpty())
-            return 0;
+        if (corners.isEmpty()) return 0;
 
         double cornersCaptured = 0;
-        ListNode node = corners.getHead();
 
-        while (node != null) {
-            int x = Coder.decodeXCoords(node.getValue());
-            int y = Coder.decodeYCoords(node.getValue());
-            if (map.getTile(x, y) == (char) (playerId + '0'))
-                cornersCaptured++;
-            node = node.getNext();
+        for (Integer corner : corners) {
+            int x = Coder.decodeXCoords(corner);
+            int y = Coder.decodeYCoords(corner);
+            if (map.getTile(x, y) == (char) (playerId + '0')) cornersCaptured++;
         }
 
-        return cornersCaptured / corners.getSize();
+        return cornersCaptured / corners.size();
     }
 
     /**
@@ -115,7 +111,7 @@ public class Heuristics {
      * @return The number of available overwrites.
      */
     public double ratioOverrides(GameAttributes state, int playerId) {
-        return Coder.decodeplayerOverrides(state.getPlayer(playerId))
+        return Coder.decodeplayerOverrides(state.getPlayer(playerId)) 
                 / Math.max((double) initialOverrides + numberBonusTiles, 1.0);
     }
 
@@ -132,17 +128,15 @@ public class Heuristics {
     }
 
     /**
-     * Calculates three different ratios in parallel.
+     * Calculates two different ratios in parallel.
      * 1.: ratioOfOwnTilesOverall() - ratio of own occupied tiles to all reachable
      * tiles.
      * 2.: ratioOfOwnTilesToOthers() - ratio of own occupied tiles to all tiles
      * occupied by opponents.
-     * 3.: walls() - ratio of how much the own tiles are connected (neighboring)
-     * with each other.
      *
      * @param map      The current MapController.
      * @param playerId The player ID.
-     * @return An array holding all three ratios.
+     * @return An array holding both ratios.
      */
     public double[] mapRelatedHeuristicsPhase1(MapController map, int playerId) {
         double[] res = new double[5];
@@ -153,9 +147,6 @@ public class Heuristics {
 
         // for ratioOfOwnTilesToOthers()
         double occupiedTiles = 0;
-
-        // for walls()
-        double countNeighboring = 0;
 
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
@@ -168,27 +159,9 @@ public class Heuristics {
                 if (tile == (char) (playerId + '0'))
                     ownTiles++;
 
-                    // for ratioOfOwnTilesToOthers() (index = 1)
+                // for ratioOfOwnTilesToOthers() (index = 1)
                 if (GameRules.isPlayer(tile))
                     occupiedTiles++;
-
-                // for walls() (index = 2)
-                // if (tile == (char) (playerId + '0')) {
-                //     for (int i = 0; i < Constants.NUMBER_OF_DIRECTIONS; i++) { // counting neighboring tiles that are
-                //         // occupied by the playerId
-
-                //         // vertical and horizontal neighbors add value 2, diagonal only 1
-                //         int nextPosition = map.getNextTile(Coder.encodePosition(x, y, i));
-                //         if (nextPosition != -1 && map.getTile(Coder.decodePosX(nextPosition),
-                //                 Coder.decodePosY(nextPosition)) == (char) (playerId + '0')) {
-                //             if (i == 1 || i == 3 || i == 5 || i == 7) {
-                //                 countNeighboring++;
-                //             } else {
-                //                 countNeighboring += 2;
-                //             }
-                //         }
-                //     }
-                // }
 
             }
         }
@@ -199,17 +172,11 @@ public class Heuristics {
         // ratioOfOwnTilesToOthers()
         res[1] = ownTiles / Math.max(1, occupiedTiles);
 
-        // walls()
-        double maxNeighboring = ownTiles * 12; // times twelve because horizontal and vertical neighbors are valued with
-        // 2 and diagonal neighbors with 1
-        res[2] = 1.0 - (countNeighboring / maxNeighboring); // inverted so that the bigger the ratio the better for the
-        // player
-
         return res;
     }
 
     /**
-     * Calculates three different ratios in parallel.
+     * Calculates five different ratios in parallel.
      * 1.: ratioOfOwnTilesOverall() - ratio of own occupied tiles to all reachable
      * tiles.
      * 2.: ratioOfOwnTilesToOthers() - ratio of own occupied tiles to all tiles
@@ -223,7 +190,7 @@ public class Heuristics {
      *
      * @param state    The current game state.
      * @param playerId The player ID.
-     * @return An array holding all three ratios.
+     * @return An array holding all five ratios.
      */
     public double[] mapRelatedHeuristicsPhase2(GameState state, int playerId) {
         double[] res = new double[5];
@@ -313,26 +280,16 @@ public class Heuristics {
             double[] res = mapRelatedHeuristicsPhase1(state.mapController(), playerId);
             double ownToOverall = res[0];
             double ownToOpponents = res[1];
-            double walls = res[2];
-
-            // weights of heuristics (we can modify them)
-            double weightCorners = 600;
-            double weightOwnToOverall = 825;
-            double weightOwnToOpponents = 825;
-            //double weightWalls = 400;
-            double weightBombs = 400;
-            double weightOverrides = 350;
 
             double score = 0;
 
-            score += weightCorners * ratioOfCornersCaptured(state.mapController(), playerId);
-            score += weightOwnToOverall * ownToOverall;
-            score += weightOwnToOpponents * ownToOpponents;
-            //score += weightWalls * walls;
-            score += weightBombs * ratioBombs(state.attributes(), playerId);
-            score += weightOverrides * ratioOverrides(state.attributes(), playerId);
+            score += Constants.WEIGHTCORNERS * ratioOfCornersCaptured(state.mapController(), playerId);
+            score += Constants.WEIGHTOWNTOOVERALLPHASE1 * ownToOverall;
+            score += Constants.WEIGHTOWNTOOPPONENTSPHASE1 * ownToOpponents;
+            score += Constants.WEIGHTBOMBS * ratioBombs(state.attributes(), playerId);
+            score += Constants.WEIGHTOVERRIDES * ratioOverrides(state.attributes(), playerId);
 
-            return (int) Math.round(score * 1000); // 0-1000 points
+            return (int) Math.round(score * 1000); 
         } else { // evaluation for Phase 2
             double[] res = mapRelatedHeuristicsPhase2(state, playerId);
             double ownToOverall = res[0];
@@ -341,41 +298,15 @@ public class Heuristics {
             double distanceToStrongestOpponent2 = res[3];
             double ratioPlayersInGame = res[4];
 
-            
-            if(ownToOverall > 1) {
-                System.out.println("OwnToOverall FAIL");
-            }
-            if(ownToOpponents > 1) {
-                System.out.println("ownToOpponents FAIL");
-            }
-            if(distanceToStrongestOpponent1 > 1) {
-                System.out.println("distance1 FAIL");
-            }
-            if(distanceToStrongestOpponent2 > 1) {
-                System.out.println("distance2 FAIL");
-            }
-            if(ratioPlayersInGame > 1) {
-                System.out.println("playersIn Game FAIL");
-            }
-
-
-            // weights of heuristics (we can modify them)
-            double weightOwnToOverall = 650;
-            double weightOwnToOpponents = 550;
-            double weightdistStrongest1 = 650;
-            double weightdistStrongest2 = 400;
-            double weightPlayersInGame = 450;
-
             double score = 0;
 
-            score += weightOwnToOverall * ownToOverall;
-            score += weightOwnToOpponents * ownToOpponents;
-            score += weightdistStrongest1 * distanceToStrongestOpponent1;
-            score += weightdistStrongest2 * distanceToStrongestOpponent2;
-            score += weightPlayersInGame * ratioPlayersInGame;
+            score += Constants.WEIGHTOWNTOOVERALLPHASE2 * ownToOverall;
+            score += Constants.WEIGHTOWNTOOPPONENTSPHASE2 * ownToOpponents;
+            score += Constants.WEIGHTDISTSTRONGEST1 * distanceToStrongestOpponent1;
+            score += Constants.WEIGHTDISTSTRONGEST2 * distanceToStrongestOpponent2;
+            score += Constants.WEIGHTDISTSTRONGEST2 * ratioPlayersInGame;
 
-            
-            return (int) Math.round(score * 1000); // 0-1000 points
+            return (int) Math.round(score * 1000); 
         }
     }
 

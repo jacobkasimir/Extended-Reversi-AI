@@ -38,7 +38,7 @@ public class IterativeDeepening {
             System.gc(); // trigger the garbage collector manually so that we won't be interrupted during our computations
             
             // calculate a move with a certain depth via Alpha Beta Pruning
-            AlphaBetaNewVersion alphaBeta = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher, aspirationWindow);
+            AlphaBeta alphaBeta = new AlphaBeta(state, heuristics, currentDepth, info, moveSorting, lower, higher, aspirationWindow);
             posResultMove = alphaBeta.alphaBetaSearch();
 
             if(aspirationWindow && posResultMove != null && posResultMove.value() == -1) {
@@ -46,7 +46,7 @@ public class IterativeDeepening {
                 lower = Integer.MIN_VALUE;
                 higher = Integer.MAX_VALUE;
                 depthStart = System.nanoTime();
-                AlphaBetaNewVersion alphaBeta2 = new AlphaBetaNewVersion(state, heuristics, currentDepth, info, moveSorting, lower, higher, aspirationWindow);
+                AlphaBeta alphaBeta2 = new AlphaBeta(state, heuristics, currentDepth, info, moveSorting, lower, higher, aspirationWindow);
                 posResultMove = alphaBeta2.alphaBetaSearch();
             }
 
@@ -98,60 +98,30 @@ public class IterativeDeepening {
         if (size < 2) return false;
 
         long lastTime = times.get(size - 1);
-        //long predictedNextTime = getPredictedNextTime(times, size, lastTime);
 
         //ratio from last and predicted branching factor
-        int next_bf = estimateNextBranchingFactor(info);
+        int next_children = estimateNextChildren(info);
 
         double avgTimePerNode = lastTime / (double) info.getNodes();
 
-        //predicted next time considering the branching factor
-        long predictedBFTime = (long) (next_bf * avgTimePerNode) + lastTime;
+        //predicted next time considering the number of chuldren
+        long predictedBFTime = (long) (next_children * avgTimePerNode) + lastTime;
 
         long currentTime = System.nanoTime() / 1_000_000;
         long timeUsed = currentTime - info.getStartTime();
         long timeLeft = info.getTimeLimit() - timeUsed;
 
-        // safety buffer
-        //long buffer = 50; // ms
-
-        // return (predictedNextTime + predictedBFTime / 2.0) + buffer >= timeLeft;
         return predictedBFTime * Constants.TIMEBUFFER >= timeLeft;
     }
 
     /**
-     * Predicts the time required to complete the next search depth based on recent depth timings.
-     * Uses either a two-point or three-point average growth estimate depending on how many depth times are available.
-     *
-     * @param times    a list of recorded durations for completed search depths
-     * @param size     the size of the list (number of recorded depths)
-     * @param lastTime the duration of the most recent completed depth
-     * @return an estimated duration for the next search depth.
-     */
-    private static long getPredictedNextTime(List<Long> times, int size, long lastTime) {
-        long secondLastTime = times.get(size - 2);
-        long predictedNextTime;
-
-        if (size > 2) {
-            long thirdLastTime = times.get(size - 3);
-            double avg1 = (double) secondLastTime/ thirdLastTime;
-            double avg2 = (double) lastTime / secondLastTime;
-            double avgGrowth = (avg1 + avg2) / 2;
-            predictedNextTime = (long) (lastTime * avgGrowth); //predicted time for the next depth
-        }   else {
-            predictedNextTime = lastTime * lastTime / secondLastTime; //predicted time for the next depth
-        }
-        return predictedNextTime;
-    }
-
-    /**
-     * Estimates the branching factor for the next depth level using recent historical values.
+     * Estimates the number of children for the next depth level using recent historical values.
      * It calculates an average growth rate between the last and current branching factors and projects it forward.
      *
      * @param info the SearchInfo instance containing current and past branching factor information
      * @return an estimated branching factor for the next depth level.
      */
-    private static int estimateNextBranchingFactor(SearchInfo info) {
+    private static int estimateNextChildren(SearchInfo info) {
         int parents = info.getNodes() - info.getNodesLastLvl() - 1;
         int childs = info.getNodes() - 1;
 

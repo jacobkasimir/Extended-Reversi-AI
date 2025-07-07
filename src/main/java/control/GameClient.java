@@ -1,7 +1,6 @@
 package control;
 
 import algorithms.strategies.AlphaBeta;
-import algorithms.strategies.AlphaBetaNewVersion;
 import algorithms.strategies.Heuristics;
 import algorithms.strategies.IterativeDeepening;
 import algorithms.strategies.MiniMax;
@@ -186,37 +185,34 @@ public class GameClient {
 
     /**
      * Computes and returns the best move with Alpha Beta Pruning (compareOn false) or with MiniMax AND Alpha Beta Pruning and compares their result (compareOn true).
+     * Handling of a given time limit (iterative deepening) or depth limit
      *
      * @return the encoded move
      */
     public int calculateMove() {
-        if (compareOn) {
-
+        if (compareOn) { //case for comparing MiniMax and AlphaBeta
             MiniMax miniMax = new MiniMax(current_gameState, this.heuristics, depthLimit);
             int moveMiniMax = miniMax.chooseMove();
 
             SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
 
-            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info, moveSorting);
-            int moveAlphaBeta = alphaBeta.chooseMove();
+            AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info, moveSorting, Integer.MIN_VALUE, Integer.MAX_VALUE, aspirationWindow);
+            int moveAlphaBeta = alphaBeta.alphaBetaSearch().move();
 
             if (moveMiniMax != moveAlphaBeta) {
                 System.err.println("Different Results! MiniMax: " + moveMiniMax + " | AlphaBeta: " + moveAlphaBeta);
             }
+
             return moveAlphaBeta;
 
         } else {
             if (timeLimit == 0) { //case for only depth limit
                 SearchInfo info = new SearchInfo(Integer.MAX_VALUE, 0);
-                // AlphaBeta alphaBeta = new AlphaBeta(current_gameState, this.heuristics, depthLimit, info, moveSorting);
-                // return alphaBeta.chooseMove();
-                AlphaBetaNewVersion alphaBetaNew=  new AlphaBetaNewVersion(current_gameState, heuristics, depthLimit, info, moveSorting,Integer.MIN_VALUE, Integer.MAX_VALUE, aspirationWindow);
-                return alphaBetaNew.alphaBetaSearch().value();
+                AlphaBeta alphaBeta =  new AlphaBeta(current_gameState, heuristics, depthLimit, info, moveSorting, Integer.MIN_VALUE, Integer.MAX_VALUE, aspirationWindow);
+                return alphaBeta.alphaBetaSearch().move();
             } else {  //case for only time limit
                 return IterativeDeepening.findMove(timeLimit, this.heuristics, current_gameState, moveSorting, aspirationWindow);
             }
-
-
         }
     }
 
@@ -225,13 +221,6 @@ public class GameClient {
      */
     public void endPhase() {
         current_gameState.attributes().setGamePhase(2);
-    }
-
-    /**
-     * Is called when the server sends the game ending message
-     */
-    public void endGame() {
-        // Possible additions for game evaluation?
     }
 
 }

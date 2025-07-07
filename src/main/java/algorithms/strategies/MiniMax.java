@@ -31,10 +31,7 @@ public class MiniMax {
      * Current state of the game
      */
     private GameState current_GameState;
-    /**
-     * Heuristic used to evaluate game states
-     */
-    private Heuristics heuristics;
+
 
 
     /**
@@ -47,7 +44,7 @@ public class MiniMax {
     public MiniMax(GameState gameState, Heuristics heuristics, int searchdepth) {
         this.moves = MoveVerifier.calculateMoves(gameState, gameState.attributes().getOurPlayerId(), heuristics);
         this.current_GameState = gameState;
-        this.heuristics = heuristics;
+
         //create the root node for the branched tree of possible moves (or game states)
         this.root = new Node(0, null, gameState.clone(), heuristics, false);
         this.searchdepth = searchdepth;
