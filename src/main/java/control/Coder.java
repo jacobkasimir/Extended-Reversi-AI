@@ -1,7 +1,7 @@
 package control;
 
 /**
- * Contains the encoder and decoder for moves, coordinates, players and positions
+ * Contains the encoder and decoder methods for moves, coordinates, players and positions
  */
 public class Coder {
     /**
