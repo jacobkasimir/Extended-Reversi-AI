@@ -21,7 +21,6 @@ public class Constants {
     public static final double WEIGHTBOMBS = 400;
     public static final double WEIGHTOVERRIDES = 350;
     //phase 2
-    // weights of heuristics (we can modify them)
     public static final double WEIGHTOWNTOOVERALLPHASE2 = 650;
     public static final double WEIGHTOWNTOOPPONENTSPHASE2 = 550;
     public static final double WEIGHTDISTSTRONGEST1 = 650;
