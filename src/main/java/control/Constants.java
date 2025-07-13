@@ -18,8 +18,8 @@ public class Constants {
     public static final double WEIGHTCORNERS = 600;
     public static final double WEIGHTOWNTOOVERALLPHASE1 = 825;
     public static final double WEIGHTOWNTOOPPONENTSPHASE1 = 825;
-    public static final double WEIGHTBOMBS = 400;
-    public static final double WEIGHTOVERRIDES = 350;
+    public static final double WEIGHTBOMBS = 200;
+    public static final double WEIGHTOVERRIDES = 400;
     //phase 2
     public static final double WEIGHTOWNTOOVERALLPHASE2 = 650;
     public static final double WEIGHTOWNTOOPPONENTSPHASE2 = 550;
